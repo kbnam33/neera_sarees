@@ -1,86 +1,123 @@
 import React, { useState } from 'react';
 
-// ICONS - Using inline SVGs for simplicity and performance.
+// ICONS - Using new, robust inline SVGs for clean rendering.
 const SearchIcon = ({ className = "w-6 h-6" }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <circle cx="11" cy="11" r="8"></circle>
-    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
   </svg>
 );
 
 const UserIcon = ({ className = "w-6 h-6" }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
   </svg>
 );
 
 const ShoppingBagIcon = ({ className = "w-6 h-6" }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-    <line x1="3" y1="6" x2="21" y2="6"></line>
-    <path d="M16 10a4 4 0 0 1-8 0"></path>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+    <path d="M3 6h18" />
+    <path d="M16 10a4 4 0 0 1-8 0" />
   </svg>
 );
 
 const FilterIcon = ({ className = "w-6 h-6" }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <line x1="4" y1="21" x2="4" y2="14" />
-        <line x1="4" y1="10" x2="4" y2="3" />
-        <line x1="12" y1="21" x2="12" y2="12" />
-        <line x1="12" y1="8" x2="12" y2="3" />
-        <line x1="20" y1="21" x2="20" y2="16" />
-        <line x1="20" y1="12" x2="20" y2="3" />
-        <line x1="1" y1="14" x2="7" y2="14" />
-        <line x1="9" y1="8" x2="15" y2="8" />
-        <line x1="17" y1="16" x2="23" y2="16" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" /><line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" /><line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" /><line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
     </svg>
 );
 
-const GridIcon = ({ className = "w-6 h-6" }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <rect x="3" y="3" width="7" height="7"></rect>
-        <rect x="14" y="3" width="7" height="7"></rect>
-        <rect x="14" y="14" width="7" height="7"></rect>
-        <rect x="3" y="14" width="7" height="7"></rect>
+const ChevronDownIcon = ({ className = "w-4 h-4" }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="m6 9 6 6 6-6"/>
     </svg>
 );
 
-// HEADER COMPONENT
+
+// HEADER COMPONENT with Mega Menu
 const Header = () => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const fabricLinks = [
+        "ORGANZA", "VELVET", "CHIFFON", "COTTON SILK", "GEORGETTE", "THE WORLD COLLECTION"
+    ];
+
+    const featuredCollections = [
+        { name: "Bridal Couture", image: "https://placehold.co/400x500/d1d5db/111827?text=Bridal+Couture" },
+        { name: "Summer '24", image: "https://placehold.co/400x500/fef3c7/111827?text=Summer+'24" }
+    ];
+
     return (
         <header className="bg-soft-beige text-charcoal-gray sticky top-0 z-50 border-b border-gray-200">
-            {/* Top Tier */}
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
-                <div className="hidden md:flex items-center gap-x-6 text-xs tracking-widest font-sans">
-                    <a href="#" className="hover:text-black">COUTURE</a>
-                    <a href="#" className="hover:text-black">DIFFUSE</a>
+                {/* Left: Logo */}
+                <div className="flex-shrink-0">
+                    <a href="/" className="flex items-center">
+                        <h1 className="relative text-5xl font-serif tracking-normal text-deep-maroon">
+                            Neera
+                            <img 
+                                src="/Lotus.png" 
+                                alt="Neera Lotus" 
+                                className="absolute -top-2 -right-1 w-7 h-auto" 
+                            />
+                        </h1>
+                    </a>
                 </div>
-                <div className="absolute left-1/2 -translate-x-1/2">
-                    <h1 className="text-4xl font-serif tracking-[0.2em] text-black">NEERA</h1>
-                </div>
-                <div className="flex items-center gap-x-4">
+
+                {/* Center: Navigation */}
+                <nav className="hidden md:flex items-center justify-center flex-1 gap-x-8 text-xs tracking-widest font-sans">
+                    <a href="#" className="hover:text-deep-maroon py-4">NEW COLLECTIONS</a>
+                    <a href="#" className="hover:text-deep-maroon py-4">ALL SAREES</a>
+                    <div className="relative flex items-center py-4" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+                        <button className="flex items-center gap-x-1.5 hover:text-deep-maroon">
+                            SHOP BY FABRIC
+                            <ChevronDownIcon />
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 w-[50vw] max-w-3xl">
+                               <div className="bg-soft-beige border border-gray-200 shadow-xl p-8">
+                                <div className="grid grid-cols-3 gap-8">
+                                    {/* Column 1: Links */}
+                                    <div className="col-span-1">
+                                        <h3 className="font-bold tracking-widest text-sm mb-4">FABRICS</h3>
+                                        <ul className="space-y-3 text-xs text-gray-600">
+                                            {fabricLinks.map(link => (
+                                                <li key={link}><a href="#" className="hover:text-deep-maroon">{link}</a></li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    {/* Columns 2 & 3: Images */}
+                                    {featuredCollections.map(collection => (
+                                        <div key={collection.name} className="col-span-1">
+                                            <div className="bg-gray-100 mb-2">
+                                                 <img src={collection.image} alt={collection.name} className="w-full h-full object-cover" />
+                                            </div>
+                                            <h4 className="text-xs tracking-wider text-center">{collection.name}</h4>
+                                        </div>
+                                    ))}
+                                </div>
+                               </div>
+                            </div>
+                        )}
+                    </div>
+                </nav>
+
+                {/* Right: Icons & Search */}
+                <div className="flex items-center justify-end flex-shrink-0 gap-x-4">
                     <div className="hidden sm:flex items-center bg-gray-100 px-3 py-2 rounded-sm">
                         <SearchIcon className="w-4 h-4 text-gray-500 mr-2" />
                         <input type="text" placeholder="saree" className="bg-transparent text-sm placeholder-gray-500 focus:outline-none w-24 font-sans"/>
                     </div>
-                    <a href="#" className="hover:text-black transition-colors duration-300"><UserIcon className="w-5 h-5" /></a>
-                    <a href="#" className="hover:text-black transition-colors duration-300"><ShoppingBagIcon className="w-5 h-5" /></a>
+                    <a href="#" className="hover:text-deep-maroon transition-colors duration-300"><UserIcon className="w-5 h-5" /></a>
+                    <a href="#" className="hover:text-deep-maroon transition-colors duration-300"><ShoppingBagIcon className="w-5 h-5" /></a>
                 </div>
             </div>
-            {/* Bottom Tier Navigation */}
-            <nav className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-3 flex justify-center items-center gap-x-8 text-xs tracking-widest font-sans border-t border-gray-200">
-                <a href="#" className="hover:text-black">NEW IN</a>
-                <a href="#" className="hover:text-black">WOMEN</a>
-                <a href="#" className="hover:text-black">MEN</a>
-                <a href="#" className="hover:text-black">COLLECTIONS</a>
-                <a href="#" className="hover:text-black">STARS OF NEERA</a>
-                <a href="#" className="hover:text-black">RUNWAYS</a>
-                <a href="#" className="hover:text-black">ABOUT</a>
-            </nav>
         </header>
     );
 };
+
 
 // PRODUCT GRID COMPONENT
 const ProductGrid = () => {
@@ -97,7 +134,7 @@ const ProductGrid = () => {
 
     return (
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-12">
-            <h2 className="text-center text-3xl font-serif tracking-[0.2em] text-black mb-8">SAREE</h2>
+            <h2 className="text-center text-3xl font-serif tracking-[0.2em] text-black mb-8">THE COLLECTION</h2>
             
             {/* Filter and Sort Bar */}
             <div className="flex justify-between items-center mb-8 border-y border-gray-200 py-4 font-sans text-xs">
@@ -114,10 +151,6 @@ const ProductGrid = () => {
                             <option>Price: Low to High</option>
                             <option>Price: High to Low</option>
                         </select>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                         <GridIcon className="w-5 h-5 cursor-pointer text-black"/>
-                         <GridIcon className="w-4 h-4 cursor-pointer text-gray-400"/>
                     </div>
                 </div>
             </div>
@@ -197,3 +230,4 @@ export default function App() {
     </div>
   )
 }
+
