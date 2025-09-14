@@ -11,6 +11,7 @@ export default {
         'deep-maroon': '#5B1A32',
         'lotus-gold': '#C9A24A',
         'charcoal-gray': '#3A3A3A',
+        'brand-dark': '#121212',
       },
       fontFamily: {
         'sans': ['Lato', 'sans-serif'],
@@ -20,3 +21,4 @@ export default {
   },
   plugins: [],
 }
+
