@@ -63,8 +63,49 @@ const Header = () => {
     return (
         <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-soft-beige text-charcoal-gray shadow-md' : 'bg-transparent text-white'}`}>
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
-                {/* Left: Logo */}
-                <div className="flex-shrink-0">
+                
+                {/* Left: Navigation */}
+                <div className="w-1/3">
+                    <nav className="hidden md:flex items-center justify-start gap-x-8 text-xs tracking-widest font-sans">
+                        <a href="#" className={`py-4 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>NEW COLLECTIONS</a>
+                        <a href="#" className={`py-4 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>ALL SAREES</a>
+                        <div className="relative flex items-center py-4" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+                            <button className={`flex items-center gap-x-1.5 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>
+                                SHOP BY FABRIC
+                                <ChevronDownIcon />
+                            </button>
+                            {isDropdownOpen && (
+                                <div className="absolute top-full left-0 pt-5 w-[50vw] max-w-3xl">
+                                   <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-xl p-8">
+                                    <div className="grid grid-cols-3 gap-8">
+                                        {/* Column 1: Links */}
+                                        <div className="col-span-1">
+                                            <h3 className="font-bold tracking-widest text-sm mb-4">FABRICS</h3>
+                                            <ul className="space-y-3 text-xs text-gray-600">
+                                                {fabricLinks.map(link => (
+                                                    <li key={link}><a href="#" className="hover:text-deep-maroon">{link}</a></li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        {/* Columns 2 & 3: Images */}
+                                        {featuredCollections.map(collection => (
+                                            <div key={collection.name} className="col-span-1">
+                                                <div className="bg-gray-100 mb-2">
+                                                     <img src={collection.image} alt={collection.name} className="w-full h-full object-cover" />
+                                                </div>
+                                                <h4 className="text-xs tracking-wider text-center">{collection.name}</h4>
+                                            </div>
+                                        ))}
+                                    </div>
+                                   </div>
+                                </div>
+                            )}
+                        </div>
+                    </nav>
+                </div>
+
+                {/* Center: Logo */}
+                <div className="w-1/3 flex justify-center">
                     <a href="/" className="flex items-center">
                         <h1 className={`relative text-5xl font-serif tracking-normal transition-colors duration-300 ${isScrolled ? 'text-deep-maroon' : 'text-white'}`}>
                             Neera
@@ -77,46 +118,8 @@ const Header = () => {
                     </a>
                 </div>
 
-                {/* Center: Navigation */}
-                <nav className="hidden md:flex items-center justify-center flex-1 gap-x-8 text-xs tracking-widest font-sans">
-                    <a href="#" className={`py-4 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>NEW COLLECTIONS</a>
-                    <a href="#" className={`py-4 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>ALL SAREES</a>
-                    <div className="relative flex items-center py-4" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-                        <button className={`flex items-center gap-x-1.5 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>
-                            SHOP BY FABRIC
-                            <ChevronDownIcon />
-                        </button>
-                        {isDropdownOpen && (
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 w-[50vw] max-w-3xl">
-                               <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-xl p-8">
-                                <div className="grid grid-cols-3 gap-8">
-                                    {/* Column 1: Links */}
-                                    <div className="col-span-1">
-                                        <h3 className="font-bold tracking-widest text-sm mb-4">FABRICS</h3>
-                                        <ul className="space-y-3 text-xs text-gray-600">
-                                            {fabricLinks.map(link => (
-                                                <li key={link}><a href="#" className="hover:text-deep-maroon">{link}</a></li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                    {/* Columns 2 & 3: Images */}
-                                    {featuredCollections.map(collection => (
-                                        <div key={collection.name} className="col-span-1">
-                                            <div className="bg-gray-100 mb-2">
-                                                 <img src={collection.image} alt={collection.name} className="w-full h-full object-cover" />
-                                            </div>
-                                            <h4 className="text-xs tracking-wider text-center">{collection.name}</h4>
-                                        </div>
-                                    ))}
-                                </div>
-                               </div>
-                            </div>
-                        )}
-                    </div>
-                </nav>
-
                 {/* Right: Icons & Search */}
-                <div className="flex items-center justify-end flex-shrink-0 gap-x-4">
+                <div className="w-1/3 flex items-center justify-end gap-x-4">
                     <div className={`hidden sm:flex items-center px-3 py-2 rounded-sm transition-colors duration-300 ${isScrolled ? 'bg-gray-100' : 'bg-white/20'}`}>
                         <SearchIcon className="w-4 h-4 text-inherit opacity-75 mr-2" />
                         <input type="text" placeholder="saree" className="bg-transparent text-sm placeholder-current placeholder-opacity-75 focus:outline-none w-24 font-sans"/>
@@ -134,24 +137,24 @@ const Hero = () => {
     return (
         <section 
             className="relative h-screen bg-cover bg-center flex items-center" 
-            style={{ backgroundImage: "url('/wmremove-transformed.png')" }}
+            style={{ backgroundImage: "url('/maroon saree plain.png')" }}
         >
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div> 
+            {/* Gradient Overlay to enhance text visibility */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
             
             {/* Content Container */}
             <div className="relative z-10 text-left max-w-2xl px-4 sm:px-8 md:px-16 lg:px-24">
-                <h2 className="text-4xl lg:text-6xl font-serif text-white leading-tight mb-4" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.4)'}}>
-                    Woven in Tradition, Styled for Today
-                </h2>
-                <p className="text-gray-200 mb-8 text-lg max-w-md" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.5)'}}>
-                    Discover timeless elegance with our exclusive collection of handcrafted sarees. Each piece tells a story of artistry and grace.
+                <h1 className="text-5xl lg:text-7xl font-serif text-white leading-tight mb-4" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.5)'}}>
+                    The Art of Drape
+                </h1>
+                <p className="text-gray-200 mb-8 text-lg max-w-md" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.6)'}}>
+                    Each saree in our collection is a testament to the timeless beauty of Indian craftsmanship. Woven with passion, designed for the modern woman.
                 </p>
                 <a 
                     href="#" 
-                    className="inline-block bg-deep-maroon text-soft-beige font-sans tracking-widest text-sm px-10 py-3 hover:bg-opacity-90 transition-colors duration-300"
+                    className="inline-block bg-soft-beige text-deep-maroon font-sans tracking-widest text-sm px-10 py-3 hover:bg-opacity-90 transition-colors duration-300 shadow-lg"
                 >
-                    EXPLORE COLLECTION
+                    DISCOVER THE STORY
                 </a>
             </div>
         </section>
@@ -260,7 +263,7 @@ const Footer = () => (
 // MAIN APP COMPONENT
 export default function App() {
   return (
-    <div className="font-sans">
+    <div className="font-sans bg-soft-beige">
       <Header />
       <main>
         <Hero />
