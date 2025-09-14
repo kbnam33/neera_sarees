@@ -164,7 +164,7 @@ const Hero = () => {
 // PRODUCT GRID COMPONENT
 const ProductGrid = () => {
     const products = [
-        { id: 1, name: "Obsidian Floral Embroidered Saree", image: "https://placehold.co/600x800/1a1a1a/ffffff?text=Saree+1" },
+        { id: 1, name: "Light Blue Mangalagiri Saree", image: "/Light blue mangalagiri.png" },
         { id: 2, name: "Midnight Bloom Sequin Saree", image: "https://placehold.co/600x800/2a2a2a/ffffff?text=Saree+2" },
         { id: 3, name: "Citrus Garden Organza Saree", image: "https://placehold.co/600x800/d4ffb0/000000?text=Saree+3" },
         { id: 4, name: "Mint Green Embroidered Saree", image: "https://placehold.co/600x800/c8f7e1/000000?text=Saree+4" },
