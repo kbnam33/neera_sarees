@@ -164,14 +164,14 @@ const Hero = () => {
 // PRODUCT GRID COMPONENT
 const ProductGrid = () => {
     const products = [
-        { id: 1, name: "Light Blue Mangalagiri Saree", image: "/Light blue mangalagiri.png" },
-        { id: 2, name: "Midnight Bloom Sequin Saree", image: "https://placehold.co/600x800/2a2a2a/ffffff?text=Saree+2" },
-        { id: 3, name: "Citrus Garden Organza Saree", image: "https://placehold.co/600x800/d4ffb0/000000?text=Saree+3" },
-        { id: 4, name: "Mint Green Embroidered Saree", image: "https://placehold.co/600x800/c8f7e1/000000?text=Saree+4" },
-        { id: 5, name: "Scarlet Red Georgette Saree", image: "https://placehold.co/600x800/ff6b6b/ffffff?text=Saree+5" },
-        { id: 6, name: "Ivory & Gold Chikankari Saree", image: "https://placehold.co/600x800/f0e9e9/000000?text=Saree+6" },
-        { id: 7, name: "Royal Blue Velvet Saree", image: "https://placehold.co/600x800/2c3e50/ffffff?text=Saree+7" },
-        { id: 8, name: "Pastel Pink Tulle Saree", image: "https://placehold.co/600x800/f8c2c2/000000?text=Saree+8" },
+        { id: 1, name: "Light Blue Mangalagiri Saree", price: "Rs 1500", image: "/New light blue.png" },
+        { id: 2, name: "Midnight Bloom Sequin Saree", price: "Rs 2500", image: "https://placehold.co/600x800/2a2a2a/ffffff?text=Saree+2" },
+        { id: 3, name: "Citrus Garden Organza Saree", price: "Rs 1800", image: "https://placehold.co/600x800/d4ffb0/000000?text=Saree+3" },
+        { id: 4, name: "Mint Green Embroidered Saree", price: "Rs 2200", image: "https://placehold.co/600x800/c8f7e1/000000?text=Saree+4" },
+        { id: 5, name: "Scarlet Red Georgette Saree", price: "Rs 1950", image: "https://placehold.co/600x800/ff6b6b/ffffff?text=Saree+5" },
+        { id: 6, name: "Ivory & Gold Chikankari Saree", price: "Rs 3200", image: "https://placehold.co/600x800/f0e9e9/000000?text=Saree+6" },
+        { id: 7, name: "Royal Blue Velvet Saree", price: "Rs 2800", image: "https://placehold.co/600x800/2c3e50/ffffff?text=Saree+7" },
+        { id: 8, name: "Pastel Pink Tulle Saree", price: "Rs 1600", image: "https://placehold.co/600x800/f8c2c2/000000?text=Saree+8" },
     ];
 
     return (
@@ -198,12 +198,18 @@ const ProductGrid = () => {
             </div>
 
             {/* Products */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-1">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {products.map((product) => (
-                    <div key={product.id} className="group text-left p-2">
-                        <div className="overflow-hidden bg-gray-100">
-                            <img src={product.image} alt={product.name} className="w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div key={product.id} className="group text-center">
+                        <div className="overflow-hidden bg-gray-100 mb-4 aspect-[3/4]">
+                            <img 
+                                src={product.image} 
+                                alt={product.name} 
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
                         </div>
+                        <h3 className="text-sm text-charcoal-gray font-serif tracking-wide">{product.name}</h3>
+                        <p className="text-md text-deep-maroon font-sans font-semibold">{product.price}</p>
                     </div>
                 ))}
             </div>
