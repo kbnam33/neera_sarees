@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // ICONS - Using new, robust inline SVGs for clean rendering.
 const SearchIcon = ({ className = "w-6 h-6" }) => (
@@ -24,13 +24,13 @@ const ShoppingBagIcon = ({ className = "w-6 h-6" }) => (
 );
 
 const FilterIcon = ({ className = "w-6 h-6" }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
         <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" /><line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" /><line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" /><line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
     </svg>
 );
 
 const ChevronDownIcon = ({ className = "w-4 h-4" }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
         <path d="m6 9 6 6 6-6"/>
     </svg>
 );
@@ -39,6 +39,17 @@ const ChevronDownIcon = ({ className = "w-4 h-4" }) => (
 // HEADER COMPONENT with Mega Menu
 const Header = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const fabricLinks = [
         "ORGANZA", "VELVET", "CHIFFON", "COTTON SILK", "GEORGETTE", "THE WORLD COLLECTION"
@@ -50,12 +61,12 @@ const Header = () => {
     ];
 
     return (
-        <header className="bg-soft-beige text-charcoal-gray sticky top-0 z-50 border-b border-gray-200">
+        <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-soft-beige text-charcoal-gray shadow-md' : 'bg-transparent text-white'}`}>
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
                 {/* Left: Logo */}
                 <div className="flex-shrink-0">
                     <a href="/" className="flex items-center">
-                        <h1 className="relative text-5xl font-serif tracking-normal text-deep-maroon">
+                        <h1 className={`relative text-5xl font-serif tracking-normal transition-colors duration-300 ${isScrolled ? 'text-deep-maroon' : 'text-white'}`}>
                             Neera
                             <img 
                                 src="/Lotus.png" 
@@ -68,16 +79,16 @@ const Header = () => {
 
                 {/* Center: Navigation */}
                 <nav className="hidden md:flex items-center justify-center flex-1 gap-x-8 text-xs tracking-widest font-sans">
-                    <a href="#" className="hover:text-deep-maroon py-4">NEW COLLECTIONS</a>
-                    <a href="#" className="hover:text-deep-maroon py-4">ALL SAREES</a>
+                    <a href="#" className={`py-4 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>NEW COLLECTIONS</a>
+                    <a href="#" className={`py-4 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>ALL SAREES</a>
                     <div className="relative flex items-center py-4" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-                        <button className="flex items-center gap-x-1.5 hover:text-deep-maroon">
+                        <button className={`flex items-center gap-x-1.5 transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}>
                             SHOP BY FABRIC
                             <ChevronDownIcon />
                         </button>
                         {isDropdownOpen && (
                             <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 w-[50vw] max-w-3xl">
-                               <div className="bg-soft-beige border border-gray-200 shadow-xl p-8">
+                               <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-xl p-8">
                                 <div className="grid grid-cols-3 gap-8">
                                     {/* Column 1: Links */}
                                     <div className="col-span-1">
@@ -106,18 +117,46 @@ const Header = () => {
 
                 {/* Right: Icons & Search */}
                 <div className="flex items-center justify-end flex-shrink-0 gap-x-4">
-                    <div className="hidden sm:flex items-center bg-gray-100 px-3 py-2 rounded-sm">
-                        <SearchIcon className="w-4 h-4 text-gray-500 mr-2" />
-                        <input type="text" placeholder="saree" className="bg-transparent text-sm placeholder-gray-500 focus:outline-none w-24 font-sans"/>
+                    <div className={`hidden sm:flex items-center px-3 py-2 rounded-sm transition-colors duration-300 ${isScrolled ? 'bg-gray-100' : 'bg-white/20'}`}>
+                        <SearchIcon className="w-4 h-4 text-inherit opacity-75 mr-2" />
+                        <input type="text" placeholder="saree" className="bg-transparent text-sm placeholder-current placeholder-opacity-75 focus:outline-none w-24 font-sans"/>
                     </div>
-                    <a href="#" className="hover:text-deep-maroon transition-colors duration-300"><UserIcon className="w-5 h-5" /></a>
-                    <a href="#" className="hover:text-deep-maroon transition-colors duration-300"><ShoppingBagIcon className="w-5 h-5" /></a>
+                    <a href="#" className={`transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}><UserIcon className="w-5 h-5" /></a>
+                    <a href="#" className={`transition-colors duration-300 ${isScrolled ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`}><ShoppingBagIcon className="w-5 h-5" /></a>
                 </div>
             </div>
         </header>
     );
 };
 
+// HERO COMPONENT
+const Hero = () => {
+    return (
+        <section 
+            className="relative h-screen bg-cover bg-center flex items-center" 
+            style={{ backgroundImage: "url('/wmremove-transformed.png')" }}
+        >
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div> 
+            
+            {/* Content Container */}
+            <div className="relative z-10 text-left max-w-2xl px-4 sm:px-8 md:px-16 lg:px-24">
+                <h2 className="text-4xl lg:text-6xl font-serif text-white leading-tight mb-4" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.4)'}}>
+                    Woven in Tradition, Styled for Today
+                </h2>
+                <p className="text-gray-200 mb-8 text-lg max-w-md" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.5)'}}>
+                    Discover timeless elegance with our exclusive collection of handcrafted sarees. Each piece tells a story of artistry and grace.
+                </p>
+                <a 
+                    href="#" 
+                    className="inline-block bg-deep-maroon text-soft-beige font-sans tracking-widest text-sm px-10 py-3 hover:bg-opacity-90 transition-colors duration-300"
+                >
+                    EXPLORE COLLECTION
+                </a>
+            </div>
+        </section>
+    );
+};
 
 // PRODUCT GRID COMPONENT
 const ProductGrid = () => {
@@ -133,7 +172,7 @@ const ProductGrid = () => {
     ];
 
     return (
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-12">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-12 bg-soft-beige">
             <h2 className="text-center text-3xl font-serif tracking-[0.2em] text-black mb-8">THE COLLECTION</h2>
             
             {/* Filter and Sort Bar */}
@@ -221,13 +260,13 @@ const Footer = () => (
 // MAIN APP COMPONENT
 export default function App() {
   return (
-    <div className="bg-soft-beige font-sans">
+    <div className="font-sans">
       <Header />
       <main>
+        <Hero />
         <ProductGrid />
       </main>
       <Footer />
     </div>
   )
 }
-
