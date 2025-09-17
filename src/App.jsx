@@ -9,10 +9,10 @@ const ChevronDownIcon = ({ className = "w-4 h-4" }) => ( <svg xmlns="http://www.
 const ShareIcon = ({ className="w-6 h-6" }) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>);
 const HeartIcon = ({ className = "w-6 h-6" }) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>);
 const ChevronRightIcon = ({ className = "w-6 h-6" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg> );
-const InstagramIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>);
-const FacebookIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>);
-const TwitterIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>);
-const PinterestIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.28 4.52a9.6 9.6 0 0 0-13.58 0 9.6 9.6 0 0 0 0 13.58 9.6 9.6 0 0 0 13.58 0 9.6 9.6 0 0 0 0-13.58z"></path><path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10c0-5.52-4.48-10-10-10z"></path><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>);
+const InstagramIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>);
+const FacebookIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>);
+const TwitterIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>);
+const PinterestIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.28 4.52a9.6 9.6 0 0 0-13.58 0 9.6 9.6 0 0 0 0 13.58 9.6 9.6 0 0 0 13.58 0 9.6 9.6 0 0 0 0-13.58z"></path><path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10c0-5.52-4.48-10-10-10z"></path><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>);
 
 // Product Data
 const productsData = [
@@ -243,39 +243,41 @@ const ProductPage = ({ product, onBack, onProductSelect }) => {
 }
 
 const Footer = () => (
-    <footer className="bg-brand-dark text-gray-300 font-sans">
-        <div className="max-w-7xl mx-auto px-8 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 text-sm">
+    <footer className="bg-brand-dark text-gray-400 font-sans">
+        <div className="max-w-screen-xl mx-auto px-8 py-20">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-xs uppercase tracking-wider">
                 <div>
-                    <h5 className="text-white font-semibold tracking-widest mb-4">THE COMPANY</h5>
-                    <ul className="space-y-3 text-gray-400">
-                        {['About Us', 'Press', 'Sustainability', 'Couture Process', 'Careers'].map(item => (<li key={item}><a href="#" className="hover:text-white">{item}</a></li>))}
+                    <h5 className="text-white font-semibold mb-6">THE COMPANY</h5>
+                    <ul className="space-y-4">
+                        {['About Us', 'Press', 'Sustainability', 'Couture Process', 'Runways', 'Associations', 'Career'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))}
                     </ul>
                 </div>
                 <div>
-                    <h5 className="text-white font-semibold tracking-widest mb-4">NEED HELP</h5>
-                    <ul className="space-y-3 text-gray-400">
-                         {['Contact Us', 'Book an Appointment', 'Shipping', "FAQ's", 'Stockist'].map(item => (<li key={item}><a href="#" className="hover:text-white">{item}</a></li>))}
+                    <h5 className="text-white font-semibold mb-6">NEED HELP</h5>
+                    <ul className="space-y-4">
+                         {['Contact Us', 'Book an Appointment', 'Shipping', "FAQ's", 'Stockist'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))}
                     </ul>
                 </div>
                 <div>
-                    <h5 className="text-white font-semibold tracking-widest mb-4">LEGAL</h5>
-                    <ul className="space-y-3 text-gray-400">
-                         {['Privacy & Cookies', 'Fees and Payment', 'Term and Condition'].map(item => (<li key={item}><a href="#" className="hover:text-white">{item}</a></li>))}
+                    <h5 className="text-white font-semibold mb-6">LEGAL</h5>
+                    <ul className="space-y-4">
+                         {['Privacy & Cookies', 'Fees and Payment', 'Term and Condition'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))}
                     </ul>
                 </div>
                 <div>
-                    <h5 className="text-white font-semibold tracking-widest mb-4">NEWSLETTER</h5>
-                    <p className="mb-4 text-gray-400">Subscribe for exclusive updates.</p>
-                    <div className="flex">
-                        <input type="email" placeholder="Enter your email Address" className="bg-brand-dark border border-gray-600 p-3 w-full focus:outline-none focus:border-white text-white placeholder-gray-500" />
-                        <button className="bg-brand-dark border border-gray-600 border-l-0 px-4 text-white"><ChevronRightIcon className="w-5 h-5"/></button>
+                    <h5 className="text-white font-semibold mb-6">NEWSLETTER</h5>
+                    <div className="relative">
+                        <input type="email" placeholder="Enter your email Address" className="bg-transparent border-b border-gray-600 py-2 w-full focus:outline-none focus:border-white text-white placeholder-gray-500 pr-10" />
+                        <button className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                            <ChevronRightIcon className="w-5 h-5"/>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div className="border-t border-gray-700 pt-8 mt-12 flex justify-between items-center text-xs text-gray-500">
-                <p>&copy; {new Date().getFullYear()} Neera Sarees. All Rights Reserved.</p>
-                <div className="flex space-x-4">
+            <div className="border-t border-gray-800 pt-8 mt-16 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500">
+                <p className="mb-4 sm:mb-0">&copy; {new Date().getFullYear()} NEERA. ALL RIGHTS RESERVED.</p>
+                <div className="flex items-center space-x-4">
+                    <button className="border border-gray-700 rounded-full px-4 py-1.5 hover:border-white hover:text-white transition-colors">INR ( INDIA )</button>
                     <a href="#" className="hover:text-white"><InstagramIcon className="w-5 h-5" /></a>
                     <a href="#" className="hover:text-white"><FacebookIcon className="w-5 h-5" /></a>
                     <a href="#" className="hover:text-white"><TwitterIcon className="w-5 h-5" /></a>
