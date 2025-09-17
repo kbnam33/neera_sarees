@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient'; // Import the Supabase client
 
 // ICONS
 const SearchIcon = ({ className = "w-6 h-6" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
@@ -14,17 +15,7 @@ const FacebookIcon = ({className}) => (<svg className={className} viewBox="0 0 2
 const TwitterIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>);
 const PinterestIcon = ({className}) => (<svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.28 4.52a9.6 9.6 0 0 0-13.58 0 9.6 9.6 0 0 0 0 13.58 9.6 9.6 0 0 0 13.58 0 9.6 9.6 0 0 0 0-13.58z"></path><path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10c0-5.52-4.48-10-10-10z"></path><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>);
 
-// Product Data
-const productsData = [
-    { id: 1, name: "Light Blue Mangalagiri Saree", price: "₹ 1500", image: "/New light blue.png", images: ["/New light blue.png", "/New light blue.png", "/New light blue.png"], color: "Light Blue", description: "This serene light blue Mangalagiri saree is a perfect blend of tradition and elegance. Made from fine cotton, it features a simple yet graceful design, making it ideal for both casual and formal occasions." },
-    { id: 2, name: "Blue Purple Mangalagiri Saree", price: "₹ 1750", image: "/Blue purple.png", images: ["/Blue purple.png", "/Blue purple.png", "/Blue purple.png"], color: "Blue Purple", description: "A stunning saree featuring a unique blend of blue and purple hues. The handwoven fabric is soft to the touch and drapes beautifully, highlighted by a subtle golden border." },
-    { id: 3, name: "Bhagalpuri Silk Saree", price: "₹ 1900", image: "/Bhagalpuri silk.png", images: ["/Bhagalpuri silk.png", "/Bhagalpuri silk.png", "/Bhagalpuri silk.png"], color: "Rose Pink", description: "Exuding grace, this Bhagalpuri silk saree in a lovely rose pink is perfect for festive celebrations. Its rich texture and natural sheen make it a timeless addition to any wardrobe." },
-    { id: 4, name: "Light Blue Mangalagiri Saree", price: "₹ 1500", image: "/New light blue.png", images: ["/New light blue.png", "/New light blue.png", "/New light blue.png"], color: "Light Blue", description: "This serene light blue Mangalagiri saree is a perfect blend of tradition and elegance. Made from fine cotton, it features a simple yet graceful design, making it ideal for both casual and formal occasions." },
-    { id: 5, name: "Blue Purple Mangalagiri Saree", price: "₹ 1750", image: "/Blue purple.png", images: ["/Blue purple.png", "/Blue purple.png", "/Blue purple.png"], color: "Blue Purple", description: "A stunning saree featuring a unique blend of blue and purple hues. The handwoven fabric is soft to the touch and drapes beautifully, highlighted by a subtle golden border." },
-    { id: 6, name: "Bhagalpuri Silk Saree", price: "₹ 1900", image: "/Bhagalpuri silk.png", images: ["/Bhagalpuri silk.png", "/Bhagalpuri silk.png", "/Bhagalpuri silk.png"], color: "Rose Pink", description: "Exuding grace, this Bhagalpuri silk saree in a lovely rose pink is perfect for festive celebrations. Its rich texture and natural sheen make it a timeless addition to any wardrobe." },
-    { id: 7, name: "Light Blue Mangalagiri Saree", price: "₹ 1500", image: "/New light blue.png", images: ["/New light blue.png", "/New light blue.png", "/New light blue.png"], color: "Light Blue", description: "This serene light blue Mangalagiri saree is a perfect blend of tradition and elegance. Made from fine cotton, it features a simple yet graceful design, making it ideal for both casual and formal occasions." },
-    { id: 8, name: "Blue Purple Mangalagiri Saree", price: "₹ 1750", image: "/Blue purple.png", images: ["/Blue purple.png", "/Blue purple.png", "/Blue purple.png"], color: "Blue Purple", description: "A stunning saree featuring a unique blend of blue and purple hues. The handwoven fabric is soft to the touch and drapes beautifully, highlighted by a subtle golden border." },
-];
+// NOTE: Static product data has been removed. Data will be fetched from Supabase.
 
 const Header = ({ isProductPage, onNavigate }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -127,7 +118,7 @@ const ProductGrid = ({ onProductSelect, products, isAllSareesPage = false, onNav
                      <div className="flex justify-between items-center mb-8 border-y border-gray-200 py-4 font-sans text-xs">
                         <button className="flex items-center gap-x-2 tracking-widest"><FilterIcon className="w-4 h-4"/> SHOW FILTERS</button>
                         <div className="flex items-center gap-x-6">
-                            <span className="text-gray-500 tracking-wider">{productsData.length} PRODUCTS</span>
+                            <span className="text-gray-500 tracking-wider">{products.length} PRODUCTS</span>
                             <div className="flex items-center gap-x-2">
                                 <label htmlFor="sort" className="text-gray-500 tracking-wider">SORT BY</label>
                                 <select id="sort" className="bg-transparent focus:outline-none"><option>Newest</option><option>Price: Low to High</option><option>Price: High to Low</option></select>
@@ -142,7 +133,7 @@ const ProductGrid = ({ onProductSelect, products, isAllSareesPage = false, onNav
                                 <img src={product.image} alt={product.name} className={`w-full h-full object-cover ${product.image.includes('Blue purple') || product.image.includes('Bhagalpuri') ? 'object-top' : 'object-center'} transition-transform duration-500 group-hover:scale-105`} />
                             </div>
                             <h3 className="text-sm text-charcoal-gray font-serif tracking-wide">{product.name}</h3>
-                            <p className="text-md text-deep-maroon font-sans font-semibold">{product.price}</p>
+                            <p className="text-md text-deep-maroon font-sans font-semibold">₹ {product.price}</p>
                         </div>
                     ))}
                 </div>
@@ -180,9 +171,14 @@ const ProductInfoAccordion = () => {
     );
 }
 
-const ProductPage = ({ product, onBack, onProductSelect }) => {
+const ProductPage = ({ product, onBack, onProductSelect, products }) => {
     const [mainImage, setMainImage] = useState(product.images[0]);
-    const relatedProducts = productsData.filter(p => p.id !== product.id).slice(0, 4);
+    const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 4);
+    
+    useEffect(() => {
+        setMainImage(product.images[0]);
+    }, [product]);
+
     return (
         <div className="bg-soft-beige">
             <div className="max-w-7xl mx-auto px-4 sm:px-8 py-16 pt-32">
@@ -196,7 +192,7 @@ const ProductPage = ({ product, onBack, onProductSelect }) => {
                     </div>
                     <div className="font-sans">
                          <h1 className="text-3xl font-serif text-deep-maroon mb-4">{product.name}</h1>
-                        <p className="text-2xl text-charcoal-gray mb-6">{product.price}</p>
+                        <p className="text-2xl text-charcoal-gray mb-6">₹ {product.price}</p>
                         <div className="flex items-center justify-between mb-6">
                             <p className="text-sm text-gray-600">Color: <span className="font-semibold">{product.color}</span></p>
                             <div className="flex gap-x-4">
@@ -215,8 +211,8 @@ const ProductPage = ({ product, onBack, onProductSelect }) => {
                         </div>
                         <p className="text-xs text-gray-500 mb-4">Made to order: 7 - 8 Weeks</p>
                         <div className="flex gap-x-4">
-                            <button className="flex-1 bg-deep-maroon text-white py-3 tracking-widest hover:bg-opacity-90">ADD TO CART</button>
-                            <button className="flex-1 border border-charcoal-gray text-charcoal-gray py-3 tracking-widest hover:bg-gray-100">ENQUIRE</button>
+                            <button className="flex-1 bg-deep-maroon text-white py-3 tracking-widest hover:bg-lotus-gold transition-colors duration-300">ADD TO CART</button>
+                            <button className="flex-1 border border-charcoal-gray text-charcoal-gray py-3 tracking-widest hover:bg-charcoal-gray hover:text-white transition-colors duration-300">BUY NOW</button>
                         </div>
                     </div>
                 </div>
@@ -232,7 +228,7 @@ const ProductPage = ({ product, onBack, onProductSelect }) => {
                                     <img src={relProduct.image} alt={relProduct.name} className={`w-full h-full object-cover ${relProduct.image.includes('Blue purple') || relProduct.image.includes('Bhagalpuri') ? 'object-top' : 'object-center'} transition-transform duration-500 group-hover:scale-105`} />
                                 </div>
                                 <h3 className="text-sm text-charcoal-gray font-serif tracking-wide">{relProduct.name}</h3>
-                                <p className="text-md text-deep-maroon font-sans font-semibold">{relProduct.price}</p>
+                                <p className="text-md text-deep-maroon font-sans font-semibold">₹ {relProduct.price}</p>
                             </div>
                         ))}
                     </div>
@@ -291,6 +287,26 @@ const Footer = () => (
 export default function App() {
     const [currentPage, setCurrentPage] = useState('home');
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const { data, error } = await supabase.from('products').select('*');
+                if (error) throw error;
+                setProducts(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     useEffect(() => { window.scrollTo(0, 0); }, [currentPage, selectedProduct]);
     
@@ -304,12 +320,20 @@ export default function App() {
         setCurrentPage('product');
     };
 
+    if (loading) {
+        return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading...</p></div>
+    }
+
+    if (error) {
+         return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Error fetching products: {error}</p></div>
+    }
+
     const renderPage = () => {
         switch (currentPage) {
             case 'product':
-                return <ProductPage product={selectedProduct} onBack={() => handleNavigate( 'allSarees')} onProductSelect={handleProductSelect} />;
+                return <ProductPage product={selectedProduct} onBack={() => handleNavigate( 'allSarees')} onProductSelect={handleProductSelect} products={products} />;
             case 'allSarees':
-                return <ProductGrid onProductSelect={handleProductSelect} products={productsData} isAllSareesPage={true} />;
+                return <ProductGrid onProductSelect={handleProductSelect} products={products} isAllSareesPage={true} />;
             case 'home':
             default:
                 return (
@@ -317,11 +341,11 @@ export default function App() {
                         <Hero />
                         <div className="bg-soft-beige pt-16">
                             <SectionTitle title="NEW COLLECTION" />
-                            <ProductGrid onProductSelect={handleProductSelect} products={productsData.slice(0, 4)} onNavigate={handleNavigate} />
+                            <ProductGrid onProductSelect={handleProductSelect} products={products.slice(0, 4)} onNavigate={handleNavigate} />
                         </div>
                          <div className="bg-soft-beige pt-8">
                             <SectionTitle title="ALL SAREES" />
-                            <ProductGrid onProductSelect={handleProductSelect} products={productsData.slice(4, 8)} onNavigate={handleNavigate} />
+                            <ProductGrid onProductSelect={handleProductSelect} products={products.slice(4, 8)} onNavigate={handleNavigate} />
                         </div>
                     </>
                 );
@@ -336,4 +360,3 @@ export default function App() {
         </div>
     )
 }
-

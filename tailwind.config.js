@@ -9,8 +9,10 @@ export default {
       colors: {
         'soft-beige': '#F8F5EF',
         'deep-maroon': '#5B1A32',
+        'deep-maroon-dark': '#4a1528',
         'lotus-gold': '#C9A24A',
         'charcoal-gray': '#3A3A3A',
+        'charcoal-gray-dark': '#2c2c2c',
         'brand-dark': '#121212',
       },
       fontFamily: {
@@ -21,4 +23,3 @@ export default {
   },
   plugins: [],
 }
-
