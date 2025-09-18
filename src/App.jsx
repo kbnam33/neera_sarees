@@ -31,7 +31,7 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-    
+
     const isOpaque = isScrolled || isProductPage;
     const headerClasses = `fixed top-0 w-full z-50 transition-all duration-300 ${isOpaque ? 'bg-soft-beige text-charcoal-gray shadow-md' : 'bg-transparent text-white'}`;
     const navLinkClasses = `py-4 transition-colors duration-300 ${isOpaque ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`;
@@ -49,7 +49,7 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
             onNavigate('home');
         }
     };
-    
+
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
     return (
@@ -84,7 +84,7 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
                 </div>
                  <div className="w-1/3 flex justify-center">
                     <button onClick={() => onNavigate('home')} className="flex items-center">
-                        <h1 
+                        <h1
                             className="relative text-5xl font-serif tracking-normal text-deep-maroon"
                             style={!isOpaque ? { textShadow: '1px 1px 5px rgba(0,0,0,0.3)' } : {}}
                         >
@@ -96,16 +96,16 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
                 <div className="w-1/3 flex items-center justify-end gap-x-4">
                     <div className={iconContainerClasses}>
                         <SearchIcon className="w-4 h-4 opacity-75 mr-2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search..." 
+                        <input
+                            type="text"
+                            placeholder="Search..."
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
                                 if (e.target.value) {
                                     onNavigate('allSarees');
                                 }
                             }}
-                            className="bg-transparent text-sm placeholder-current placeholder-opacity-75 focus:outline-none w-24 font-sans" 
+                            className="bg-transparent text-sm placeholder-current placeholder-opacity-75 focus:outline-none w-24 font-sans"
                         />
                     </div>
                     {session ? (
@@ -131,7 +131,7 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
 };
 
 const Hero = () => (
-    <section className="relative h-screen bg-cover bg-center flex items-center" style={{ backgroundImage: "url('/maroon saree plain.png')" }}>
+    <section className="relative h-screen bg-cover bg-center flex items-center" style={{ backgroundImage: "url('/Maroon saree with dark bg.png')" }}>
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
         <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-8 w-full">
             <div className="max-w-xl text-left">
@@ -214,7 +214,7 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
         setMainImage(product.images ? product.images[0] : '');
         setSelectedColor(product.colors ? product.colors[0] : null);
     }, [product]);
-    
+
     const handleAddToCart = () => {
         addToCart(product);
     };
@@ -308,7 +308,7 @@ function AppContent({ session }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { cartItems, addToCart, loadingCart } = useCart();
-    
+
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState('newest');
     const [lastOrderDetails, setLastOrderDetails] = useState(null);
@@ -342,8 +342,8 @@ function AppContent({ session }) {
         fetchProducts();
     }, []);
 
-    useEffect(() => { 
-        window.scrollTo(0, 0); 
+    useEffect(() => {
+        window.scrollTo(0, 0);
         if (session && currentPage === 'auth') {
             if (productToBuyNow) {
                 addToCart(productToBuyNow);
@@ -351,13 +351,13 @@ function AppContent({ session }) {
             }
             if (postLoginNavigate) {
                 setCurrentPage(postLoginNavigate);
-                setPostLoginNavigate(null); 
+                setPostLoginNavigate(null);
             } else {
                 setCurrentPage('home');
             }
         }
     }, [currentPage, session, postLoginNavigate, productToBuyNow, addToCart]);
-    
+
     const handleNavigate = (page) => {
         setCurrentPage(page);
         setSelectedProduct(null);
@@ -372,7 +372,7 @@ function AppContent({ session }) {
         setLastOrderDetails(orderDetails);
         handleNavigate('orderConfirmation');
     };
-    
+
     const displayedProducts = products
         .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => {
@@ -383,7 +383,7 @@ function AppContent({ session }) {
                     return b.price - a.price;
                 case 'newest':
                 default:
-                    return b.id - a.id; 
+                    return b.id - a.id;
             }
         });
 
@@ -422,11 +422,11 @@ function AppContent({ session }) {
 
     return (
         <div className="font-sans bg-soft-beige">
-            {currentPage !== 'auth' && currentPage !== 'orderConfirmation' && 
-                <Header 
-                    isProductPage={['product', 'allSarees', 'cart', 'checkout', 'profile'].includes(currentPage)} 
-                    onNavigate={handleNavigate} 
-                    session={session} 
+            {currentPage !== 'auth' && currentPage !== 'orderConfirmation' &&
+                <Header
+                    isProductPage={['product', 'allSarees', 'cart', 'checkout', 'profile'].includes(currentPage)}
+                    onNavigate={handleNavigate}
+                    session={session}
                     setSearchTerm={setSearchTerm}
                 />
             }
