@@ -2,7 +2,7 @@ import React from 'react';
 import { useCart } from './CartContext';
 
 const CartPage = ({ onNavigate, session }) => {
-    const { cartItems, removeFromCart, updateQuantity } = useCart();
+    const { cartItems, updateQuantity } = useCart();
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
@@ -47,7 +47,12 @@ const CartPage = ({ onNavigate, session }) => {
                                         </div>
                                         <div>
                                             <p className="font-serif text-charcoal-gray">{item.name}</p>
-                                            <button onClick={() => removeFromCart(item.id)} className="text-xs text-gray-500 hover:text-red-600 hover:underline">Remove</button>
+                                            <button 
+                                                onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                                                className="text-xs text-gray-500 hover:text-red-600 hover:underline"
+                                            >
+                                                Remove
+                                            </button>
                                         </div>
                                     </div>
                                     <div className="text-center text-charcoal-gray font-sans">₹ {item.price}</div>
