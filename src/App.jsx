@@ -31,13 +31,13 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
+    
     const isOpaque = isScrolled || isProductPage;
     const headerClasses = `fixed top-0 w-full z-50 transition-all duration-300 ${isOpaque ? 'bg-soft-beige text-charcoal-gray shadow-md' : 'bg-transparent text-white'}`;
     const navLinkClasses = `py-4 transition-colors duration-300 ${isOpaque ? 'hover:text-deep-maroon' : 'hover:opacity-75'}`;
     const iconContainerClasses = `hidden sm:flex items-center px-3 py-2 rounded-sm transition-colors duration-300 ${isOpaque ? 'bg-gray-100 text-charcoal-gray' : 'bg-white/20 text-white'}`;
 
-    const fabricLinks = ["ORGANZA", "VELVET", "CHIFFON", "COTTON SILK", "GEORGETTE", "THE WORLD COLLECTION"];
+    const fabricLinks = ["Organza", "Velvet", "Chiffon", "Cotton Silk", "Georgette", "The World Collection"];
     const featuredCollections = [
         { name: "Bridal Couture", image: "https://placehold.co/400x500/d1d5db/111827?text=Bridal+Couture" },
         { name: "Summer '24", image: "https://placehold.co/400x500/fef3c7/111827?text=Summer+'24" }
@@ -49,18 +49,18 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
             onNavigate('home');
         }
     };
-
+    
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
     return (
         <header className={headerClasses}>
             <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
                 <div className="w-1/3">
-                     <nav className="hidden md:flex items-center justify-start gap-x-8 text-xs tracking-widest font-sans">
-                        <button onClick={() => onNavigate('home')} className={navLinkClasses}>NEW COLLECTIONS</button>
-                        <button onClick={() => onNavigate('allSarees')} className={navLinkClasses}>ALL SAREES</button>
+                     <nav className="hidden md:flex items-center justify-start gap-x-8 text-xs tracking-widest font-sans capitalize">
+                        <button onClick={() => onNavigate('home')} className={navLinkClasses}>New Collections</button>
+                        <button onClick={() => onNavigate('allSarees')} className={navLinkClasses}>All Sarees</button>
                         <div className="relative flex items-center py-4" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-                            <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}><p>SHOP BY FABRIC</p><ChevronDownIcon /></button>
+                            <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}><p>Shop By Fabric</p><ChevronDownIcon /></button>
                             {isDropdownOpen && (
                                 <div className="absolute top-full left-0 pt-5 w-[50vw] max-w-3xl">
                                     <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-xl p-8">
@@ -84,7 +84,7 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
                 </div>
                  <div className="w-1/3 flex justify-center">
                     <button onClick={() => onNavigate('home')} className="flex items-center">
-                        <h1
+                        <h1 
                             className="relative text-5xl font-serif tracking-normal text-deep-maroon"
                             style={!isOpaque ? { textShadow: '1px 1px 5px rgba(0,0,0,0.3)' } : {}}
                         >
@@ -96,22 +96,22 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
                 <div className="w-1/3 flex items-center justify-end gap-x-4">
                     <div className={iconContainerClasses}>
                         <SearchIcon className="w-4 h-4 opacity-75 mr-2" />
-                        <input
-                            type="text"
-                            placeholder="Search..."
+                        <input 
+                            type="text" 
+                            placeholder="Search..." 
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
                                 if (e.target.value) {
                                     onNavigate('allSarees');
                                 }
                             }}
-                            className="bg-transparent text-sm placeholder-current placeholder-opacity-75 focus:outline-none w-24 font-sans"
+                            className="bg-transparent text-sm placeholder-current placeholder-opacity-75 focus:outline-none w-24 font-sans" 
                         />
                     </div>
                     {session ? (
                         <>
                             <button onClick={() => onNavigate('profile')} className={navLinkClasses}><UserIcon className="w-5 h-5" /></button>
-                            <button onClick={handleLogout} className={navLinkClasses}><p className="text-xs tracking-widest">LOGOUT</p></button>
+                            <button onClick={handleLogout} className={navLinkClasses}><p className="text-xs tracking-widest capitalize">Logout</p></button>
                         </>
                     ) : (
                         <button onClick={() => onNavigate('auth')} className={navLinkClasses}><UserIcon className="w-5 h-5" /></button>
@@ -131,7 +131,7 @@ const Header = ({ isProductPage, onNavigate, session, setSearchTerm }) => {
 };
 
 const Hero = () => (
-    <section className="relative h-screen bg-cover bg-center flex items-center" style={{ backgroundImage: "url('/Maroon saree with dark bg.png')" }}>
+    <section className="relative h-screen bg-cover bg-center flex items-center" style={{ backgroundImage: "url('/New maroon saree.png')" }}>
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
         <div className="relative z-10 max-w-screen-2xl mx-auto px-4 sm:px-8 w-full">
             <div className="max-w-xl text-left">
@@ -144,7 +144,7 @@ const Hero = () => (
                     Carry the grace of tradition in a modern style.
                 </p>
                 <a href="#"
-                   className="group relative inline-block text-sm font-semibold tracking-widest text-deep-maroon uppercase bg-soft-beige px-12 py-4 overflow-hidden transition-colors duration-300 hover:bg-lotus-gold hover:text-white shadow-lg"
+                   className="group relative inline-block text-sm font-semibold tracking-widest text-deep-maroon uppercase bg-soft-beige px-12 py-4 overflow-hidden transition-colors duration-300 hover:bg-gray-200 shadow-lg"
                 >
                     <span className="relative z-10">Explore Collection</span>
                 </a>
@@ -153,7 +153,7 @@ const Hero = () => (
     </section>
 );
 
-const SectionTitle = ({ title }) => ( <div className="text-center my-12"> <h2 className="text-3xl font-serif tracking-[0.2em] text-black inline-block relative"> <span className="absolute top-1/2 -left-20 w-16 h-px bg-gray-400"></span> {title} <span className="absolute top-1/2 -right-20 w-16 h-px bg-gray-400"></span> </h2> </div> );
+const SectionTitle = ({ title }) => ( <div className="text-center my-12"> <h2 className="text-3xl font-serif tracking-[0.2em] text-black inline-block relative capitalize"> <span className="absolute top-1/2 -left-20 w-16 h-px bg-gray-400"></span> {title} <span className="absolute top-1/2 -right-20 w-16 h-px bg-gray-400"></span> </h2> </div> );
 
 const ProductGrid = ({ onProductSelect, products, isAllSareesPage = false, onNavigate, sortOption, setSortOption }) => {
     return (
@@ -162,7 +162,7 @@ const ProductGrid = ({ onProductSelect, products, isAllSareesPage = false, onNav
                 {isAllSareesPage && (
                     <div className="flex justify-end items-center mb-8 border-y border-gray-200 py-4 font-sans text-xs">
                         <div className="flex items-center gap-x-6">
-                            <span className="text-gray-500 tracking-wider">{products.length} PRODUCTS</span>
+                            <span className="text-gray-500 tracking-wider">{products.length} Products</span>
                             <div className="relative">
                                 <select
                                     id="sort"
@@ -194,7 +194,7 @@ const ProductGrid = ({ onProductSelect, products, isAllSareesPage = false, onNav
                 </div>
                 {!isAllSareesPage && (
                     <div className="text-right mt-8">
-                        <button onClick={() => onNavigate('allSarees')} className="font-sans text-sm tracking-widest text-charcoal-gray hover:text-deep-maroon underline">VIEW ALL SAREES</button>
+                        <button onClick={() => onNavigate('allSarees')} className="font-sans text-sm tracking-widest text-charcoal-gray hover:text-deep-maroon underline capitalize">View All Sarees</button>
                     </div>
                 )}
             </div>
@@ -202,7 +202,7 @@ const ProductGrid = ({ onProductSelect, products, isAllSareesPage = false, onNav
     );
 };
 
-const ProductInfoAccordion = () => { const [activeTab, setActiveTab] = useState('DETAILS'); const content = { DETAILS: { title: 'DETAILS', text: 'This is a three-piece look. Kindly note, product tones may vary due to lighting. For queries or customizations, please mail us at: orders@neerasarees.in' }, CARE: { title: 'CARE INSTRUCTIONS', text: 'Dry clean only. Store in a cool, dry place. Avoid direct exposure to sunlight to maintain the vibrancy of the fabric.' }, SHIPPING: { title: 'SHIPPING & RETURNS', text: 'Complimentary shipping within India. For international orders, shipping charges and duties may apply. Returns are accepted within 14 days of receipt for unused items.' } }; return ( <div className="border border-gray-200 p-8 grid grid-cols-1 md:grid-cols-3 gap-8"> <div className="md:col-span-1 flex flex-col gap-y-2 font-sans text-xs tracking-widest"> {Object.keys(content).map(key => ( <button key={key} onClick={() => setActiveTab(key)} className={`text-left p-2 transition-colors flex justify-between items-center w-full ${activeTab === key ? 'text-deep-maroon font-bold' : 'text-gray-500 hover:text-charcoal-gray'}`}> <span>{content[key].title}</span> <ChevronRightIcon className={`w-4 h-4 transition-transform ${activeTab === key ? 'transform rotate-90 md:rotate-0' : ''}`}/> </button> ))} </div> <div className="md:col-span-2 text-sm text-gray-700"> <p>{content[activeTab].text}</p> </div> </div> ); }
+const ProductInfoAccordion = () => { const [activeTab, setActiveTab] = useState('DETAILS'); const content = { DETAILS: { title: 'Details', text: 'This is a three-piece look. Kindly note, product tones may vary due to lighting. For queries or customizations, please mail us at: orders@neerasarees.in' }, CARE: { title: 'Care Instructions', text: 'Dry clean only. Store in a cool, dry place. Avoid direct exposure to sunlight to maintain the vibrancy of the fabric.' }, SHIPPING: { title: 'Shipping & Returns', text: 'Complimentary shipping within India. For international orders, shipping charges and duties may apply. Returns are accepted within 14 days of receipt for unused items.' } }; return ( <div className="border border-gray-200 p-8 grid grid-cols-1 md:grid-cols-3 gap-8"> <div className="md:col-span-1 flex flex-col gap-y-2 font-sans text-xs tracking-widest"> {Object.keys(content).map(key => ( <button key={key} onClick={() => setActiveTab(key)} className={`text-left p-2 transition-colors flex justify-between items-center w-full ${activeTab === key ? 'text-deep-maroon font-bold' : 'text-gray-500 hover:text-charcoal-gray'}`}> <span>{content[key].title}</span> <ChevronRightIcon className={`w-4 h-4 transition-transform ${activeTab === key ? 'transform rotate-90 md:rotate-0' : ''}`}/> </button> ))} </div> <div className="md:col-span-2 text-sm text-gray-700"> <p>{content[activeTab].text}</p> </div> </div> ); }
 
 const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, session, setPostLoginNavigate, setProductToBuyNow }) => {
     const { addToCart } = useCart();
@@ -214,7 +214,7 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
         setMainImage(product.images ? product.images[0] : '');
         setSelectedColor(product.colors ? product.colors[0] : null);
     }, [product]);
-
+    
     const handleAddToCart = () => {
         addToCart(product);
     };
@@ -233,8 +233,8 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
     return (
         <div className="bg-soft-beige">
             <div className="max-w-7xl mx-auto px-4 sm:px-8 py-16 pt-32">
-                <button onClick={onBack} className="font-sans text-xs tracking-widest mb-8 text-gray-500 hover:text-black">
-                    &larr; BACK TO COLLECTION
+                <button onClick={onBack} className="font-sans text-xs tracking-widest mb-8 text-gray-500 hover:text-black capitalize">
+                    &larr; Back to Collection
                 </button>
                 <div className="grid md:grid-cols-2 gap-12 lg:gap-24">
                     <div className="flex flex-col-reverse md:flex-row gap-4">
@@ -257,7 +257,7 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
                         </div>
                         <p className="text-sm text-gray-700 leading-relaxed mb-8">{product.description}</p>
                         <div className="mb-8">
-                            <p className="text-sm font-semibold mb-2 tracking-widest">COLOR</p>
+                            <p className="text-sm font-semibold mb-2 tracking-widest capitalize">Color</p>
                             <div className="flex gap-x-2">
                                 {product.colors && product.colors.map(color => (
                                     <button
@@ -272,8 +272,8 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
                         </div>
                         <p className="text-xs text-gray-500 mb-4">Made to order: 7 - 8 Weeks</p>
                         <div className="flex gap-x-4">
-                            <button onClick={handleAddToCart} className="flex-1 bg-deep-maroon text-white py-3 tracking-widest hover:bg-lotus-gold transition-colors duration-300">ADD TO CART</button>
-                            <button onClick={handleBuyNow} className="flex-1 border border-charcoal-gray text-charcoal-gray py-3 tracking-widest hover:bg-charcoal-gray hover:text-white transition-colors duration-300">BUY NOW</button>
+                            <button onClick={handleAddToCart} className="flex-1 bg-soft-beige text-deep-maroon border border-deep-maroon py-3 tracking-widest hover:bg-gray-200 transition-colors duration-300 capitalize">Add to Cart</button>
+                            <button onClick={handleBuyNow} className="flex-1 bg-brand-dark text-soft-beige py-3 tracking-widest hover:bg-charcoal-gray transition-colors duration-300 capitalize">Buy Now</button>
                         </div>
                     </div>
                 </div>
@@ -281,7 +281,7 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
             <div className="max-w-7xl mx-auto px-4 sm:px-8 py-16">
                 <ProductInfoAccordion />
                 <div className="mt-24">
-                    <h2 className="text-center text-2xl font-serif tracking-[0.2em] text-black mb-8">YOU MAY ALSO LIKE</h2>
+                    <h2 className="text-center text-2xl font-serif tracking-[0.2em] text-black mb-8 capitalize">You May Also Like</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {relatedProducts.map(relProduct => (
                             <div key={relProduct.id} className="group text-center cursor-pointer" onClick={() => onProductSelect(relProduct)}>
@@ -299,7 +299,7 @@ const ProductPage = ({ product, onBack, onProductSelect, products, onNavigate, s
     )
 }
 
-const Footer = () => ( <footer className="bg-brand-dark text-gray-400 font-sans"> <div className="max-w-screen-xl mx-auto px-8 py-20"> <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-xs uppercase tracking-wider"> <div> <h5 className="text-white font-semibold mb-6">THE COMPANY</h5> <ul className="space-y-4"> {['About Us', 'Press', 'Sustainability', 'Couture Process', 'Runways', 'Associations', 'Career'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul> </div> <div> <h5 className="text-white font-semibold mb-6">NEED HELP</h5> <ul className="space-y-4"> {['Contact Us', 'Book an Appointment', 'Shipping', "FAQ's", 'Stockist'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul> </div> <div> <h5 className="text-white font-semibold mb-6">LEGAL</h5> <ul className="space-y-4"> {['Privacy & Cookies', 'Fees and Payment', 'Term and Condition'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul> </div> <div> <h5 className="text-white font-semibold mb-6">NEWSLETTER</h5> <div className="relative"> <input type="email" placeholder="Enter your email Address" className="bg-transparent border-b border-gray-600 py-2 w-full focus:outline-none focus:border-white text-white placeholder-gray-500 pr-10" /> <button className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"> <ChevronRightIcon className="w-5 h-5"/> </button> </div> </div> </div> <div className="border-t border-gray-800 pt-8 mt-16 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500"> <p className="mb-4 sm:mb-0">&copy; {new Date().getFullYear()} NEERA. ALL RIGHTS RESERVED.</p> <div className="flex items-center space-x-4"> <button className="border border-gray-700 rounded-full px-4 py-1.5 hover:border-white hover:text-white transition-colors">INR ( INDIA )</button> <a href="#" className="hover:text-white"><InstagramIcon className="w-5 h-5" /></a> <a href="#" className="hover:text-white"><FacebookIcon className="w-5 h-5" /></a> <a href="#" className="hover:text-white"><TwitterIcon className="w-5 h-5" /></a> <a href="#" className="hover:text-white"><PinterestIcon className="w-5 h-5" /></a> </div> </div> </div> </footer> );
+const Footer = () => ( <footer className="bg-brand-dark text-gray-400 font-sans"> <div className="max-w-screen-xl mx-auto px-8 py-20"> <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-xs uppercase tracking-wider"> <div> <h5 className="text-white font-semibold mb-6">The Company</h5> <ul className="space-y-4"> {['About Us', 'Press', 'Sustainability', 'Couture Process', 'Runways', 'Associations', 'Career'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul> </div> <div> <h5 className="text-white font-semibold mb-6">Need Help</h5> <ul className="space-y-4"> {['Contact Us', 'Book an Appointment', 'Shipping', "FAQ's", 'Stockist'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul> </div> <div> <h5 className="text-white font-semibold mb-6">Legal</h5> <ul className="space-y-4"> {['Privacy & Cookies', 'Fees and Payment', 'Term and Condition'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul> </div> <div> <h5 className="text-white font-semibold mb-6">Newsletter</h5> <div className="relative"> <input type="email" placeholder="Enter your email Address" className="bg-transparent border-b border-gray-600 py-2 w-full focus:outline-none focus:border-white text-white placeholder-gray-500 pr-10" /> <button className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"> <ChevronRightIcon className="w-5 h-5"/> </button> </div> </div> </div> <div className="border-t border-gray-800 pt-8 mt-16 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500"> <p className="mb-4 sm:mb-0">&copy; {new Date().getFullYear()} NEERA. ALL RIGHTS RESERVED.</p> <div className="flex items-center space-x-4"> <button className="border border-gray-700 rounded-full px-4 py-1.5 hover:border-white hover:text-white transition-colors">INR ( INDIA )</button> <a href="#" className="hover:text-white"><InstagramIcon className="w-5 h-5" /></a> <a href="#" className="hover:text-white"><FacebookIcon className="w-5 h-5" /></a> <a href="#" className="hover:text-white"><TwitterIcon className="w-5 h-5" /></a> <a href="#" className="hover:text-white"><PinterestIcon className="w-5 h-5" /></a> </div> </div> </div> </footer> );
 
 function AppContent({ session }) {
     const [currentPage, setCurrentPage] = useState('home');
@@ -308,7 +308,7 @@ function AppContent({ session }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { cartItems, addToCart, loadingCart } = useCart();
-
+    
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOption, setSortOption] = useState('newest');
     const [lastOrderDetails, setLastOrderDetails] = useState(null);
@@ -342,8 +342,8 @@ function AppContent({ session }) {
         fetchProducts();
     }, []);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
+    useEffect(() => { 
+        window.scrollTo(0, 0); 
         if (session && currentPage === 'auth') {
             if (productToBuyNow) {
                 addToCart(productToBuyNow);
@@ -351,13 +351,13 @@ function AppContent({ session }) {
             }
             if (postLoginNavigate) {
                 setCurrentPage(postLoginNavigate);
-                setPostLoginNavigate(null);
+                setPostLoginNavigate(null); 
             } else {
                 setCurrentPage('home');
             }
         }
     }, [currentPage, session, postLoginNavigate, productToBuyNow, addToCart]);
-
+    
     const handleNavigate = (page) => {
         setCurrentPage(page);
         setSelectedProduct(null);
@@ -372,7 +372,7 @@ function AppContent({ session }) {
         setLastOrderDetails(orderDetails);
         handleNavigate('orderConfirmation');
     };
-
+    
     const displayedProducts = products
         .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => {
@@ -383,7 +383,7 @@ function AppContent({ session }) {
                     return b.price - a.price;
                 case 'newest':
                 default:
-                    return b.id - a.id;
+                    return b.id - a.id; 
             }
         });
 
@@ -394,7 +394,7 @@ function AppContent({ session }) {
             case 'orderConfirmation': return <OrderConfirmationPage onNavigate={handleNavigate} order={lastOrderDetails} />;
             case 'product': return <ProductPage product={selectedProduct} onBack={() => handleNavigate('allSarees')} onProductSelect={handleProductSelect} products={products} onNavigate={handleNavigate} session={session} setPostLoginNavigate={setPostLoginNavigate} setProductToBuyNow={setProductToBuyNow} />;
             case 'allSarees': return <ProductGrid onProductSelect={handleProductSelect} products={displayedProducts} isAllSareesPage={true} onNavigate={handleNavigate} sortOption={sortOption} setSortOption={setSortOption} />;
-            case 'cart': return <CartPage onNavigate={handleNavigate} session={session} />;
+            case 'cart': return <CartPage onNavigate={handleNavigate} session={session} setPostLoginNavigate={setPostLoginNavigate} />;
             case 'checkout': return <CheckoutPage onNavigate={handleNavigate} session={session} onOrderSuccess={handleOrderSuccess} />;
             case 'home':
             default:
@@ -408,11 +408,11 @@ function AppContent({ session }) {
                     <>
                         <Hero />
                         <div className="bg-soft-beige pt-16">
-                            <SectionTitle title="NEW COLLECTION" />
+                            <SectionTitle title="New Collection" />
                             <ProductGrid onProductSelect={handleProductSelect} products={products.slice(0, 4)} onNavigate={handleNavigate} />
                         </div>
                          <div className="bg-soft-beige pt-8">
-                            <SectionTitle title="ALL SAREES" />
+                            <SectionTitle title="All Sarees" />
                             <ProductGrid onProductSelect={handleProductSelect} products={products.slice(4, 8)} onNavigate={handleNavigate} />
                         </div>
                     </>
@@ -422,11 +422,11 @@ function AppContent({ session }) {
 
     return (
         <div className="font-sans bg-soft-beige">
-            {currentPage !== 'auth' && currentPage !== 'orderConfirmation' &&
-                <Header
-                    isProductPage={['product', 'allSarees', 'cart', 'checkout', 'profile'].includes(currentPage)}
-                    onNavigate={handleNavigate}
-                    session={session}
+            {currentPage !== 'auth' && currentPage !== 'orderConfirmation' && 
+                <Header 
+                    isProductPage={['product', 'allSarees', 'cart', 'checkout', 'profile'].includes(currentPage)} 
+                    onNavigate={handleNavigate} 
+                    session={session} 
                     setSearchTerm={setSearchTerm}
                 />
             }
@@ -457,3 +457,4 @@ export default function App() {
         </CartProvider>
     );
 }
+
