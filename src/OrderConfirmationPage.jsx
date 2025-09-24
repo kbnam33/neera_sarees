@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Green checkmark icon
 const CheckCircleIcon = ({ className = "w-16 h-16" }) => (
@@ -7,7 +8,9 @@ const CheckCircleIcon = ({ className = "w-16 h-16" }) => (
     </svg>
 );
 
-const OrderConfirmationPage = ({ onNavigate, order }) => {
+const OrderConfirmationPage = ({ order }) => {
+    const navigate = useNavigate();
+
     if (!order) {
         // Fallback for when the page is refreshed or accessed directly
         return (
@@ -16,7 +19,7 @@ const OrderConfirmationPage = ({ onNavigate, order }) => {
                     <h1 className="text-2xl font-serif text-deep-maroon mb-4">Looking for an order?</h1>
                     <p className="text-charcoal-gray mb-8">Your order details couldn't be found. Please check your email for the confirmation.</p>
                     <button 
-                        onClick={() => onNavigate('home')}
+                        onClick={() => navigate('/')}
                         className="bg-deep-maroon text-white py-3 px-8 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300"
                     >
                         CONTINUE SHOPPING
@@ -90,7 +93,7 @@ const OrderConfirmationPage = ({ onNavigate, order }) => {
 
             <div className="text-center mt-12">
                 <button 
-                    onClick={() => onNavigate('home')}
+                    onClick={() => navigate('/')}
                     className="bg-deep-maroon text-white py-3 px-10 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 text-sm"
                 >
                     CONTINUE SHOPPING

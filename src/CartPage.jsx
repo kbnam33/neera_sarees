@@ -1,16 +1,18 @@
 import React from 'react';
 import { useCart } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 
-const CartPage = ({ onNavigate, session }) => {
+const CartPage = ({ session }) => {
     const { cartItems, updateQuantity } = useCart();
+    const navigate = useNavigate();
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
     const handleCheckout = () => {
         if (session) {
-            onNavigate('checkout');
+            navigate('/checkout');
         } else {
-            onNavigate('auth');
+            navigate('/auth');
         }
     };
 
@@ -23,7 +25,7 @@ const CartPage = ({ onNavigate, session }) => {
                     <div className="text-center py-16">
                         <p className="text-charcoal-gray mb-6">Your cart is currently empty.</p>
                         <button 
-                            onClick={() => onNavigate('allSarees')}
+                            onClick={() => navigate('/products')}
                             className="bg-deep-maroon text-white py-3 px-8 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300"
                         >
                             CONTINUE SHOPPING
@@ -48,7 +50,7 @@ const CartPage = ({ onNavigate, session }) => {
                                         <div>
                                             <p className="font-serif text-charcoal-gray">{item.name}</p>
                                             <button 
-                                                onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                                                onClick={() => updateQuantity(item.id, 0)} 
                                                 className="text-xs text-gray-500 hover:text-red-600 hover:underline"
                                             >
                                                 Remove
@@ -60,12 +62,12 @@ const CartPage = ({ onNavigate, session }) => {
                                         <input 
                                             type="number" 
                                             value={item.quantity}
-                                            onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
+                                            onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10) || 0)}
                                             min="1"
                                             className="w-16 p-1 text-center border border-gray-300"
                                         />
                                     </div>
-                                    <div className="text-right text-deep-maroon font-sans font-semibold">₹ {item.price * item.quantity}</div>
+                                    <div className="text-right text-deep-maroon font-sans font-semibold">₹ {(item.price * item.quantity).toFixed(2)}</div>
                                 </div>
                             ))}
                         </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { useCart } from './CartContext';
 
@@ -8,8 +9,9 @@ const BackArrowIcon = ({ className = "w-4 h-4" }) => (
     </svg>
 );
 
-const CheckoutPage = ({ onNavigate, session, onOrderSuccess }) => {
+const CheckoutPage = ({ session, onOrderSuccess }) => {
     const { cartItems, clearCart } = useCart();
+    const navigate = useNavigate();
     const [shippingInfo, setShippingInfo] = useState({
         name: '',
         address: '',
@@ -65,7 +67,7 @@ const CheckoutPage = ({ onNavigate, session, onOrderSuccess }) => {
     return (
         <div className="bg-soft-beige min-h-screen pt-32 pb-16 font-sans">
             <div className="max-w-6xl mx-auto px-4 sm:px-8">
-                <button onClick={() => onNavigate('cart')} className="text-sm text-charcoal-gray hover:text-deep-maroon mb-8 flex items-center gap-x-2 transition-colors">
+                <button onClick={() => navigate('/cart')} className="text-sm text-charcoal-gray hover:text-deep-maroon mb-8 flex items-center gap-x-2 transition-colors">
                     <BackArrowIcon />
                     <span>Back to Cart</span>
                 </button>

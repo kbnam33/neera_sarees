@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import { useCart } from './CartContext';
 
 // A simple back arrow icon
 const ArrowLeftIcon = ({ className = "w-6 h-6" }) => (
@@ -9,13 +11,16 @@ const ArrowLeftIcon = ({ className = "w-6 h-6" }) => (
 );
 
 
-const AuthPage = ({ onNavigate }) => {
+const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { addToCart } = useCart();
 
     const handleAuth = async (e) => {
         e.preventDefault();
@@ -24,17 +29,26 @@ const AuthPage = ({ onNavigate }) => {
         setMessage('');
 
         try {
-            let response;
-            if (isLogin) {
-                response = await supabase.auth.signInWithPassword({ email, password });
-            } else {
-                response = await supabase.auth.signUp({ email, password });
-                if (!response.error) {
-                    setMessage('Registration successful! Please check your email to verify your account.');
-                }
-            }
+            const authFunction = isLogin 
+                ? supabase.auth.signInWithPassword 
+                : supabase.auth.signUp;
             
-            if (response.error) throw response.error;
+            const { data, error: authError } = await authFunction({ email, password });
+
+            if (authError) throw authError;
+
+            if (isLogin && data.user) {
+                 const buyNowProduct = sessionStorage.getItem('buyNowProduct');
+                if (buyNowProduct) {
+                    const product = JSON.parse(buyNowProduct);
+                    addToCart(product);
+                    sessionStorage.removeItem('buyNowProduct');
+                }
+                const from = location.state?.from?.pathname || '/';
+                navigate(from, { replace: true });
+            } else {
+                 setMessage('Registration successful! Please check your email to verify your account.');
+            }
 
         } catch (error) {
             setError(error.message);
@@ -46,7 +60,7 @@ const AuthPage = ({ onNavigate }) => {
     return (
         <div className="min-h-screen bg-soft-beige font-sans">
             <button 
-                onClick={() => onNavigate('home')} 
+                onClick={() => navigate('/')} 
                 className="absolute top-8 left-8 text-charcoal-gray hover:text-deep-maroon transition-colors flex items-center gap-x-2 z-10"
             >
                 <ArrowLeftIcon className="w-5 h-5" />
