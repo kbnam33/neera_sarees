@@ -19,7 +19,7 @@ const FabricPage = ({ allProducts }) => {
                                 ? product.images[0]
                                 : 'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera';
                             return (
-                                 <Link to={`/product/${product.slug || product.id}`} key={product.id} className="group text-left">
+                                 <Link to={`/products/${product.fabric_type}/${product.slug}`} key={product.id} className="group text-left">
                                     <div className="overflow-hidden mb-4 bg-gray-100">
                                         <img src={imageUrl} alt={product.name} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105" />
                                     </div>

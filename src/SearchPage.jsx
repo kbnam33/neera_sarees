@@ -6,19 +6,33 @@ const SearchPage = ({ allProducts }) => {
     const query = searchParams.get('q') || '';
 
     const filteredProducts = useMemo(() => {
-        if (!query) {
+        if (!query || !query.trim()) {
             return [];
         }
 
-        const searchTerms = query.toLowerCase().split(' ').filter(term => term);
+        const lowerCaseQuery = query.toLowerCase().trim();
+        
+        // This regular expression removes the standalone words "saree" or "sarees"
+        // to focus on the more important keywords like fabric type or color.
+        const primaryTermsQuery = lowerCaseQuery.replace(/\bsarees?\b/g, '').trim();
+        
+        // If the query was *only* "saree" or "sarees", we fall back to the original query.
+        // Otherwise, we use the cleaned query.
+        const finalQuery = primaryTermsQuery || lowerCaseQuery;
+
+        // We split the final query into individual words to check for their presence.
+        const searchTerms = finalQuery.split(' ').filter(term => term);
 
         return allProducts.filter(product => {
+            // Create a comprehensive, searchable string from product details.
             const searchableText = [
-                product.name,
-                product.description,
-                product.fabric_type
+                product.name || '',
+                product.description || '',
+                product.fabric_type || ''
             ].join(' ').toLowerCase();
             
+            // This logic now ensures that *every* important search term exists in the product's text.
+            // For example, "blue silk" will find sarees that have both "blue" AND "silk".
             return searchTerms.every(term => searchableText.includes(term));
         });
     }, [query, allProducts]);
@@ -61,3 +75,4 @@ const SearchPage = ({ allProducts }) => {
 };
 
 export default SearchPage;
+

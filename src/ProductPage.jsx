@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { supabase } from './supabaseClient';
 import { useCart } from './CartContext';
 
 // --- ICONS ---
 const ChevronRightIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg> );
 
 // --- PRODUCT INFO TABS ---
-const ProductInfoTabs = () => {
+const ProductInfoTabs = ({product}) => {
     const [activeTab, setActiveTab] = useState('DETAILS');
     const tabs = {
-        DETAILS: { title: 'Details & Craftsmanship', text: 'This exquisite piece is handcrafted by master artisans, featuring traditional weaving techniques passed down through generations. Made from the finest silk, its unique texture and drape are a testament to its quality. Kindly note, product tones may vary slightly due to the natural dyeing process and lighting.' },
+        DETAILS: { title: 'Details & Craftsmanship', text: product.description || 'This exquisite piece is handcrafted by master artisans, featuring traditional weaving techniques passed down through generations. Made from the finest silk, its unique texture and drape are a testament to its quality. Kindly note, product tones may vary slightly due to the natural dyeing process and lighting.' },
         CARE: { title: 'Care Instructions', text: 'To preserve the beauty of your saree, we recommend dry cleaning only. Store in a cool, dry place away from direct sunlight. Fold carefully and avoid using metal hangers to maintain the integrity of the fabric.' },
         SHIPPING: { title: 'Shipping & Returns', text: 'Enjoy complimentary shipping within India. For international orders, charges and duties may apply. We accept returns for unused items within 14 days of receipt. Please refer to our detailed policy for more information.' }
     };
@@ -51,40 +50,27 @@ const ProductPage = ({ allProducts, session }) => {
     const [product, setProduct] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
     const [mainImage, setMainImage] = useState('');
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchProductData = async () => {
-            if (!slug) return;
+        window.scrollTo(0, 0);
 
-            setLoading(true);
-            window.scrollTo(0, 0);
+        if (allProducts.length > 0 && slug) {
+            // Find the product by matching the slug from the URL parameter.
+            const foundProduct = allProducts.find(p => p.slug === slug);
 
-            const { data: productData, error: productError } = await supabase
-                .from('products')
-                .select('*')
-                .eq('slug', slug)
-                .single();
-
-            if (productError || !productData) {
-                console.error('Error fetching product:', productError);
-                setLoading(false);
-                navigate('/products');
-                return;
+            if (foundProduct) {
+                setProduct(foundProduct);
+                setSelectedColor(foundProduct.colors ? foundProduct.colors[0] : null);
+                if (foundProduct.images && foundProduct.images.length > 0) {
+                    setMainImage(foundProduct.images[0]);
+                }
+            } else {
+                // If no product is found for this slug, redirect to the main products page.
+                navigate('/products', { replace: true });
             }
-
-            setProduct(productData);
-            setSelectedColor(productData.colors ? productData.colors[0] : null);
-            if (productData.images && productData.images.length > 0) {
-                setMainImage(productData.images[0]);
-            }
-            setLoading(false);
-        };
-        
-        fetchProductData();
-
-    }, [slug, navigate]);
+        }
+    }, [slug, allProducts, navigate]);
 
     const handleAddToCart = () => { if(product) addToCart(product); };
     const handleBuyNow = () => {
@@ -97,8 +83,8 @@ const ProductPage = ({ allProducts, session }) => {
         }
     };
     
-    if (loading || !product) {
-        return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading...</p></div>;
+    if (!product) {
+        return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Product...</p></div>;
     }
 
     const relatedProducts = allProducts
@@ -129,7 +115,7 @@ const ProductPage = ({ allProducts, session }) => {
                     <div className="w-full lg:sticky top-28 self-start">
                         <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon mb-4">{product.name}</h1>
                         <p className="text-2xl text-charcoal-gray mb-8 font-semibold font-sans">₹ {product.price.toFixed(2)}</p>
-                        <p className="text-sm text-gray-700 leading-relaxed mb-10 max-w-prose">{product.description}</p>
+                        
                         <div className="mb-8">
                             <p className="text-sm font-semibold mb-3 tracking-widest uppercase">Color: <span className="font-normal normal-case">{selectedColor}</span></p>
                             <div className="flex flex-wrap gap-4">
@@ -148,7 +134,7 @@ const ProductPage = ({ allProducts, session }) => {
                             <button onClick={handleAddToCart} className="w-full bg-deep-maroon text-white py-4 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300">Add to Bag</button>
                             <button onClick={handleBuyNow} className="w-full border border-charcoal-gray text-charcoal-gray py-4 tracking-widest uppercase text-sm hover:bg-charcoal-gray hover:text-white transition-colors duration-300">Buy Now</button>
                         </div>
-                        <ProductInfoTabs />
+                        <ProductInfoTabs product={product} />
                     </div>
                 </div>
             </div>

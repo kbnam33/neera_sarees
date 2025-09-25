@@ -28,7 +28,7 @@ const SearchOverlay = ({ isOpen, onClose }) => {
     const handleSearch = (e) => {
         if (e.key === 'Enter' && searchTerm.trim() !== '') {
             onClose();
-            navigate(`/search?q=${searchTerm.trim()}`);
+            navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
         }
     };
     
@@ -347,7 +347,18 @@ function AppContent({ session }) {
             const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
 
-            setProducts(productsData || []);
+            // Add a URL-friendly slug to each product object. This is crucial for clean URLs.
+            const productsWithSlugs = (productsData || []).map(product => ({
+                ...product,
+                slug: product.name.toLowerCase()
+                             .replace(/\s+/g, '-')      // Replace spaces with -
+                             .replace(/[^\w-]+/g, '')   // Remove all non-word chars
+                             .replace(/--+/g, '-')       // Replace multiple - with single -
+                             .replace(/^-+/, '')         // Trim - from start of text
+                             .replace(/-+$/, '')         // Trim - from end of text
+            }));
+
+            setProducts(productsWithSlugs);
             setFabrics(fabricsData || []);
             setLoading(false);
         };
@@ -390,7 +401,7 @@ function AppContent({ session }) {
                     } />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
-                    <Route path="/products/:fabricName/:slug" element={<ProductPage allProducts={products} session={session} />} />
+                    <Route path="/products/:fabric_type/:slug" element={<ProductPage allProducts={products} session={session} />} />
                     <Route path="/search" element={<SearchPage allProducts={products} />} />
                     <Route path="/cart" element={<CartPage session={session} />} />
                     <Route path="/checkout" element={<CheckoutPage session={session} onOrderSuccess={handleOrderSuccess} />} />
@@ -413,3 +424,4 @@ export default function App() {
     }, []);
     return (<CartProvider session={session}><AppContent session={session} /></CartProvider>);
 }
+
