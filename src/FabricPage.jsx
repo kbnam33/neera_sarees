@@ -4,7 +4,6 @@ import { useParams, Link } from 'react-router-dom';
 const FabricPage = ({ allProducts }) => {
     const { fabricName } = useParams();
 
-    // Filter products to find ones that match the selected fabric type
     const filteredProducts = allProducts.filter(p => p.fabric_type === fabricName);
 
     return (
@@ -20,13 +19,13 @@ const FabricPage = ({ allProducts }) => {
                                 ? product.images[0]
                                 : 'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera';
                             return (
-                                 <a href={`/product/${product.id}`} key={product.id} className="group text-left">
+                                 <Link to={`/product/${product.slug || product.id}`} key={product.id} className="group text-left">
                                     <div className="overflow-hidden mb-4 bg-gray-100">
                                         <img src={imageUrl} alt={product.name} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105" />
                                     </div>
                                     <h3 className="text-md font-serif text-charcoal-gray">{product.name}</h3>
                                     <p className="text-md text-deep-maroon font-sans">₹ {product.price.toFixed(2)}</p>
-                                </a>
+                                </Link>
                             );
                         })}
                     </div>
