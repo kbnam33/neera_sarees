@@ -10,6 +10,7 @@ import ProfilePage from './ProfilePage.jsx';
 import ProductPage from './ProductPage.jsx';
 import FabricPage from './FabricPage.jsx';
 import SearchPage from './SearchPage.jsx';
+import StoryPage from './StoryPage.jsx';
 
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
@@ -145,16 +146,17 @@ const Hero = () => (
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 w-full">
             <div className="max-w-screen-xl mx-auto px-8">
-                <div className="max-w-xl text-left text-white">
-                    <h1 className="text-5xl lg:text-7xl font-serif leading-tight tracking-tight mb-4" style={{ textShadow: '0px 2px 15px rgba(0,0,0,0.5)' }}>
+                <div className="max-w-xl text-left">
+                    <h1 className="text-5xl lg:text-7xl font-serif leading-tight tracking-tight mb-4 text-gray-50 text-shadow-glow animate-fadeInDown">
                         Woven in Legacy
                     </h1>
-                    <p className="text-lg text-gray-200 mb-8" style={{ textShadow: '0px 1px 10px rgba(0,0,0,0.7)' }}>
+                    <p className="text-lg text-gray-300 mb-8 text-shadow-glow animate-fadeInDown" style={{ animationDelay: '200ms' }}>
                         Discover timeless elegance, handcrafted for the modern woman. Each thread tells a story of tradition and artistry.
                     </p>
                     <Link
                        to="/products"
-                       className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-brand-dark uppercase bg-soft-beige px-10 py-4 transition-colors duration-300 hover:bg-lotus-gold hover:text-white shadow-lg"
+                       className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-brand-dark uppercase bg-white/90 px-10 py-4 transition-all duration-300 hover:bg-brand-dark hover:text-white shadow-lg animate-fadeInDown"
+                       style={{ animationDelay: '400ms' }}
                     >
                         Explore the Collection <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
                     </Link>
@@ -200,19 +202,21 @@ const HomeProductSection = ({ title, description, products }) => {
 };
 
 
-// --- BRAND STORY SECTION ---
-const BrandStory = () => (
-    <section className="bg-white py-20 md:py-32">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <img src="/Blue purple.png" alt="Artisan weaving a saree" className="w-full object-cover" />
+// --- STORY HIGHLIGHT SECTION ---
+const StoryHighlight = () => (
+    <section className="bg-white">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-20 md:py-32 grid md:grid-cols-2 gap-16 items-center">
+            <div className="relative aspect-[4/5]">
+                <img src="/maroon saree plain.png" alt="Close-up of a handwoven saree" className="w-full h-full object-cover absolute top-0 left-0" />
             </div>
             <div className="text-left">
-                <h2 className="text-3xl font-serif text-deep-maroon tracking-wider mb-6">The Heart of Craft</h2>
-                <p className="text-charcoal-gray leading-relaxed mb-4">Neera is more than just a brand; it is a celebration of heritage. We partner with master weavers across India, preserving centuries-old techniques passed down through generations.</p>
-                <p className="text-charcoal-gray leading-relaxed mb-8">Each saree is a masterpiece of patience and skill, woven from the finest natural threads. We believe in sustainable luxury—creating pieces that are not only beautiful but also honour the artisans and the environment.</p>
+                <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">Our Philosophy</p>
+                <h2 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight mb-6">A Confluence of Craft and Purity</h2>
+                <p className="text-charcoal-gray leading-relaxed mb-8 max-w-prose">
+                    Like its namesake—pure water—Neera embodies an elemental elegance. It is a story told not in words, but in threads; a quiet dialogue between the weaver's patient hand and the timeless grace of tradition. Each drape is a fluid expression of artistry, designed to move with you, becoming a second skin, a whisper of heritage in a modern world.
+                </p>
                 <Link to="/story" className="group inline-flex items-center gap-x-2 text-sm font-semibold tracking-widest text-deep-maroon uppercase">
-                    Our Philosophy <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    Discover Our Story <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
             </div>
         </div>
@@ -395,13 +399,14 @@ function AppContent({ session }) {
                         <>
                             <Hero />
                             <HomeProductSection title="New Collection" products={products.slice(0, 3)} />
-                            <BrandStory />
+                            <StoryHighlight />
                             <HomeProductSection title="Signature Sarees" products={products.slice(3, 9)} />
                         </>
                     } />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
                     <Route path="/products/:fabric_type/:slug" element={<ProductPage allProducts={products} session={session} />} />
+                    <Route path="/story" element={<StoryPage />} />
                     <Route path="/search" element={<SearchPage allProducts={products} />} />
                     <Route path="/cart" element={<CartPage session={session} />} />
                     <Route path="/checkout" element={<CheckoutPage session={session} onOrderSuccess={handleOrderSuccess} />} />
@@ -424,4 +429,3 @@ export default function App() {
     }, []);
     return (<CartProvider session={session}><AppContent session={session} /></CartProvider>);
 }
-
