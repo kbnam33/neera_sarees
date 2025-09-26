@@ -11,6 +11,12 @@ import ProductPage from './ProductPage.jsx';
 import FabricPage from './FabricPage.jsx';
 import SearchPage from './SearchPage.jsx';
 import StoryPage from './StoryPage.jsx';
+import RefundAndExchangePolicy from './RefundAndExchangePolicy.jsx';
+import PrivacyPolicy from './PrivacyPolicy.jsx';
+import TermsAndConditions from './TermsAndConditions.jsx';
+import ShippingPolicy from './ShippingPolicy.jsx';
+import ContactUs from './ContactUs.jsx';
+
 
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
@@ -191,7 +197,7 @@ const Header = ({ session, fabrics, products }) => {
                     {/* Center Logo */}
                     <div className="absolute left-1/2 -translate-x-1/2">
                         <Link to="/" className="flex items-center">
-                            <h1 className={`text-3xl md:text-4xl font-serif tracking-normal transition-colors duration-300 ${isOpaque ? 'text-deep-maroon' : 'text-white'}`}>Neera</h1>
+                           <img src="/Neera png.png" alt="Neera" className="h-12 md:h-14 w-auto transition-all duration-300" />
                         </Link>
                     </div>
                     {/* Right side */}
@@ -372,23 +378,37 @@ const Footer = () => {
         <div className="max-w-screen-xl mx-auto px-8 py-16">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 text-xs uppercase tracking-wider">
                 <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
-                     <h1 className="text-4xl font-serif tracking-normal text-white">Neera</h1>
+                     <img src="/Neera png.png" alt="Neera" className="h-14 w-auto" />
                 </div>
                 <div>
                     <h5 className="text-white font-semibold mb-6">Shop</h5>
-                    <ul className="space-y-4"> {['All Sarees', 'Collections', 'New Arrivals', 'Gifting'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul>
+                    <ul className="space-y-4">
+                        <li><Link to="/products" className="hover:text-white transition-colors">All Sarees</Link></li>
+                        <li><Link to="/products" className="hover:text-white transition-colors">New Arrivals</Link></li>
+                    </ul>
                 </div>
                 <div>
                     <h5 className="text-white font-semibold mb-6">About</h5>
-                    <ul className="space-y-4"> {['Our Story', 'Craftsmanship', 'Sustainability', 'Journal'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul>
+                    <ul className="space-y-4">
+                        <li><Link to="/story" className="hover:text-white transition-colors">Our Story</Link></li>
+                    </ul>
                 </div>
                 <div>
                     <h5 className="text-white font-semibold mb-6">Support</h5>
-                    <ul className="space-y-4"> {["FAQ's", 'Contact Us', 'Shipping & Returns', 'Book an Appointment'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul>
+                    <ul className="space-y-4">
+                        <li><Link to="/refund-and-exchange-policy" className="hover:text-white transition-colors">Refund and Exchange Policy</Link></li>
+                        <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                        <li><Link to="/terms-and-conditions" className="hover:text-white transition-colors">Terms and Conditions</Link></li>
+                        <li><Link to="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link></li>
+                        <li><Link to="/contact-us" className="hover:text-white transition-colors">Contact Us</Link></li>
+                    </ul>
                 </div>
                  <div>
                     <h5 className="text-white font-semibold mb-6">Follow Us</h5>
-                    <ul className="space-y-4"> {['Instagram', 'Facebook', 'Pinterest'].map(item => (<li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>))} </ul>
+                    <ul className="space-y-4">
+                        <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                        <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
+                    </ul>
                 </div>
             </div>
             <div className="border-t border-gray-800 pt-8 mt-16 text-center text-xs text-gray-500">
@@ -482,6 +502,11 @@ function AppContent({ session }) {
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/profile" element={<ProfilePage session={session} />} />
                     <Route path="/order-confirmation" element={<OrderConfirmationPage order={lastOrderDetails} />} />
+                    <Route path="/refund-and-exchange-policy" element={<RefundAndExchangePolicy />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                    <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                    <Route path="/contact-us" element={<ContactUs />} />
                 </Routes>
             </main>
             <Footer />

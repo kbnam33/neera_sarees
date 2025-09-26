@@ -190,15 +190,17 @@ const ProductPage = ({ allProducts, session }) => {
                         
                         <div className="mb-8">
                             <p className="text-sm font-semibold mb-3 tracking-widest uppercase">Color: <span className="font-normal normal-case">{selectedColor}</span></p>
-                            <div className="flex flex-wrap gap-4">
+                            <div className="flex flex-wrap gap-3">
                                 {product.colors && product.colors.map(color => (
                                     <button
                                         key={color}
                                         onClick={() => setSelectedColor(color)}
-                                        className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border border-gray-300 ${selectedColor === color ? 'ring-2 ring-offset-2 ring-charcoal-gray' : ''}`}
+                                        className={`w-9 h-9 transition-all duration-200 ease-in-out border border-gray-300 shadow-sm hover:shadow-md ${selectedColor === color ? 'ring-2 ring-offset-2 ring-charcoal-gray' : ''}`}
                                         style={{ backgroundColor: color.toLowerCase() }}
                                         title={color}
-                                    />
+                                    >
+                                        <span className="sr-only">{color}</span>
+                                    </button>
                                 ))}
                             </div>
                         </div>
@@ -236,4 +238,3 @@ const ProductPage = ({ allProducts, session }) => {
 };
 
 export default ProductPage;
-
