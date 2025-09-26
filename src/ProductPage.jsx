@@ -1,9 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
 
 // --- ICONS ---
 const ChevronRightIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg> );
+
+// --- SWIPEABLE IMAGE CAROUSEL FOR MOBILE ---
+const ProductImageCarousel = ({ images, productName }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
+    const sliderRef = useRef(null);
+
+    const handleTouchStart = (e) => {
+        touchStartX.current = e.targetTouches[0].clientX;
+    };
+
+    const handleTouchMove = (e) => {
+        touchEndX.current = e.targetTouches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        if (touchStartX.current - touchEndX.current > 75) { // Min swipe distance
+            setCurrentIndex(prevIndex => prevIndex === images.length - 1 ? prevIndex : prevIndex + 1);
+        }
+
+        if (touchStartX.current - touchEndX.current < -75) { // Min swipe distance
+            setCurrentIndex(prevIndex => prevIndex === 0 ? 0 : prevIndex - 1);
+        }
+    };
+
+    useEffect(() => {
+        if (sliderRef.current) {
+            sliderRef.current.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+    }, [currentIndex]);
+
+    return (
+        <div className="relative overflow-hidden w-full bg-gray-100">
+            <div
+                ref={sliderRef}
+                className="flex transition-transform duration-300 ease-in-out"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+            >
+                {images.map((img, index) => (
+                    <div key={index} className="w-full flex-shrink-0">
+                        <img src={img} alt={`${productName} view ${index + 1}`} className="w-full h-full object-cover aspect-[3/4]" />
+                    </div>
+                ))}
+            </div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                {images.map((_, index) => (
+                    <button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === index ? 'bg-white scale-125' : 'bg-white/50'}`}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+};
+
 
 // --- PRODUCT INFO TABS ---
 const ProductInfoTabs = ({product}) => {
@@ -17,7 +77,7 @@ const ProductInfoTabs = ({product}) => {
     return (
         <div className="mt-12">
             <div className="border-b border-gray-200">
-                <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
                     {Object.keys(tabs).map((key) => (
                         <button
                             key={key}
@@ -26,7 +86,7 @@ const ProductInfoTabs = ({product}) => {
                                 activeTab === key
                                     ? 'border-deep-maroon text-deep-maroon'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-serif text-md transition-colors duration-300 focus:outline-none`}
+                            } whitespace-nowrap py-4 px-1 border-b-2 font-serif text-sm md:text-md transition-colors duration-300 focus:outline-none`}
                         >
                             {tabs[key].title}
                         </button>
@@ -56,7 +116,6 @@ const ProductPage = ({ allProducts, session }) => {
         window.scrollTo(0, 0);
 
         if (allProducts.length > 0 && slug) {
-            // Find the product by matching the slug from the URL parameter.
             const foundProduct = allProducts.find(p => p.slug === slug);
 
             if (foundProduct) {
@@ -66,7 +125,6 @@ const ProductPage = ({ allProducts, session }) => {
                     setMainImage(foundProduct.images[0]);
                 }
             } else {
-                // If no product is found for this slug, redirect to the main products page.
                 navigate('/products', { replace: true });
             }
         }
@@ -93,28 +151,42 @@ const ProductPage = ({ allProducts, session }) => {
 
     return (
         <div className="bg-soft-beige">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pt-28 pb-16">
+            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pt-24 md:pt-28 pb-16">
                  <div className="mb-8 font-sans text-xs tracking-widest text-gray-500">
                     <Link to="/products" className="hover:text-black">All Sarees</Link>
                     <span> / </span>
                     <Link to={`/fabric/${product.fabric_type}`} className="hover:text-black capitalize">{product.fabric_type}</Link>
                  </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-8 lg:gap-y-0">
+                    {/* --- Image Section --- */}
                     <div className="w-full">
-                        <div className="bg-gray-100 mb-4">
-                            <img src={mainImage} alt={product.name} className="w-full h-full object-cover aspect-[3/4]" />
+                        {/* Mobile Carousel */}
+                        <div className="lg:hidden">
+                            {product.images && product.images.length > 0 ? (
+                                <ProductImageCarousel images={product.images} productName={product.name} />
+                            ) : (
+                                <div className="bg-gray-100"><img src={'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera'} alt={product.name} className="w-full h-full object-cover aspect-[3/4]" /></div>
+                            )}
                         </div>
-                        <div className="flex gap-4">
-                            {product.images && product.images.map((img, index) => (
-                                <div key={index} className="w-24 h-32 bg-gray-100 cursor-pointer" onClick={() => setMainImage(img)}>
-                                    <img src={img} alt={`${product.name} thumbnail ${index + 1}`} className={`w-full h-full object-cover transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
-                                </div>
-                            ))}
+
+                        {/* Desktop Thumbnails */}
+                        <div className="hidden lg:block">
+                            <div className="bg-gray-100 mb-4">
+                                <img src={mainImage} alt={product.name} className="w-full h-full object-cover aspect-[3/4]" />
+                            </div>
+                            <div className="flex gap-4">
+                                {product.images && product.images.map((img, index) => (
+                                    <div key={index} className="w-24 h-32 bg-gray-100 cursor-pointer" onClick={() => setMainImage(img)}>
+                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} className={`w-full h-full object-cover transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
+                     {/* --- Details Section --- */}
                     <div className="w-full lg:sticky top-28 self-start">
-                        <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon mb-4">{product.name}</h1>
-                        <p className="text-2xl text-charcoal-gray mb-8 font-semibold font-sans">₹ {product.price.toFixed(2)}</p>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-deep-maroon mb-2 md:mb-4">{product.name}</h1>
+                        <p className="text-xl md:text-2xl text-charcoal-gray mb-6 md:mb-8 font-semibold font-sans">₹ {product.price.toFixed(2)}</p>
                         
                         <div className="mb-8">
                             <p className="text-sm font-semibold mb-3 tracking-widest uppercase">Color: <span className="font-normal normal-case">{selectedColor}</span></p>
@@ -140,20 +212,20 @@ const ProductPage = ({ allProducts, session }) => {
             </div>
             
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-24 border-t border-gray-200">
-                <div className="mb-12">
+                <div className="mb-12 text-center md:text-left">
                     <h2 className="text-3xl lg:text-4xl font-serif text-deep-maroon tracking-wider">You May Also Like</h2>
                     <p className="text-sm text-gray-500 mt-2">Discover other pieces from our curated collection.</p>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
                     {relatedProducts.map(relProduct => {
                         const imageUrl = relProduct.images && relProduct.images.length > 0 ? relProduct.images[0] : 'https://placehold.co/900x1200';
                         return(
                             <Link to={`/products/${relProduct.fabric_type}/${relProduct.slug}`} key={relProduct.id} className="group text-left">
-                                <div className="overflow-hidden bg-gray-100 mb-4">
+                                <div className="overflow-hidden bg-gray-100 mb-3">
                                     <img src={imageUrl} alt={relProduct.name} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105" />
                                 </div>
-                                <h3 className="text-md font-serif text-charcoal-gray">{relProduct.name}</h3>
-                                <p className="text-md text-deep-maroon font-sans">₹ {relProduct.price.toFixed(2)}</p>
+                                <h3 className="text-sm md:text-md font-serif text-charcoal-gray">{relProduct.name}</h3>
+                                <p className="text-sm md:text-md text-deep-maroon font-sans">₹ {relProduct.price.toFixed(2)}</p>
                             </Link>
                         );
                     })}
@@ -164,3 +236,4 @@ const ProductPage = ({ allProducts, session }) => {
 };
 
 export default ProductPage;
+
