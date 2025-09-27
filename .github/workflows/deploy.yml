@@ -1,0 +1,45 @@
+name: Build and Deploy to Hostinger
+
+# This action runs on pushes to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Use a standard virtual machine
+
+    steps:
+      # 1. Check out your repository code
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js for the build process
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Match your development Node version
+
+      # 3. Install dependencies and build the project
+      - name: Install Dependencies
+        run: npm install
+      - name: Build Project
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+
+      # 4. Deploy the 'dist' folder to your server via FTP
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/ # The folder to upload
+          server-dir: ./public_html/ # The destination on your server
+          # The following line cleans out old files on the server before uploading new ones.
+          # Use with caution and ensure your server-dir is correct.
+          # clean: true
