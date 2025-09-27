@@ -39,7 +39,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/ # The folder to upload
-          server-dir: /home/u381110176/domains/neera.store/public_html # The destination on your server
+          server-dir: /home/u381110176/domains/neera.store/public_html/ # The destination on your server
           # The following line cleans out old files on the server before uploading new ones.
           # Use with caution and ensure your server-dir is correct.
-          clean: true
+          dangerous-clean-slate: true
