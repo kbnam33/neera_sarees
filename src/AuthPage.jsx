@@ -12,7 +12,7 @@ const AuthPage = () => {
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    const { addToCart } = useCart();
+    const { mergeLocalCartWithSupabase } = useCart();
 
     const handleAuth = async (e) => {
         e.preventDefault();
@@ -21,25 +21,25 @@ const AuthPage = () => {
         setMessage('');
 
         try {
-            const authFunction = isLogin 
-                ? supabase.auth.signInWithPassword 
-                : supabase.auth.signUp;
-            
-            const { data, error: authError } = await authFunction({ email, password });
+            if (isLogin) {
+                // --- Handle Sign In ---
+                const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
+                if (authError) throw authError;
 
-            if (authError) throw authError;
-
-            if (isLogin && data.user) {
-                 const buyNowProduct = sessionStorage.getItem('buyNowProduct');
-                if (buyNowProduct) {
-                    const product = JSON.parse(buyNowProduct);
-                    addToCart(product);
-                    sessionStorage.removeItem('buyNowProduct');
+                if (data.user) {
+                    // Merge guest cart with Supabase cart after successful login
+                    await mergeLocalCartWithSupabase(data.user);
+                    
+                    // Redirect to the previous page or profile
+                    const from = location.state?.from?.pathname || '/profile';
+                    navigate(from, { replace: true });
                 }
-                const from = location.state?.from?.pathname || '/profile';
-                navigate(from, { replace: true });
-            } else if (!isLogin) {
-                 setMessage('Registration successful! Please check your email to verify your account.');
+
+            } else {
+                // --- Handle Sign Up ---
+                const { error: authError } = await supabase.auth.signUp({ email, password });
+                if (authError) throw authError;
+                setMessage('Registration successful! Please check your email to verify your account.');
             }
 
         } catch (error) {

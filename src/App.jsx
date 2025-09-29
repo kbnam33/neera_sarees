@@ -197,7 +197,7 @@ const Header = ({ session, fabrics, products }) => {
                     {/* Center Logo */}
                     <div className="absolute left-1/2 -translate-x-1/2">
                         <Link to="/" className="flex items-center">
-                           <img src="/Neera png.png" alt="Neera" className="h-12 md:h-14 w-auto transition-all duration-300" />
+                           <img src="/Neera logo.png" alt="Neera" className="h-16 md:h-20 w-auto transition-all duration-300" />
                         </Link>
                     </div>
                     {/* Right side */}
@@ -378,7 +378,7 @@ const Footer = () => {
         <div className="max-w-screen-xl mx-auto px-8 py-16">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 text-xs uppercase tracking-wider">
                 <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
-                     <img src="/Neera png.png" alt="Neera" className="h-14 w-auto" />
+                     <img src="/Neera logo.png" alt="Neera" className="h-20 w-auto" />
                 </div>
                 <div>
                     <h5 className="text-white font-semibold mb-6">Shop</h5>
@@ -523,4 +523,3 @@ export default function App() {
     }, []);
     return (<CartProvider session={session}><AppContent session={session} /></CartProvider>);
 }
-
