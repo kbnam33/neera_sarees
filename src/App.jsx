@@ -117,24 +117,16 @@ const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
 // --- HEADER ---
 const Header = ({ session, fabrics, products }) => {
     const { cartItems } = useCart();
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
-        const handleScroll = () => setIsScrolled(window.scrollY > 20);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [location.pathname]);
 
-    const isOpaque = isScrolled || location.pathname !== '/';
-    const headerClasses = `fixed top-0 w-full z-50 transition-all duration-500 ease-in-out ${isOpaque ? 'bg-soft-beige/95 backdrop-blur-sm text-charcoal-gray shadow-sm' : 'bg-transparent text-white'}`;
+    const headerClasses = `fixed top-0 w-full z-50 transition-all duration-500 ease-in-out bg-soft-beige/95 backdrop-blur-sm text-charcoal-gray shadow-sm`;
     const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
     const featuredProducts = products.slice(0, 2);
@@ -216,38 +208,12 @@ const Header = ({ session, fabrics, products }) => {
         </>
     );
 };
-// --- HERO SECTION ---
-const Hero = () => (
-    <section className="relative h-screen bg-cover bg-center flex items-center" style={{ backgroundImage: "url('/New hero image.png')" }}>
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="relative z-10 w-full">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
-                <div className="max-w-xl text-center md:text-left mx-auto md:mx-0">
-                    <h1 className="text-5xl lg:text-7xl font-serif leading-tight tracking-tight mb-4 text-gray-50 text-shadow-glow animate-fadeInDown">
-                        Woven in Legacy
-                    </h1>
-                    <p className="text-lg text-gray-300 mb-8 text-shadow-glow animate-fadeInDown" style={{ animationDelay: '200ms' }}>
-                        Discover timeless elegance, handcrafted for the modern woman. Each thread tells a story of tradition and artistry.
-                    </p>
-                    <Link
-                       to="/products"
-                       className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-brand-dark uppercase bg-white/90 px-10 py-4 transition-all duration-300 hover:bg-brand-dark hover:text-white shadow-lg animate-fadeInDown"
-                       style={{ animationDelay: '400ms' }}
-                    >
-                        Explore the Collection <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
-                    </Link>
-                </div>
-            </div>
-        </div>
-    </section>
-);
-
 
 // --- HOME PRODUCT SECTION ---
 const HomeProductSection = ({ title, description, products }) => {
     if (!products || products.length === 0) return null;
     return (
-        <section className="bg-soft-beige py-20 md:py-28">
+        <section className="bg-soft-beige py-12 md:py-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 text-center">
                 <h2 className="text-3xl font-serif text-deep-maroon tracking-wider mb-4">{title}</h2>
                 {description && <p className="text-charcoal-gray max-w-2xl mx-auto mb-12">{description}</p>}
@@ -384,27 +350,29 @@ const Footer = () => {
                     <h5 className="text-white font-semibold mb-6">Shop</h5>
                     <ul className="space-y-4">
                         <li><Link to="/products" className="hover:text-white transition-colors">All Sarees</Link></li>
-                        <li><Link to="/products" className="hover:text-white transition-colors">New Arrivals</Link></li>
+                        <li><Link to="/fabric/silk" className="hover:text-white transition-colors">Silk</Link></li>
+                        <li><Link to="/fabric/mangalagiri" className="hover:text-white transition-colors">Mangalagiri</Link></li>
+                        <li><Link to="/fabric/cotton" className="hover:text-white transition-colors">Cotton</Link></li>
                     </ul>
                 </div>
                 <div>
-                    <h5 className="text-white font-semibold mb-6">About</h5>
+                    <h5 className="text-white font-semibold mb-6">Our Brand</h5>
                     <ul className="space-y-4">
                         <li><Link to="/story" className="hover:text-white transition-colors">Our Story</Link></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 className="text-white font-semibold mb-6">Support</h5>
-                    <ul className="space-y-4">
-                        <li><Link to="/refund-and-exchange-policy" className="hover:text-white transition-colors">Refund and Exchange Policy</Link></li>
-                        <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                        <li><Link to="/terms-and-conditions" className="hover:text-white transition-colors">Terms and Conditions</Link></li>
-                        <li><Link to="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link></li>
                         <li><Link to="/contact-us" className="hover:text-white transition-colors">Contact Us</Link></li>
                     </ul>
                 </div>
                  <div>
-                    <h5 className="text-white font-semibold mb-6">Follow Us</h5>
+                    <h5 className="text-white font-semibold mb-6">Customer Care</h5>
+                    <ul className="space-y-4">
+                        <li><Link to="/shipping-policy" className="hover:text-white transition-colors">Shipping</Link></li>
+                        <li><Link to="/refund-and-exchange-policy" className="hover:text-white transition-colors">Exchanges</Link></li>
+                        <li><Link to="/terms-and-conditions" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                        <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                    </ul>
+                </div>
+                 <div>
+                    <h5 className="text-white font-semibold mb-6">Connect</h5>
                     <ul className="space-y-4">
                         <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
                         <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
@@ -485,12 +453,10 @@ function AppContent({ session }) {
             <main>
                 <Routes>
                     <Route path="/" element={
-                        <>
-                            <Hero />
-                            <HomeProductSection title="New Collection" products={products.slice(0, 4)} />
-                            <StoryHighlight />
-                            <HomeProductSection title="Signature Sarees" products={products.slice(4, 8)} />
-                        </>
+                        <div className="pt-20">
+                           <HomeProductSection title="New Arrivals" products={products.slice(0, 3)} />
+                           <StoryHighlight />
+                        </div>
                     } />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
