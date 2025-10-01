@@ -75,7 +75,7 @@ const ProductInfoTabs = ({product}) => {
     };
 
     return (
-        <div className="mt-12">
+        <div className="mt-16">
             <div className="border-b border-gray-200">
                 <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
                     {Object.keys(tabs).map((key) => (
@@ -151,7 +151,7 @@ const ProductPage = ({ allProducts, session }) => {
 
     return (
         <div className="bg-soft-beige">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pt-24 md:pt-28 pb-16">
+            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pb-16">
                  <div className="mb-8 font-sans text-xs tracking-widest text-gray-500">
                     <Link to="/products" className="hover:text-black">All Sarees</Link>
                     <span> / </span>
@@ -185,29 +185,50 @@ const ProductPage = ({ allProducts, session }) => {
                     </div>
                      {/* --- Details Section --- */}
                     <div className="w-full lg:sticky top-28 self-start">
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-deep-maroon mb-2 md:mb-4">{product.name}</h1>
-                        <p className="text-xl md:text-2xl text-charcoal-gray mb-6 md:mb-8 font-semibold font-sans">₹ {product.price.toFixed(2)}</p>
+                        <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight">{product.name}</h1>
+                        <p className="text-md text-charcoal-gray/80 mt-3 mb-6 max-w-prose">
+                            A timeless piece of artistry, this saree is handwoven with passion and precision, embodying both tradition and modernity.
+                        </p>
+                        <p className="text-2xl text-charcoal-gray mb-10 font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
                         
-                        <div className="mb-8">
-                            <p className="text-sm font-semibold mb-3 tracking-widest uppercase">Color: <span className="font-normal normal-case">{selectedColor}</span></p>
-                            <div className="flex flex-wrap gap-3">
-                                {product.colors && product.colors.map(color => (
-                                    <button
-                                        key={color}
-                                        onClick={() => setSelectedColor(color)}
-                                        className={`w-9 h-9 transition-all duration-200 ease-in-out border border-gray-300 shadow-sm hover:shadow-md ${selectedColor === color ? 'ring-2 ring-offset-2 ring-charcoal-gray' : ''}`}
-                                        style={{ backgroundColor: color.toLowerCase() }}
-                                        title={color}
-                                    >
-                                        <span className="sr-only">{color}</span>
-                                    </button>
-                                ))}
+                        <div className="border-y border-gray-200 py-8">
+                            <dl className="space-y-6">
+                                <div className="grid grid-cols-3 gap-4 items-center">
+                                    <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1">FABRIC</dt>
+                                    <dd className="text-md text-charcoal-gray/90 capitalize col-span-2">{product.fabric_type}</dd>
+                                </div>
+                                <div className="grid grid-cols-3 gap-4">
+                                    <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1 self-start pt-1">COLOR</dt>
+                                    <dd className="col-span-2">
+                                        <p className="text-md text-charcoal-gray/90 capitalize mb-3">{selectedColor}</p>
+                                        <div className="flex flex-wrap gap-3">
+                                            {product.colors && product.colors.map(color => (
+                                                <button
+                                                    key={color}
+                                                    onClick={() => setSelectedColor(color)}
+                                                    className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border-2 shadow-sm hover:shadow-md focus:outline-none ${selectedColor === color ? 'ring-2 ring-offset-2 ring-deep-maroon border-white' : 'border-gray-300'}`}
+                                                    style={{ backgroundColor: color.toLowerCase() }}
+                                                    title={color}
+                                                >
+                                                    <span className="sr-only">{color}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                        
+                        <div className="mt-8">
+                             <p className="text-xs text-gray-600 mb-6">
+                                <strong>Please note:</strong> The actual product color may vary by 2-5% from the image displayed due to differences in screen resolution and lighting.
+                            </p>
+                            <div className="space-y-4">
+                                <button onClick={handleAddToCart} className="w-full bg-deep-maroon text-white py-4 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300">Add to Bag</button>
+                                <button onClick={handleBuyNow} className="w-full border border-charcoal-gray text-charcoal-gray py-4 tracking-widest uppercase text-sm hover:bg-charcoal-gray hover:text-white transition-colors duration-300">Buy Now</button>
                             </div>
                         </div>
-                        <div className="space-y-4">
-                            <button onClick={handleAddToCart} className="w-full bg-deep-maroon text-white py-4 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300">Add to Bag</button>
-                            <button onClick={handleBuyNow} className="w-full border border-charcoal-gray text-charcoal-gray py-4 tracking-widest uppercase text-sm hover:bg-charcoal-gray hover:text-white transition-colors duration-300">Buy Now</button>
-                        </div>
+
                         <ProductInfoTabs product={product} />
                     </div>
                 </div>
@@ -226,8 +247,8 @@ const ProductPage = ({ allProducts, session }) => {
                                 <div className="overflow-hidden bg-gray-100 mb-3">
                                     <img src={imageUrl} alt={relProduct.name} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105" />
                                 </div>
-                                <h3 className="text-sm md:text-md font-serif text-charcoal-gray">{relProduct.name}</h3>
-                                <p className="text-sm md:text-md text-deep-maroon font-sans">₹ {relProduct.price.toFixed(2)}</p>
+                                <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{relProduct.name}</h3>
+                                <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {relProduct.price.toFixed(2)}</p>
                             </Link>
                         );
                     })}
@@ -238,3 +259,4 @@ const ProductPage = ({ allProducts, session }) => {
 };
 
 export default ProductPage;
+
