@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { useCart, CartProvider } from './CartContext';
@@ -26,6 +26,50 @@ const ChevronDownIcon = ({ className = "w-4 h-4" }) => ( <svg xmlns="http://www.
 const ArrowRightIcon = ({ className = "w-6 h-6" }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>);
 const CloseIcon = ({ className = "w-8 h-8"}) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>);
 const MenuIcon = ({ className = "w-6 h-6" }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>);
+
+// A custom hook to handle scroll animations
+const useIntersect = (options) => {
+    const [isIntersecting, setIntersecting] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setIntersecting(true);
+                observer.unobserve(entry.target);
+            }
+        }, options);
+
+        if (ref.current) {
+            observer.observe(ref.current);
+        }
+
+        return () => {
+            if (ref.current) {
+                observer.unobserve(ref.current);
+            }
+        };
+    }, [ref, options]);
+
+    return [ref, isIntersecting];
+};
+
+const AnimatedUncrop = ({ children, className, delay = 0 }) => {
+    const [ref, isIntersecting] = useIntersect({ threshold: 0.2, triggerOnce: true });
+    return (
+        <div ref={ref} className={`overflow-hidden ${className}`}>
+            <div
+                className="transition-transform duration-1000 ease-out"
+                style={{
+                    transform: isIntersecting ? 'translateY(0)' : 'translateY(100%)',
+                    transitionDelay: `${delay}ms`
+                }}
+            >
+                {children}
+            </div>
+        </div>
+    );
+};
 
 
 // --- SEARCH OVERLAY ---
@@ -267,49 +311,43 @@ const HomeProductSection = ({ title, products }) => {
 
 // --- STORY HIGHLIGHT SECTION ---
 const StoryHighlight = () => (
-    <section className="bg-earthen-tan overflow-hidden">
-        <div className="min-h-screen relative flex items-center">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
-                    <div className="text-left relative z-10">
-                        <div className="bg-soft-beige/80 backdrop-blur-sm p-10 md:p-14 shadow-2xl">
-                            <p 
-                                className="text-sm font-serif uppercase tracking-widest text-charcoal-gray/70 animate-fadeInUp"
-                            >
-                                The Essence of Neera
-                            </p>
-                            <h2 
-                                className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight my-6 animate-fadeInUp"
-                                style={{ animationDelay: '200ms' }}
-                            >
-                                Purity in every thread.
-                            </h2>
-                            <p 
-                                className="text-charcoal-gray/90 leading-relaxed animate-fadeInUp" 
-                                style={{ animationDelay: '400ms' }}
-                            >
-                                Inspired by the Sanskrit word for 'pure water,' our sarees are designed to drape with the effortless grace of flowing water—a fluid expression of artistry that is both timeless and modern.
-                            </p>
-                            <Link 
-                                to="/story" 
-                                className="group inline-block text-sm font-semibold tracking-widest text-deep-maroon uppercase mt-10 animate-fadeInUp"
-                                style={{ animationDelay: '600ms' }}
-                            >
-                                <span className="relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-deep-maroon after:transition-all after:duration-300 group-hover:after:w-full">
-                                    Discover Our Story
-                                </span>
-                            </Link>
+    <section className="bg-soft-beige py-20 md:py-32 overflow-hidden">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-center">
+                
+                {/* Image */}
+                <div className="lg:col-span-10">
+                    <AnimatedUncrop>
+                        <div className="p-2 border border-black">
+                            <img 
+                                src="/cinemtic-bg.png" 
+                                alt="A serene, sunlit room with a draped saree."
+                                className="w-full h-auto object-cover"
+                            />
                         </div>
-                    </div>
+                    </AnimatedUncrop>
                 </div>
-            </div>
-             <div className="absolute inset-y-0 right-0 w-full lg:w-1/2">
-                <div className="h-full w-full">
-                    <img 
-                        className="h-full w-full object-cover" 
-                        src="/cinemtic-bg.png" 
-                        alt="A serene, sunlit room with a draped saree."
-                    />
+                <div className="lg:col-span-8 lg:col-start-3 -mt-16 lg:-mt-24 relative z-10">
+                    <AnimatedUncrop delay={200}>
+                        <div className="p-8 md:p-12 border border-black bg-soft-beige">
+                            <div className="max-w-xl">
+                                <h2 className="text-4xl lg:text-5xl font-serif text-black leading-tight mb-6 font-normal">
+                                    Purity in every thread.
+                                </h2>
+                                <p className="text-charcoal-gray-dark leading-relaxed mb-10">
+                                    Inspired by the Sanskrit word for 'pure water,' our sarees are designed to drape with the effortless grace of flowing water—a fluid expression of artistry that is both timeless and modern.
+                                </p>
+                                <Link 
+                                    to="/story" 
+                                    className="group inline-block text-sm font-semibold tracking-widest text-deep-maroon uppercase"
+                                >
+                                    <span className="relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-deep-maroon after:transition-all after:duration-300 group-hover:after:w-full">
+                                        Discover Our Story
+                                    </span>
+                                </Link>
+                            </div>
+                        </div>
+                    </AnimatedUncrop>
                 </div>
             </div>
         </div>
@@ -513,4 +551,3 @@ export default function App() {
         </CartProvider>
     );
 }
-
