@@ -135,7 +135,7 @@ const Header = ({ session, fabrics, products }) => {
 
     useEffect(() => {
         const handleScroll = () => {
-            const logoBarHeight = 96; // h-24 = 6rem = 96px
+            const logoBarHeight = 80; 
             setIsNavSticky(window.scrollY > logoBarHeight);
         };
         window.addEventListener('scroll', handleScroll);
@@ -158,18 +158,15 @@ const Header = ({ session, fabrics, products }) => {
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} session={session} />
             
-            <header className="relative z-50 h-40"> {/* Placeholder to prevent content jump */}
+            <header className="relative z-50 h-36">
                 <div className="fixed top-0 left-0 right-0 bg-soft-beige/95 backdrop-blur-sm shadow-sm">
-                    {/* Top row with logo */}
-                    <div className="h-24 flex items-center justify-center transition-transform duration-300" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
+                    <div className="h-20 flex items-center justify-center transition-transform duration-300" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
                         <Link to="/" className="flex items-center">
-                            <img src="/Neera logo.png" alt="Neera" className="h-24 w-auto" />
+                            <img src="/Neera logo.png" alt="Neera" className="h-20 w-auto" />
                         </Link>
                     </div>
-                    {/* Bottom row with navigation and actions */}
-                    <div className={`absolute left-0 right-0 bg-soft-beige/95 backdrop-blur-sm transition-transform duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-96px)' : 'translateY(0)' }}>
+                    <div className={`absolute left-0 right-0 bg-soft-beige/95 backdrop-blur-sm transition-all duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-80px)' : 'translateY(0)' }}>
                         <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-16 border-t border-gray-200">
-                            {/* Left side */}
                             <div className="flex-1 flex justify-start">
                                 <div className="md:hidden">
                                     <button onClick={() => setIsMobileMenuOpen(true)}>
@@ -218,7 +215,6 @@ const Header = ({ session, fabrics, products }) => {
                                      <Link to="/story" className={navLinkClasses}>Our Story</Link>
                                 </nav>
                             </div>
-                            {/* Right side */}
                             <div className="flex-1 flex justify-end items-center gap-x-4 sm:gap-x-6">
                                 <button onClick={() => setIsSearchOpen(true)}><SearchIcon /></button>
                                 {session ? (<Link to="/profile"><UserIcon /></Link>) : (<Link to="/auth"><UserIcon /></Link>)}
@@ -236,13 +232,12 @@ const Header = ({ session, fabrics, products }) => {
 };
 
 // --- HOME PRODUCT SECTION ---
-const HomeProductSection = ({ title, description, products }) => {
+const HomeProductSection = ({ title, products }) => {
     if (!products || products.length === 0) return null;
     return (
-        <section className="bg-soft-beige py-12 md:py-20">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 text-center">
-                <h2 className="text-2xl font-serif text-deep-maroon tracking-wider mb-4">{title}</h2>
-                {description && <p className="text-charcoal-gray max-w-2xl mx-auto mb-12">{description}</p>}
+        <section className="bg-soft-beige pt-12 pb-20">
+            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 text-left">
+                <h2 className="text-2xl font-serif text-deep-maroon tracking-wider mb-8">{title}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
                     {products.map((product) => {
                         const imageUrl = product.images && product.images.length > 0
@@ -259,7 +254,7 @@ const HomeProductSection = ({ title, description, products }) => {
                         );
                     })}
                 </div>
-                 <div className="mt-16 text-center">
+                 <div className="mt-16 text-left">
                     <Link to="/products" className="group inline-flex items-center gap-x-2 text-sm font-semibold tracking-widest text-deep-maroon uppercase">
                         View All Sarees <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
@@ -275,7 +270,7 @@ const StoryHighlight = () => (
     <section className="bg-white">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-20 md:py-32 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
             <div className="relative aspect-[4/5] order-last md:order-first">
-                <img src="/maroon saree plain.png" alt="Close-up of a handwoven saree" className="w-full h-full object-cover" />
+                <img src="/maroon-saree-plain.png" alt="Close-up of a handwoven saree" className="w-full h-full object-cover" />
             </div>
             <div className="text-left">
                 <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">Our Philosophy</p>
@@ -333,7 +328,7 @@ const CustomSortDropdown = ({ sortOption, setSortOption }) => {
 // --- ALL PRODUCTS GRID ---
 const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
     return (
-        <div className="bg-soft-beige pt-48 pb-20">
+        <div className="bg-soft-beige pb-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-200 pb-4 gap-4">
                     <h1 className="text-3xl font-serif text-deep-maroon">All Sarees</h1>
@@ -365,47 +360,33 @@ const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
 const Footer = () => {
     const location = useLocation();
     if (['/auth', '/order-confirmation'].includes(location.pathname)) return null;
+    
     return (
-     <footer className="bg-earthen-brown text-soft-beige font-sans">
+     <footer className="bg-soft-beige text-charcoal-gray font-sans border-t border-gray-200">
         <div className="max-w-screen-xl mx-auto px-8 py-16">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 text-xs uppercase tracking-wider">
-                <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
-                     <img src="/Neera logo.png" alt="Neera" className="h-20 w-auto brightness-0 invert" />
-                </div>
-                <div>
-                    <h5 className="text-white font-semibold mb-6">Shop</h5>
-                    <ul className="space-y-4">
-                        <li><Link to="/products" className="hover:text-white transition-colors">All Sarees</Link></li>
-                        <li><Link to="/fabric/silk" className="hover:text-white transition-colors">Silk</Link></li>
-                        <li><Link to="/fabric/mangalagiri" className="hover:text-white transition-colors">Mangalagiri</Link></li>
-                        <li><Link to="/fabric/cotton" className="hover:text-white transition-colors">Cotton</Link></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 className="text-white font-semibold mb-6">Our Brand</h5>
-                    <ul className="space-y-4">
-                        <li><Link to="/story" className="hover:text-white transition-colors">Our Story</Link></li>
-                        <li><Link to="/contact-us" className="hover:text-white transition-colors">Contact Us</Link></li>
-                    </ul>
-                </div>
-                 <div>
-                    <h5 className="text-white font-semibold mb-6">Customer Care</h5>
-                    <ul className="space-y-4">
-                        <li><Link to="/shipping-policy" className="hover:text-white transition-colors">Shipping</Link></li>
-                        <li><Link to="/refund-and-exchange-policy" className="hover:text-white transition-colors">Exchanges</Link></li>
-                        <li><Link to="/terms-and-conditions" className="hover:text-white transition-colors">Terms of Service</Link></li>
-                        <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                    </ul>
-                </div>
-                 <div>
-                    <h5 className="text-white font-semibold mb-6">Connect</h5>
-                    <ul className="space-y-4">
-                        <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
-                        <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
-                    </ul>
-                </div>
+            <div className="text-center mb-12">
+                <Link to="/">
+                     <img src="/Neera logo.png" alt="Neera" className="h-20 w-auto mx-auto mb-8" />
+                </Link>
+                <nav className="flex justify-center flex-wrap gap-x-6 gap-y-3 text-xs uppercase tracking-widest text-charcoal-gray/80">
+                    <Link to="/products" className="hover:text-deep-maroon transition-colors">ALL SAREES</Link>
+                    <Link to="/story" className="hover:text-deep-maroon transition-colors">OUR STORY</Link>
+                    <Link to="/contact-us" className="hover:text-deep-maroon transition-colors">CONTACT US</Link>
+                    <Link to="/shipping-policy" className="hover:text-deep-maroon transition-colors">SHIPPING</Link>
+                    <Link to="/refund-and-exchange-policy" className="hover:text-deep-maroon transition-colors">EXCHANGES</Link>
+                </nav>
             </div>
-            <div className="border-t border-white/20 pt-8 mt-16 text-center text-xs text-white/70">
+            
+            <div className="max-w-md mx-auto text-center">
+                 <h5 className="font-semibold mb-4 uppercase tracking-wider">BE THE FIRST TO KNOW</h5>
+                 <p className="text-sm mb-6 text-charcoal-gray/70">Sign up for exclusive offers, original stories, events and more.</p>
+                 <form className="flex w-full border-b border-gray-400 focus-within:border-deep-maroon transition-colors">
+                    <input type="email" placeholder="YOUR EMAIL" className="bg-transparent py-2 flex-grow focus:outline-none text-sm tracking-wider placeholder:text-gray-400" />
+                    <button type="submit" className="text-sm font-bold tracking-widest py-2">SIGN UP</button>
+                 </form>
+            </div>
+
+            <div className="pt-12 mt-12 text-center text-xs text-charcoal-gray/50 uppercase tracking-widest">
                 <p>&copy; {new Date().getFullYear()} NEERA. ALL RIGHTS RESERVED.</p>
             </div>
         </div>
@@ -414,37 +395,36 @@ const Footer = () => {
 };
 
 // --- APP CONTENT & ROUTING ---
-function AppContent({ session }) {
+function AppContent() {
+    const [session, setSession] = useState(null);
     const [products, setProducts] = useState([]);
     const [fabrics, setFabrics] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
     const location = useLocation();
-
     const [sortOption, setSortOption] = useState('newest');
     const [lastOrderDetails, setLastOrderDetails] = useState(null);
     
     useEffect(() => {
+        if (!supabase) return;
+        supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
+        return () => subscription.unsubscribe();
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
+            if (!supabase) {
+                setError("Supabase credentials are not configured. Please check your .env file and restart the server.");
+                setLoading(false);
+                return;
+            }
             setLoading(true);
-            
             const { data: productsData, error: productsError } = await supabase.from('products').select('*');
             if (productsError) { setError(productsError.message); setLoading(false); return; }
-
             const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
-
-            const productsWithSlugs = (productsData || []).map(product => ({
-                ...product,
-                slug: product.name.toLowerCase()
-                             .replace(/\s+/g, '-')      // Replace spaces with -
-                             .replace(/[^\w-]+/g, '')   // Remove all non-word chars
-                             .replace(/--+/g, '-')       // Replace multiple - with single -
-                             .replace(/^-+/, '')         // Trim - from start of text
-                             .replace(/-+$/, '')         // Trim - from end of text
-            }));
-
+            const productsWithSlugs = (productsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
             setProducts(productsWithSlugs);
             setFabrics(fabricsData || []);
             setLoading(false);
@@ -452,38 +432,32 @@ function AppContent({ session }) {
         fetchData();
     }, []);
 
-    useEffect(() => {
-      window.scrollTo(0, 0);
-    }, [location.pathname]);
+    useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
     
-    const handleOrderSuccess = (orderDetails) => {
+    const handleOrderSuccess = (orderDetails) => { 
         setLastOrderDetails(orderDetails);
-        navigate('/order-confirmation');
+        navigate('/order-confirmation'); 
     };
 
-    const displayedProducts = [...products]
-        .sort((a, b) => {
-            switch (sortOption) {
-                case 'price-asc': return a.price - b.price;
-                case 'price-desc': return b.price - a.price;
-                case 'newest': default: return new Date(b.created_at) - new Date(a.created_at);
-            }
-        });
+    const displayedProducts = [...products].sort((a, b) => {
+        switch (sortOption) {
+            case 'price-asc': return a.price - b.price;
+            case 'price-desc': return b.price - a.price;
+            case 'newest': default: return new Date(b.created_at) - new Date(a.created_at);
+        }
+    });
     
-    if (loading) { return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Neera...</p></div>; }
-    if (error) { return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Error: {error}</p></div>; }
+    if (loading) return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Neera...</p></div>;
+    if (error && !products.length) return <div className="h-screen flex justify-center items-center bg-soft-beige text-center p-8"><p className="text-red-600 font-semibold">{error}</p></div>
+
+    const shouldHavePadding = !['/story', '/'].includes(location.pathname);
 
     return (
         <div className="font-sans bg-soft-beige text-charcoal-gray">
             <Header session={session} fabrics={fabrics} products={products} />
-            <main>
+            <main className={shouldHavePadding ? 'pt-36' : ''}>
                 <Routes>
-                    <Route path="/" element={
-                        <div className="pt-40">
-                           <HomeProductSection title="New Arrivals" products={products.slice(0, 3)} />
-                           <StoryHighlight />
-                        </div>
-                    } />
+                    <Route path="/" element={<><HomeProductSection title="New Arrivals" products={products.slice(0, 3)} /><StoryHighlight /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
                     <Route path="/products/:fabric_type/:slug" element={<ProductPage allProducts={products} session={session} />} />
@@ -507,11 +481,12 @@ function AppContent({ session }) {
 }
 
 export default function App() {
-    const [session, setSession] = useState(null);
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
-        return () => subscription.unsubscribe();
-    }, []);
-    return (<CartProvider session={session}><AppContent session={session} /></CartProvider>);
+    const navigate = useNavigate(); // This hook can only be used in a Router context.
+    
+    return (
+        <CartProvider>
+            <AppContent />
+        </CartProvider>
+    );
 }
+
