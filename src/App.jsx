@@ -69,6 +69,11 @@ const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
 
     if (!isOpen) return null;
 
+    const handleNavigate = (path) => {
+        onClose();
+        navigate(path);
+    };
+
     return (
         <div className="fixed inset-0 bg-soft-beige z-[100] flex flex-col animate-fadeIn" onClick={onClose}>
             <div className="flex justify-end p-8">
@@ -99,11 +104,11 @@ const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
                     <Link to="/story" className="block text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200" onClick={onClose}>Our Story</Link>
                 </div>
                 <div className="flex-shrink-0 pt-6 flex justify-center items-center gap-x-8">
-                     <button onClick={() => { onClose(); navigate(session ? '/profile' : '/auth'); }} className="flex items-center gap-x-2 text-charcoal-gray">
+                     <button onClick={() => handleNavigate(session ? '/profile' : '/auth')} className="flex items-center gap-x-2 text-charcoal-gray">
                         <UserIcon />
                         <span className="text-sm">{session ? 'Profile' : 'Sign In'}</span>
                     </button>
-                    <button onClick={() => { onClose(); navigate('/search'); }} className="flex items-center gap-x-2 text-charcoal-gray">
+                    <button onClick={() => setIsSearchOpen(true)} className="flex items-center gap-x-2 text-charcoal-gray">
                         <SearchIcon />
                         <span className="text-sm">Search</span>
                     </button>
@@ -120,88 +125,109 @@ const Header = ({ session, fabrics, products }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [hoveredFabric, setHoveredFabric] = useState(null);
+    const [isNavSticky, setIsNavSticky] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [location.pathname]);
 
-    const headerClasses = `fixed top-0 w-full z-50 transition-all duration-500 ease-in-out bg-soft-beige/95 backdrop-blur-sm text-charcoal-gray shadow-sm`;
+    useEffect(() => {
+        const handleScroll = () => {
+            const logoBarHeight = 96; // h-24 = 6rem = 96px
+            setIsNavSticky(window.scrollY > logoBarHeight);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-    const featuredProducts = products.slice(0, 2);
+
+    const latestProducts = [...products]
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 2);
+
+    const dropdownProducts = hoveredFabric
+        ? products.filter(p => p.fabric_type === hoveredFabric).slice(0, 2)
+        : latestProducts;
 
     return (
         <>
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} session={session} />
-            <header className={headerClasses}>
-                <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-20">
-                    {/* Left side */}
-                    <div className="flex-1 flex justify-start">
-                        <div className="md:hidden">
-                            <button onClick={() => setIsMobileMenuOpen(true)}>
-                                <MenuIcon />
-                            </button>
-                        </div>
-                        <nav className="hidden md:flex items-center gap-x-8 font-sans">
-                            <Link to="/products" className={navLinkClasses}>All Sarees</Link>
-                            <div className="relative" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-                                <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
-                                   Shop by Fabric <ChevronDownIcon />
-                                </button>
-                                {isDropdownOpen && (
-                                    <div className="absolute top-full left-[-200px] pt-5 w-[80vw] max-w-4xl opacity-0 animate-fadeIn" style={{ animationDelay: '50ms' }}>
-                                        <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-2xl p-8 grid grid-cols-4 gap-8">
-                                            <div className="col-span-1">
-                                                <h3 className="font-serif text-lg mb-4">Fabric Types</h3>
-                                                <ul className="space-y-3">
-                                                    {fabrics.map(fabric => (
-                                                        <li key={fabric.id}>
-                                                            <Link to={`/fabric/${fabric.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setIsDropdownOpen(false)}>
-                                                                {fabric.name}
-                                                            </Link>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                            <div className="col-span-3 grid grid-cols-2 gap-6">
-                                                {featuredProducts.map(product => {
-                                                     const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/400x500';
-                                                     return(
-                                                        <Link key={product.id} to={`/products/${product.fabric_type}/${product.slug}`} className="group" onClick={() => setIsDropdownOpen(false)}>
-                                                            <div className="overflow-hidden bg-gray-100 mb-2">
-                                                                <img src={imageUrl} alt={product.name} className="w-full h-full object-cover aspect-[4/5] transition-transform duration-300 group-hover:scale-105" />
-                                                            </div>
-                                                            <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors">{product.name}</h4>
-                                                            <p className="text-xs text-gray-500">Shop Now</p>
-                                                        </Link>
-                                                     );
-                                                })}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                             <Link to="/story" className={navLinkClasses}>Our Story</Link>
-                        </nav>
-                    </div>
-                    {/* Center Logo */}
-                    <div className="absolute left-1/2 -translate-x-1/2">
+            
+            <header className="relative z-50 h-40"> {/* Placeholder to prevent content jump */}
+                <div className="fixed top-0 left-0 right-0 bg-soft-beige/95 backdrop-blur-sm shadow-sm">
+                    {/* Top row with logo */}
+                    <div className="h-24 flex items-center justify-center transition-transform duration-300" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
                         <Link to="/" className="flex items-center">
-                           <img src="/Neera logo.png" alt="Neera" className="h-16 md:h-20 w-auto transition-all duration-300" />
+                            <img src="/Neera logo.png" alt="Neera" className="h-24 w-auto" />
                         </Link>
                     </div>
-                    {/* Right side */}
-                    <div className="flex-1 flex justify-end items-center gap-x-4 sm:gap-x-6">
-                        <div className="hidden md:flex items-center gap-x-4 sm:gap-x-6">
-                            <button onClick={() => setIsSearchOpen(true)}><SearchIcon /></button>
-                            {session ? (<Link to="/profile"><UserIcon /></Link>) : (<Link to="/auth"><UserIcon /></Link>)}
+                    {/* Bottom row with navigation and actions */}
+                    <div className={`absolute left-0 right-0 bg-soft-beige/95 backdrop-blur-sm transition-transform duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-96px)' : 'translateY(0)' }}>
+                        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-16 border-t border-gray-200">
+                            {/* Left side */}
+                            <div className="flex-1 flex justify-start">
+                                <div className="md:hidden">
+                                    <button onClick={() => setIsMobileMenuOpen(true)}>
+                                        <MenuIcon />
+                                    </button>
+                                </div>
+                                <nav className="hidden md:flex items-center gap-x-8 font-sans">
+                                    <Link to="/products" className={navLinkClasses}>All Sarees</Link>
+                                    <div className="relative" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+                                        <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
+                                           Shop by Fabric <ChevronDownIcon />
+                                        </button>
+                                        {isDropdownOpen && (
+                                            <div className="absolute top-full left-[-200px] pt-5 w-[80vw] max-w-4xl opacity-0 animate-fadeIn" style={{ animationDelay: '50ms' }}>
+                                                <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-2xl p-8 grid grid-cols-3 gap-8">
+                                                    <div className="col-span-1" onMouseLeave={() => setHoveredFabric(null)}>
+                                                        <h3 className="font-serif text-lg mb-4">Fabric Types</h3>
+                                                        <ul className="space-y-3">
+                                                            {fabrics.map(fabric => (
+                                                                <li key={fabric.id} onMouseEnter={() => setHoveredFabric(fabric.name)}>
+                                                                    <Link to={`/fabric/${fabric.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setIsDropdownOpen(false)}>
+                                                                        {fabric.name}
+                                                                    </Link>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                    <div className="col-span-2 grid grid-cols-2 gap-6">
+                                                        {dropdownProducts.map(product => {
+                                                             const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/400x500';
+                                                             return(
+                                                                <Link key={product.id} to={`/products/${product.fabric_type}/${product.slug}`} className="group" onClick={() => setIsDropdownOpen(false)}>
+                                                                    <div className="overflow-hidden bg-gray-100 mb-2">
+                                                                        <img src={imageUrl} alt={product.name} className="w-full h-full object-cover aspect-[4/5] transition-transform duration-300 group-hover:scale-105" />
+                                                                    </div>
+                                                                    <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors">{product.name}</h4>
+                                                                    <p className="text-xs text-gray-500">Shop Now</p>
+                                                                </Link>
+                                                             );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                     <Link to="/story" className={navLinkClasses}>Our Story</Link>
+                                </nav>
+                            </div>
+                            {/* Right side */}
+                            <div className="flex-1 flex justify-end items-center gap-x-4 sm:gap-x-6">
+                                <button onClick={() => setIsSearchOpen(true)}><SearchIcon /></button>
+                                {session ? (<Link to="/profile"><UserIcon /></Link>) : (<Link to="/auth"><UserIcon /></Link>)}
+                                <Link to="/cart" className="relative">
+                                    <ShoppingBagIcon />
+                                    {cartItemCount > 0 && (<span className="absolute -top-1.5 -right-1.5 bg-lotus-gold text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">{cartItemCount}</span>)}
+                                </Link>
+                            </div>
                         </div>
-                        <Link to="/cart" className="relative">
-                            <ShoppingBagIcon />
-                            {cartItemCount > 0 && (<span className="absolute -top-1.5 -right-1.5 bg-lotus-gold text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">{cartItemCount}</span>)}
-                        </Link>
                     </div>
                 </div>
             </header>
@@ -215,7 +241,7 @@ const HomeProductSection = ({ title, description, products }) => {
     return (
         <section className="bg-soft-beige py-12 md:py-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 text-center">
-                <h2 className="text-3xl font-serif text-deep-maroon tracking-wider mb-4">{title}</h2>
+                <h2 className="text-2xl font-serif text-deep-maroon tracking-wider mb-4">{title}</h2>
                 {description && <p className="text-charcoal-gray max-w-2xl mx-auto mb-12">{description}</p>}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
                     {products.map((product) => {
@@ -307,7 +333,7 @@ const CustomSortDropdown = ({ sortOption, setSortOption }) => {
 // --- ALL PRODUCTS GRID ---
 const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
     return (
-        <div className="bg-soft-beige pt-32 pb-20">
+        <div className="bg-soft-beige pt-48 pb-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-200 pb-4 gap-4">
                     <h1 className="text-3xl font-serif text-deep-maroon">All Sarees</h1>
@@ -340,11 +366,11 @@ const Footer = () => {
     const location = useLocation();
     if (['/auth', '/order-confirmation'].includes(location.pathname)) return null;
     return (
-     <footer className="bg-brand-dark text-gray-400 font-sans">
+     <footer className="bg-earthen-brown text-soft-beige font-sans">
         <div className="max-w-screen-xl mx-auto px-8 py-16">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 text-xs uppercase tracking-wider">
                 <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
-                     <img src="/Neera logo.png" alt="Neera" className="h-20 w-auto" />
+                     <img src="/Neera logo.png" alt="Neera" className="h-20 w-auto brightness-0 invert" />
                 </div>
                 <div>
                     <h5 className="text-white font-semibold mb-6">Shop</h5>
@@ -379,7 +405,7 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
-            <div className="border-t border-gray-800 pt-8 mt-16 text-center text-xs text-gray-500">
+            <div className="border-t border-white/20 pt-8 mt-16 text-center text-xs text-white/70">
                 <p>&copy; {new Date().getFullYear()} NEERA. ALL RIGHTS RESERVED.</p>
             </div>
         </div>
@@ -453,7 +479,7 @@ function AppContent({ session }) {
             <main>
                 <Routes>
                     <Route path="/" element={
-                        <div className="pt-20">
+                        <div className="pt-40">
                            <HomeProductSection title="New Arrivals" products={products.slice(0, 3)} />
                            <StoryHighlight />
                         </div>

@@ -146,7 +146,7 @@ const ProductPage = ({ allProducts, session }) => {
     }
 
     const relatedProducts = allProducts
-        .filter(p => p.fabric_type === product.fabric_type && p.id !== product.id)
+        .filter(p => p.id !== product.id)
         .slice(0, 4);
 
     return (

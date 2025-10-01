@@ -20,6 +20,7 @@ export default {
         'charcoal-gray': '#3A3A3A',
         'charcoal-gray-dark': '#2c2c2c',
         'brand-dark': '#121212',
+        'earthen-brown': '#A38F85', // New earthen color
       },
       fontFamily: {
         'sans': ['Lato', 'sans-serif'],

@@ -106,7 +106,7 @@ const ContactUs = () => {
                             </a>
                         </div>
 
-                        {/* Address Section */}
+                        {/* Address Section
                         <div className="mt-12 pt-12 border-t border-gray-200">
                             <h2 className="text-2xl font-serif text-deep-maroon mb-4">
                                 Our Studio
@@ -117,7 +117,7 @@ const ContactUs = () => {
                                 Chennai, Tamil Nadu 600018<br/>
                                 India
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
