@@ -65,7 +65,7 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     };
 
     return (
-        <div className="bg-soft-beige min-h-screen pt-32 pb-16 font-sans">
+        <div className="bg-soft-beige min-h-screen pt-16 pb-16 font-sans">
             <div className="max-w-6xl mx-auto px-4 sm:px-8">
                 <button onClick={() => navigate('/cart')} className="text-sm text-charcoal-gray hover:text-deep-maroon mb-8 flex items-center gap-x-2 transition-colors">
                     <BackArrowIcon />

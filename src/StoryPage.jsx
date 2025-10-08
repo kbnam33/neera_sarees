@@ -80,21 +80,21 @@ const StoryPage = () => {
             </AnimatedSection>
             
             <AnimatedSection>
-                 <section className="bg-soft-beige">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 items-center min-h-screen">
-                        <div className="h-full w-full">
-                            <img src="/flying-saree.png" alt="A flowing saree symbolizing grace" className="w-full h-screen object-cover" />
+                 <section className="py-20 md:py-32 bg-soft-beige">
+                    <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
+                        <div className="max-w-xl">
+                           <h2 className="text-4xl lg:text-5xl font-serif text-brand-dark leading-tight mb-6">
+                               Fluidity and Grace
+                           </h2>
+                           <p className="text-charcoal-gray/90 leading-relaxed">
+                               Just as water flows effortlessly, our sarees are designed to bring fluidity, comfort, and charm to every occasion.
+                           </p>
                         </div>
-                        <div className="text-left p-12 md:p-24">
-                            <h2 className="text-3xl lg:text-4xl font-serif text-brand-dark leading-tight mb-6">
-                                Fluidity and Grace
-                            </h2>
-                            <p className="text-charcoal-gray/90 leading-relaxed max-w-md">
-                                Just as water flows effortlessly, our sarees are designed to bring fluidity, comfort, and charm to every occasion.
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                   </div>
+                   <div className="w-full mt-16">
+                       <img src="/flying-saree.png" alt="A flowing saree symbolizing grace" className="w-full h-auto object-cover" />
+                   </div>
+               </section>
             </AnimatedSection>
 
             <AnimatedSection>

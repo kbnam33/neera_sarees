@@ -7,6 +7,7 @@ const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState(''); // Add state for full name
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [message, setMessage] = useState('');
@@ -27,17 +28,25 @@ const AuthPage = () => {
                 if (authError) throw authError;
 
                 if (data.user) {
-                    // Merge guest cart with Supabase cart after successful login
                     await mergeLocalCartWithSupabase(data.user);
-                    
-                    // Redirect to the previous page or profile
                     const from = location.state?.from?.pathname || '/profile';
                     navigate(from, { replace: true });
                 }
 
             } else {
-                // --- Handle Sign Up ---
-                const { error: authError } = await supabase.auth.signUp({ email, password });
+                // --- Handle Sign Up with Full Name ---
+                if (!fullName.trim()) {
+                    throw new Error("Full name is required.");
+                }
+                const { data, error: authError } = await supabase.auth.signUp({ 
+                    email, 
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName
+                        }
+                    }
+                });
                 if (authError) throw authError;
                 setMessage('Registration successful! Please check your email to verify your account.');
             }
@@ -65,6 +74,19 @@ const AuthPage = () => {
                 </p>
                 
                 <form onSubmit={handleAuth} className="space-y-6">
+                    {!isLogin && (
+                         <div>
+                            <input
+                                id="fullName"
+                                type="text"
+                                placeholder="Full Name"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                required
+                                className="w-full p-3 text-sm bg-transparent border-b border-gray-300 text-charcoal-gray placeholder-gray-400 focus:outline-none focus:border-deep-maroon transition-colors"
+                            />
+                        </div>
+                    )}
                     <div>
                         <input
                             id="email"
@@ -93,7 +115,7 @@ const AuthPage = () => {
                             disabled={loading}
                             className="w-full bg-deep-maroon text-white py-3 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400"
                         >
-                            {loading ? 'Processing...' : 'Continue'}
+                            {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
                         </button>
                     </div>
                 </form>

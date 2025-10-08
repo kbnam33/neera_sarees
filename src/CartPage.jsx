@@ -12,12 +12,12 @@ const CartPage = ({ session }) => {
         if (session) {
             navigate('/checkout');
         } else {
-            navigate('/auth');
+            navigate('/auth', { state: { from: { pathname: '/checkout' } } });
         }
     };
 
     return (
-        <div className="bg-white min-h-screen pt-24 pb-16">
+        <div className="bg-white min-h-screen pt-16 pb-16">
             <div className="max-w-4xl mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-8 mb-8">
                     <h1 className="text-4xl font-serif text-deep-maroon">Your Bag</h1>

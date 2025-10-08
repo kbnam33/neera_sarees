@@ -5,6 +5,13 @@ import { useCart } from './CartContext';
 // --- ICONS ---
 const ChevronRightIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg> );
 
+// Helper function to format color names for CSS
+const formatCssColor = (colorName) => {
+  if (!colorName) return 'transparent';
+  // Removes spaces and converts to lower case. E.g., "Dark Blue" -> "darkblue"
+  return colorName.replace(/\s+/g, '').toLowerCase();
+};
+
 // --- SWIPEABLE IMAGE CAROUSEL FOR MOBILE ---
 const ProductImageCarousel = ({ images, productName }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -119,10 +126,16 @@ const ProductPage = ({ allProducts, session }) => {
             const foundProduct = allProducts.find(p => p.slug === slug);
 
             if (foundProduct) {
-                setProduct(foundProduct);
-                setSelectedColor(foundProduct.colors ? foundProduct.colors[0] : null);
-                if (foundProduct.images && foundProduct.images.length > 0) {
-                    setMainImage(foundProduct.images[0]);
+                let productToShow = { ...foundProduct };
+                // Check if this is the specific product and override its images
+                if (productToShow.name === 'Mangalagiri Dark Blue') {
+                    productToShow.images = ['/new-mangalagiri-dark-blue.png'];
+                }
+
+                setProduct(productToShow);
+                setSelectedColor(productToShow.colors ? productToShow.colors[0] : null);
+                if (productToShow.images && productToShow.images.length > 0) {
+                    setMainImage(productToShow.images[0]);
                 }
             } else {
                 navigate('/products', { replace: true });
@@ -131,13 +144,15 @@ const ProductPage = ({ allProducts, session }) => {
     }, [slug, allProducts, navigate]);
 
     const handleAddToCart = () => { if(product) addToCart(product); };
+    
     const handleBuyNow = () => {
-        if (session) {
-            if(product) addToCart(product);
-            navigate('/checkout');
-        } else {
-            if(product) sessionStorage.setItem('buyNowProduct', JSON.stringify(product));
-            navigate('/auth', { state: { from: { pathname: `/products/${product.fabric_type}/${product.slug}` } } });
+        if (product) {
+            addToCart(product);
+            if (session) {
+                navigate('/checkout');
+            } else {
+                navigate('/auth', { state: { from: { pathname: '/checkout' } } });
+            }
         }
     };
     
@@ -150,7 +165,7 @@ const ProductPage = ({ allProducts, session }) => {
         .slice(0, 4);
 
     return (
-        <div className="bg-soft-beige">
+        <div className="bg-soft-beige pt-16">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pb-16">
                  <div className="mb-8 font-sans text-xs tracking-widest text-gray-500">
                     <Link to="/products" className="hover:text-black">All Sarees</Link>
@@ -207,7 +222,7 @@ const ProductPage = ({ allProducts, session }) => {
                                                     key={color}
                                                     onClick={() => setSelectedColor(color)}
                                                     className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border-2 shadow-sm hover:shadow-md focus:outline-none ${selectedColor === color ? 'ring-2 ring-offset-2 ring-deep-maroon border-white' : 'border-gray-300'}`}
-                                                    style={{ backgroundColor: color.toLowerCase() }}
+                                                    style={{ backgroundColor: formatCssColor(color) }}
                                                     title={color}
                                                 >
                                                     <span className="sr-only">{color}</span>
@@ -259,4 +274,3 @@ const ProductPage = ({ allProducts, session }) => {
 };
 
 export default ProductPage;
-

@@ -7,7 +7,7 @@ const FabricPage = ({ allProducts }) => {
     const filteredProducts = allProducts.filter(p => p.fabric_type === fabricName);
 
     return (
-        <div className="bg-soft-beige pt-32 pb-20">
+        <div className="bg-soft-beige pt-16 pb-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-8 mb-12">
                     <h1 className="text-4xl font-serif text-deep-maroon capitalize">{fabricName}</h1>

@@ -396,7 +396,7 @@ const CustomSortDropdown = ({ sortOption, setSortOption }) => {
 // --- ALL PRODUCTS GRID ---
 const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
     return (
-        <div className="bg-soft-beige pb-20">
+        <div className="bg-soft-beige pt-16 pb-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-200 pb-4 gap-4">
                     <h1 className="text-3xl font-serif text-deep-maroon">All Sarees</h1>
@@ -463,6 +463,7 @@ function AppContent() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const location = useLocation();
+    const navigate = useNavigate();
     const [sortOption, setSortOption] = useState('newest');
     const [lastOrderDetails, setLastOrderDetails] = useState(null);
     
@@ -483,9 +484,20 @@ function AppContent() {
             setLoading(true);
             const { data: productsData, error: productsError } = await supabase.from('products').select('*');
             if (productsError) { setError(productsError.message); setLoading(false); return; }
+
+            // Apply temporary front-end fixes
+            const updatedProductsData = (productsData || []).map(p => {
+                if (p.name === 'Mangalagiri Dark Blue') {
+                    // This will apply the color change globally.
+                    // The image change is now handled specifically on the ProductPage.
+                    return { ...p, colors: ['Dark Blue', 'Grey'] };
+                }
+                return p;
+            });
+
             const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
-            const productsWithSlugs = (productsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
+            const productsWithSlugs = (updatedProductsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
             setProducts(productsWithSlugs);
             setFabrics(fabricsData || []);
             setLoading(false);
@@ -511,13 +523,10 @@ function AppContent() {
     if (loading) return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Neera...</p></div>;
     if (error && !products.length) return <div className="h-screen flex justify-center items-center bg-soft-beige text-center p-8"><p className="text-red-600 font-semibold">{error}</p></div>
 
-    const shouldHavePadding = !['/story', '/', '/auth', '/order-confirmation'].includes(location.pathname);
-
-
     return (
         <div className="font-sans bg-soft-beige text-charcoal-gray">
             <Header session={session} fabrics={fabrics} products={products} />
-            <main className={shouldHavePadding ? 'pt-48' : ''}>
+            <main>
                 <Routes>
                     <Route path="/" element={<><HomeProductSection title="New Arrivals" products={products.slice(0, 3)} /><StoryHighlight /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
@@ -543,8 +552,6 @@ function AppContent() {
 }
 
 export default function App() {
-    const navigate = useNavigate(); // This hook can only be used in a Router context.
-    
     return (
         <CartProvider>
             <AppContent />

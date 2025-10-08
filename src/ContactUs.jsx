@@ -12,7 +12,7 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="bg-soft-beige min-h-screen pt-32 pb-24 font-sans">
+        <div className="bg-soft-beige min-h-screen pt-16 pb-24 font-sans">
             <div className="max-w-5xl mx-auto px-4 sm:px-8">
                 {/* --- Header Section --- */}
                 <div className="text-center mb-16 md:mb-20">
@@ -126,4 +126,3 @@ const ContactUs = () => {
 };
 
 export default ContactUs;
-
