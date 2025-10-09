@@ -36,10 +36,12 @@ const CartPage = ({ session }) => {
                 ) : (
                     <div className="animate-fadeIn">
                         <div className="space-y-6">
-                            {cartItems.map(item => (
+                            {cartItems.map(item => {
+                                const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://placehold.co/96x144/F8F5EF/5B1A32?text=Neera';
+                                return (
                                 <div key={item.id} className="flex gap-x-6 items-center border-b border-gray-200 pb-6">
                                     <div className="w-24 h-36 bg-gray-100 flex-shrink-0">
-                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                        <img src={imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-grow">
                                         <p className="font-serif text-lg text-charcoal-gray">{item.name}</p>
@@ -66,7 +68,7 @@ const CartPage = ({ session }) => {
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                            )})}
                         </div>
 
                         <div className="mt-12 flex justify-end">

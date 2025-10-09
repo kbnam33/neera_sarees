@@ -63,17 +63,19 @@ const ProfilePage = ({ session }) => {
                                     </div>
                                 </div>
                                 <div className="space-y-4">
-                                    {order.products.map(product => (
+                                    {order.products.map(product => {
+                                        const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/64x80/F8F5EF/5B1A32?text=Neera';
+                                        return (
                                         <div key={product.id} className="flex items-center gap-x-4">
                                             <div className="w-16 h-20 bg-gray-100">
-                                                <img src={product.image} alt={product.name} className="w-full h-full object-cover"/>
+                                                <img src={imageUrl} alt={product.name} className="w-full h-full object-cover"/>
                                             </div>
                                             <div>
                                                 <p className="font-serif text-charcoal-gray">{product.name}</p>
                                                 <p className="text-sm text-gray-600">Quantity: {product.quantity}</p>
                                             </div>
                                         </div>
-                                    ))}
+                                    )})}
                                 </div>
                             </div>
                         ))}

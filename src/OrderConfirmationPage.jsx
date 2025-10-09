@@ -48,16 +48,18 @@ const OrderConfirmationPage = ({ order }) => {
                     <div>
                         <h2 className="text-lg font-semibold text-charcoal-gray mb-4 border-b pb-2">Order Summary</h2>
                         <div className="space-y-4">
-                            {products.map(item => (
+                            {products.map(item => {
+                                const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://placehold.co/64x80/F8F5EF/5B1A32?text=Neera';
+                                return (
                                 <div key={item.id} className="flex items-center gap-x-4">
-                                    <img src={item.image} alt={item.name} className="w-16 h-20 object-cover rounded-md" />
+                                    <img src={imageUrl} alt={item.name} className="w-16 h-20 object-cover rounded-md" />
                                     <div className="flex-grow">
                                         <p className="font-semibold text-charcoal-gray text-sm">{item.name}</p>
                                         <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                                     </div>
                                     <p className="text-sm font-semibold text-charcoal-gray">₹{(item.price * item.quantity).toFixed(2)}</p>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                         <div className="mt-4 pt-4 border-t text-sm">
                              <div className="flex justify-between">

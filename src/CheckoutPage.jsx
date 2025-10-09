@@ -116,18 +116,20 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                     <div className="lg:order-2 bg-white/60 p-8 rounded-lg border border-gray-200 h-fit">
                         <h2 className="text-2xl font-serif text-deep-maroon border-b border-gray-300 pb-4 mb-6">Your Order</h2>
                         <div className="space-y-4">
-                            {cartItems.map(item => (
+                            {cartItems.map(item => {
+                                const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://placehold.co/64x80/F8F5EF/5B1A32?text=Neera';
+                                return (
                                 <div key={item.id} className="flex justify-between items-center text-sm">
                                     <div className="flex items-center gap-x-4">
                                         <div className="w-16 h-20 bg-gray-100 rounded-md overflow-hidden relative">
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                            <img src={imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                             <span className="absolute -top-2 -right-2 bg-charcoal-gray text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">{item.quantity}</span>
                                         </div>
                                         <p className="text-charcoal-gray flex-1">{item.name}</p>
                                     </div>
                                     <p className="font-semibold text-charcoal-gray whitespace-nowrap">₹ {(item.price * item.quantity).toFixed(2)}</p>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                         <div className="mt-6 pt-6 border-t border-gray-300 space-y-2">
                             <div className="flex justify-between text-sm">

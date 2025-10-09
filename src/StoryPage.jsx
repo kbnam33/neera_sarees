@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ASSETS } from './assets.js'; // Import the new assets file
 
 const ArrowRightIcon = ({ className = "w-5 h-5" }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>);
 
@@ -64,7 +65,7 @@ const StoryPage = () => {
                     <div className="max-w-screen-xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         <div>
                             <div className="p-2 border border-charcoal-gray-dark shadow-2xl">
-                                 <img src="/theme-image.png" alt="A rich, textured saree in a traditional setting" className="w-full h-full object-cover" />
+                                 <img src={ASSETS.THEME_IMAGE_URL} alt="A rich, textured saree in a traditional setting" className="w-full h-full object-cover" />
                             </div>
                         </div>
                         <div className="flex flex-col justify-center h-full">
@@ -92,7 +93,7 @@ const StoryPage = () => {
                         </div>
                    </div>
                    <div className="w-full mt-16">
-                       <img src="/flying-saree.png" alt="A flowing saree symbolizing grace" className="w-full h-auto object-cover" />
+                       <img src={ASSETS.FLYING_SAREE_URL} alt="A flowing saree symbolizing grace" className="w-full h-auto object-cover" />
                    </div>
                </section>
             </AnimatedSection>
@@ -108,7 +109,7 @@ const StoryPage = () => {
                          </div>
                     </div>
                     <div className="w-full mt-16">
-                        <img src="/orange-mangalagiri-display.png" alt="A woman wearing a Neera saree with confidence" className="w-full h-auto object-cover" />
+                        <img src={ASSETS.ORANGE_MANGALAGIRI_URL} alt="A woman wearing a Neera saree with confidence" className="w-full h-auto object-cover" />
                     </div>
                 </section>
             </AnimatedSection>
@@ -126,3 +127,4 @@ const StoryPage = () => {
 };
 
 export default StoryPage;
+

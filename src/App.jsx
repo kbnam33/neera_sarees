@@ -16,7 +16,8 @@ import PrivacyPolicy from './PrivacyPolicy.jsx';
 import TermsAndConditions from './TermsAndConditions.jsx';
 import ShippingPolicy from './ShippingPolicy.jsx';
 import ContactUs from './ContactUs.jsx';
-
+import ProductImage from './components/ProductImage.jsx';
+import { ASSETS } from './assets.js'; // Import the new assets file
 
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
@@ -189,13 +190,7 @@ const Header = ({ session, fabrics, products }) => {
     const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
-    const latestProducts = [...products]
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .slice(0, 2);
-
-    const dropdownProducts = hoveredFabric
-        ? products.filter(p => p.fabric_type === hoveredFabric).slice(0, 2)
-        : latestProducts;
+    const activeFabric = hoveredFabric ? fabrics.find(f => f.name === hoveredFabric) : null;
 
     return (
         <>
@@ -206,7 +201,7 @@ const Header = ({ session, fabrics, products }) => {
                 <div className="fixed top-0 left-0 right-0 bg-soft-beige/95 backdrop-blur-sm shadow-sm">
                     <div className="h-32 flex items-center justify-center transition-transform duration-300" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
                         <Link to="/" className="flex items-center">
-                            <img src="/Neera logo.png" alt="Neera" className="h-32 w-auto" />
+                            <img src={ASSETS.LOGO_URL} alt="Neera" className="h-32 w-auto" />
                         </Link>
                     </div>
                     <div className={`absolute left-0 right-0 bg-soft-beige/95 backdrop-blur-sm transition-all duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-128px)' : 'translateY(0)' }}>
@@ -224,8 +219,8 @@ const Header = ({ session, fabrics, products }) => {
                                            Shop by Fabric <ChevronDownIcon />
                                         </button>
                                         {isDropdownOpen && (
-                                            <div className="absolute top-full left-[-200px] pt-5 w-[80vw] max-w-4xl opacity-0 animate-fadeIn" style={{ animationDelay: '50ms' }}>
-                                                <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-2xl p-8 grid grid-cols-3 gap-8">
+                                            <div className="absolute top-full left-[-200px] pt-5 w-[60vw] max-w-2xl opacity-0 animate-fadeIn" style={{ animationDelay: '50ms' }}>
+                                                <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-2xl p-8 grid grid-cols-2 gap-8">
                                                     <div className="col-span-1" onMouseLeave={() => setHoveredFabric(null)}>
                                                         <h3 className="font-serif text-lg mb-4">Fabric Types</h3>
                                                         <ul className="space-y-3">
@@ -238,19 +233,20 @@ const Header = ({ session, fabrics, products }) => {
                                                             ))}
                                                         </ul>
                                                     </div>
-                                                    <div className="col-span-2 grid grid-cols-2 gap-6">
-                                                        {dropdownProducts.map(product => {
-                                                             const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/400x500';
-                                                             return(
-                                                                <Link key={product.id} to={`/products/${product.fabric_type}/${product.slug}`} className="group" onClick={() => setIsDropdownOpen(false)}>
-                                                                    <div className="overflow-hidden bg-gray-100 mb-2">
-                                                                        <img src={imageUrl} alt={product.name} className="w-full h-full object-cover aspect-[4/5] transition-transform duration-300 group-hover:scale-105" />
-                                                                    </div>
-                                                                    <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors">{product.name}</h4>
-                                                                    <p className="text-xs text-gray-500">Shop Now</p>
-                                                                </Link>
-                                                             );
-                                                        })}
+                                                    <div className="col-span-1">
+                                                        {activeFabric && activeFabric.image_url ? (
+                                                            <Link to={`/fabric/${activeFabric.name}`} className="group" onClick={() => setIsDropdownOpen(false)}>
+                                                                <div className="overflow-hidden bg-gray-100 mb-2">
+                                                                    <img src={activeFabric.image_url} alt={activeFabric.name} className="w-full h-full object-cover aspect-[4/5] transition-transform duration-300 group-hover:scale-105" />
+                                                                </div>
+                                                                <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors">{activeFabric.name}</h4>
+                                                                <p className="text-xs text-gray-500">Shop Now</p>
+                                                            </Link>
+                                                        ) : (
+                                                            <div className="flex items-center justify-center h-full text-center text-gray-400 text-sm">
+                                                                <p>Hover over a fabric to see a preview.</p>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -283,20 +279,17 @@ const HomeProductSection = ({ title, products }) => {
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 text-left">
                 <h2 className="text-2xl font-serif text-deep-maroon tracking-wider mb-8">{title}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
-                    {products.map((product) => {
-                        const imageUrl = product.images && product.images.length > 0
-                            ? product.images[0]
-                            : 'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera';
-                        return (
-                             <Link to={`/products/${product.fabric_type}/${product.slug}`} key={product.id} className="group text-left">
-                                <div className="overflow-hidden mb-3 bg-gray-100">
-                                    <img src={imageUrl} alt={product.name} className={`w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105`} />
-                                </div>
-                                <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
-                                <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
-                            </Link>
-                        );
-                    })}
+                    {products.map((product) => (
+                        <div key={product.id}>
+                            <ProductImage 
+                                images={product.images}
+                                altText={product.name}
+                                productUrl={`/products/${product.fabric_type}/${product.slug}`}
+                            />
+                            <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
+                            <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
+                        </div>
+                    ))}
                 </div>
                  <div className="mt-16 text-left">
                     <Link to="/products" className="group inline-flex items-center gap-x-2 text-sm font-semibold tracking-widest text-deep-maroon uppercase">
@@ -310,7 +303,8 @@ const HomeProductSection = ({ title, products }) => {
 
 
 // --- STORY HIGHLIGHT SECTION ---
-const StoryHighlight = () => (
+const StoryHighlight = () => {
+    return (
     <section className="bg-soft-beige py-20 md:py-32 overflow-hidden">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-center">
@@ -320,7 +314,7 @@ const StoryHighlight = () => (
                     <AnimatedUncrop>
                         <div className="p-2 border border-black">
                             <img 
-                                src="/cinemtic-bg.png" 
+                                src={ASSETS.STORY_HIGHLIGHT_URL} 
                                 alt="A serene, sunlit room with a draped saree."
                                 className="w-full h-auto object-cover"
                             />
@@ -352,7 +346,8 @@ const StoryHighlight = () => (
             </div>
         </div>
     </section>
-);
+    );
+};
 
 
 // --- CUSTOM SORT DROPDOWN ---
@@ -403,20 +398,17 @@ const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
                     <CustomSortDropdown sortOption={sortOption} setSortOption={setSortOption} />
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-12">
-                    {products.map((product) => {
-                         const imageUrl = product.images && product.images.length > 0
-                            ? product.images[0]
-                            : 'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera';
-                        return (
-                            <Link to={`/products/${product.fabric_type}/${product.slug}`} key={product.id} className="group text-left">
-                                <div className="overflow-hidden mb-4 bg-gray-100">
-                                    <img src={imageUrl} alt={product.name} className={`w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105`} />
-                                </div>
-                                <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
-                                <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
-                            </Link>
-                        );
-                    })}
+                    {products.map((product) => (
+                        <div key={product.id}>
+                            <ProductImage 
+                                images={product.images}
+                                altText={product.name}
+                                productUrl={`/products/${product.fabric_type}/${product.slug}`}
+                            />
+                            <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
+                            <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
@@ -427,6 +419,7 @@ const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
 // --- FOOTER ---
 const Footer = () => {
     const location = useLocation();
+
     if (['/auth', '/order-confirmation'].includes(location.pathname)) return null;
     
     return (
@@ -434,7 +427,7 @@ const Footer = () => {
         <div className="max-w-screen-xl mx-auto px-8 py-16">
             <div className="text-center mb-12">
                 <Link to="/">
-                     <img src="/Neera logo.png" alt="Neera" className="h-32 w-auto mx-auto mb-8" />
+                     <img src={ASSETS.LOGO_URL} alt="Neera" className="h-32 w-auto mx-auto mb-8" />
                 </Link>
                 <nav className="flex justify-center flex-wrap gap-x-6 gap-y-3 text-xs uppercase tracking-widest text-charcoal-gray/80">
                     <Link to="/products" className="hover:text-deep-maroon transition-colors">ALL SAREES</Link>
@@ -485,19 +478,11 @@ function AppContent() {
             const { data: productsData, error: productsError } = await supabase.from('products').select('*');
             if (productsError) { setError(productsError.message); setLoading(false); return; }
 
-            // Apply temporary front-end fixes
-            const updatedProductsData = (productsData || []).map(p => {
-                if (p.name === 'Mangalagiri Dark Blue') {
-                    // This will apply the color change globally.
-                    // The image change is now handled specifically on the ProductPage.
-                    return { ...p, colors: ['Dark Blue', 'Grey'] };
-                }
-                return p;
-            });
-
             const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
-            const productsWithSlugs = (updatedProductsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
+
+            const productsWithSlugs = (productsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
+            
             setProducts(productsWithSlugs);
             setFabrics(fabricsData || []);
             setLoading(false);
@@ -558,3 +543,4 @@ export default function App() {
         </CartProvider>
     );
 }
+

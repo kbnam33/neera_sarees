@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
+import ProductImage from './components/ProductImage.jsx';
 
 // --- ICONS ---
 const ChevronRightIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg> );
@@ -126,16 +127,10 @@ const ProductPage = ({ allProducts, session }) => {
             const foundProduct = allProducts.find(p => p.slug === slug);
 
             if (foundProduct) {
-                let productToShow = { ...foundProduct };
-                // Check if this is the specific product and override its images
-                if (productToShow.name === 'Mangalagiri Dark Blue') {
-                    productToShow.images = ['/new-mangalagiri-dark-blue.png'];
-                }
-
-                setProduct(productToShow);
-                setSelectedColor(productToShow.colors ? productToShow.colors[0] : null);
-                if (productToShow.images && productToShow.images.length > 0) {
-                    setMainImage(productToShow.images[0]);
+                setProduct(foundProduct);
+                setSelectedColor(foundProduct.colors ? foundProduct.colors[0] : null);
+                if (foundProduct.images && foundProduct.images.length > 0) {
+                    setMainImage(foundProduct.images[0]);
                 }
             } else {
                 navigate('/products', { replace: true });
@@ -161,7 +156,7 @@ const ProductPage = ({ allProducts, session }) => {
     }
 
     const relatedProducts = allProducts
-        .filter(p => p.id !== product.id)
+        .filter(p => p.id !== product.id && p.fabric_type === product.fabric_type)
         .slice(0, 4);
 
     return (
@@ -191,7 +186,7 @@ const ProductPage = ({ allProducts, session }) => {
                             </div>
                             <div className="flex gap-4">
                                 {product.images && product.images.map((img, index) => (
-                                    <div key={index} className="w-24 h-32 bg-gray-100 cursor-pointer" onClick={() => setMainImage(img)}>
+                                    <div key={index} className="w-24 h-32 bg-gray-100 cursor-pointer" onMouseEnter={() => setMainImage(img)}>
                                         <img src={img} alt={`${product.name} thumbnail ${index + 1}`} className={`w-full h-full object-cover transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
                                     </div>
                                 ))}
@@ -212,25 +207,27 @@ const ProductPage = ({ allProducts, session }) => {
                                     <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1">FABRIC</dt>
                                     <dd className="text-md text-charcoal-gray/90 capitalize col-span-2">{product.fabric_type}</dd>
                                 </div>
-                                <div className="grid grid-cols-3 gap-4">
-                                    <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1 self-start pt-1">COLOR</dt>
-                                    <dd className="col-span-2">
-                                        <p className="text-md text-charcoal-gray/90 capitalize mb-3">{selectedColor}</p>
-                                        <div className="flex flex-wrap gap-3">
-                                            {product.colors && product.colors.map(color => (
-                                                <button
-                                                    key={color}
-                                                    onClick={() => setSelectedColor(color)}
-                                                    className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border-2 shadow-sm hover:shadow-md focus:outline-none ${selectedColor === color ? 'ring-2 ring-offset-2 ring-deep-maroon border-white' : 'border-gray-300'}`}
-                                                    style={{ backgroundColor: formatCssColor(color) }}
-                                                    title={color}
-                                                >
-                                                    <span className="sr-only">{color}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </dd>
-                                </div>
+                                {product.colors && product.colors.length > 0 && (
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1 self-start pt-1">COLOR</dt>
+                                        <dd className="col-span-2">
+                                            <p className="text-md text-charcoal-gray/90 capitalize mb-3">{selectedColor}</p>
+                                            <div className="flex flex-wrap gap-3">
+                                                {product.colors.map(color => (
+                                                    <button
+                                                        key={color}
+                                                        onClick={() => setSelectedColor(color)}
+                                                        className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border-2 shadow-sm hover:shadow-md focus:outline-none ${selectedColor === color ? 'ring-2 ring-offset-2 ring-deep-maroon border-white' : 'border-gray-300'}`}
+                                                        style={{ backgroundColor: formatCssColor(color) }}
+                                                        title={color}
+                                                    >
+                                                        <span className="sr-only">{color}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                )}
                             </dl>
                         </div>
                         
@@ -255,18 +252,17 @@ const ProductPage = ({ allProducts, session }) => {
                     <p className="text-sm text-gray-500 mt-2">Discover other pieces from our curated collection.</p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
-                    {relatedProducts.map(relProduct => {
-                        const imageUrl = relProduct.images && relProduct.images.length > 0 ? relProduct.images[0] : 'https://placehold.co/900x1200';
-                        return(
-                            <Link to={`/products/${relProduct.fabric_type}/${relProduct.slug}`} key={relProduct.id} className="group text-left">
-                                <div className="overflow-hidden bg-gray-100 mb-3">
-                                    <img src={imageUrl} alt={relProduct.name} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105" />
-                                </div>
-                                <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{relProduct.name}</h3>
-                                <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {relProduct.price.toFixed(2)}</p>
-                            </Link>
-                        );
-                    })}
+                    {relatedProducts.map(relProduct => (
+                         <div key={relProduct.id}>
+                            <ProductImage 
+                                images={relProduct.images}
+                                altText={relProduct.name}
+                                productUrl={`/products/${relProduct.fabric_type}/${relProduct.slug}`}
+                            />
+                            <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{relProduct.name}</h3>
+                            <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {relProduct.price.toFixed(2)}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
