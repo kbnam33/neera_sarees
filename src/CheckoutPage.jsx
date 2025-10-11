@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { useCart } from './CartContext';
@@ -9,6 +9,14 @@ const BackArrowIcon = ({ className = "w-4 h-4" }) => (
     </svg>
 );
 
+const LoadingOverlay = () => (
+    <div className="fixed inset-0 bg-soft-beige bg-opacity-90 z-[200] flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-deep-maroon"></div>
+        <p className="mt-4 text-lg font-serif text-deep-maroon">Placing Your Order...</p>
+    </div>
+);
+
+
 const CheckoutPage = ({ session, onOrderSuccess }) => {
     const { cartItems, clearCart } = useCart();
     const navigate = useNavigate();
@@ -17,10 +25,19 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         address: '',
         city: '',
         state: '',
-        postalCode: ''
+        postalCode: '',
+        email: '',
+        phone: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false); // New state for post-payment loading
+
+    useEffect(() => {
+        if (session) {
+            setShippingInfo(prev => ({ ...prev, email: session.user.email }));
+        }
+    }, [session]);
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
@@ -39,23 +56,103 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         setLoading(true);
         setError(null);
 
+        if (typeof subtotal !== 'number' || subtotal <= 0) {
+            setError("Cannot process an order with an invalid or zero total. Please check your cart.");
+            setLoading(false);
+            return;
+        }
+
         try {
-            const orderPayload = { 
-                user_id: session.user.id,
-                total_price: subtotal,
-                shipping_address: shippingInfo,
-                products: cartItems 
+            const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
+                body: { amount: subtotal },
+            });
+            
+            if (orderError) throw new Error(orderError.message);
+            if (!orderData.id) throw new Error("Failed to create Razorpay order.");
+
+            const razorpayOrderId = orderData.id;
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: orderData.amount,
+                currency: 'INR',
+                name: 'Neera Sarees',
+                description: 'Saree Purchase',
+                image: '/Neera logo.png',
+                order_id: razorpayOrderId,
+                handler: async (response) => {
+                    setIsPlacingOrder(true); // Show loading overlay
+                    try {
+                        const { data: verificationData, error: verificationError } = await supabase.functions.invoke('verify-razorpay-payment', {
+                            body: {
+                                order_id: razorpayOrderId,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                            },
+                        });
+
+                        if (verificationError || verificationData.status !== 'ok') {
+                            throw new Error(verificationError?.message || "Payment verification failed.");
+                        }
+                        
+                        const orderPayload = {
+                            user_id: session.user.id,
+                            total_price: subtotal,
+                            shipping_address: shippingInfo,
+                            products: cartItems,
+                            payment_status: 'paid',
+                            razorpay_order_id: razorpayOrderId,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                        };
+
+                        const { data: dbData, error: dbError } = await supabase
+                            .from('orders')
+                            .insert([orderPayload])
+                            .select();
+
+                        if (dbError) throw dbError;
+                        
+                        clearCart();
+                        onOrderSuccess({ ...orderPayload, id: dbData[0].id, created_at: dbData[0].created_at });
+
+                    } catch (handlerError) {
+                        setError(`An error occurred after payment: ${handlerError.message}`);
+                        setIsPlacingOrder(false); // Hide loading overlay on error
+                    }
+                },
+                prefill: {
+                    name: shippingInfo.name,
+                    email: shippingInfo.email,
+                    contact: shippingInfo.phone,
+                },
+                notes: {
+                    address: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} - ${shippingInfo.postalCode}`,
+                },
+                theme: {
+                    color: '#5B1A32',
+                },
+                config: {
+                    display: {
+                      blocks: {
+                        banks: {
+                          name: 'Pay using Card or UPI',
+                          instruments: [
+                            { method: 'card' },
+                            { method: 'upi' }
+                          ],
+                        },
+                      },
+                      sequence: ['block.banks'],
+                      preferences: {
+                        show_default_blocks: false,
+                      },
+                    },
+                },
             };
 
-            const { data, error } = await supabase
-                .from('orders')
-                .insert([orderPayload])
-                .select();
-
-            if (error) throw error;
-            
-            clearCart();
-            onOrderSuccess({ ...orderPayload, id: data[0].id, created_at: data[0].created_at });
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
 
         } catch (error) {
             setError(error.message);
@@ -63,9 +160,10 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
             setLoading(false);
         }
     };
-
+    
     return (
         <div className="bg-soft-beige min-h-screen pt-16 pb-16 font-sans">
+            {isPlacingOrder && <LoadingOverlay />}
             <div className="max-w-6xl mx-auto px-4 sm:px-8">
                 <button onClick={() => navigate('/cart')} className="text-sm text-charcoal-gray hover:text-deep-maroon mb-8 flex items-center gap-x-2 transition-colors">
                     <BackArrowIcon />
@@ -74,11 +172,19 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
                     {/* Shipping Form */}
                     <div className="lg:order-1">
-                        <h2 className="text-2xl font-serif text-deep-maroon mb-6">Shipping Information</h2>
+                        <h2 className="text-2xl font-serif text-deep-maroon mb-6">Contact & Shipping</h2>
                         <form onSubmit={handleSubmitOrder} className="space-y-5">
+                            <div>
+                                <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL</label>
+                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                            </div>
                             <div>
                                 <label htmlFor="name" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
                                 <input type="text" id="name" value={shippingInfo.name} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                            </div>
+                             <div>
+                                <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
+                                <input type="tel" id="phone" value={shippingInfo.phone} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
                             </div>
                             <div>
                                 <label htmlFor="address" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ADDRESS</label>
@@ -105,7 +211,7 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                                     disabled={loading || cartItems.length === 0}
                                     className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold"
                                 >
-                                    {loading ? 'PLACING ORDER...' : 'PLACE ORDER'}
+                                    {loading ? 'INITIALIZING...' : `PAY ₹${subtotal.toFixed(2)}`}
                                 </button>
                             </div>
                             {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
