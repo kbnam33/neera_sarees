@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from './CartContext';
 import ProductImage from './components/ProductImage.jsx';
 
@@ -159,8 +160,17 @@ const ProductPage = ({ allProducts, session }) => {
         .filter(p => p.id !== product.id && p.fabric_type === product.fabric_type)
         .slice(0, 4);
 
+    // Truncate description for meta tag
+    const metaDescription = product.description 
+        ? (product.description.length > 160 ? product.description.substring(0, 157) + '...' : product.description)
+        : 'Discover beautiful, handwoven sarees from Neera.';
+
     return (
         <div className="bg-soft-beige pt-16">
+            <Helmet>
+                <title>{`${product.name} - Neera`}</title>
+                <meta name="description" content={metaDescription} />
+            </Helmet>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pb-16">
                  <div className="mb-8 font-sans text-xs tracking-widest text-gray-500">
                     <Link to="/products" className="hover:text-black">All Sarees</Link>
@@ -270,3 +280,4 @@ const ProductPage = ({ allProducts, session }) => {
 };
 
 export default ProductPage;
+

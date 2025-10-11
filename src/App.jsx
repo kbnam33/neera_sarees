@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from './supabaseClient';
 import { useCart, CartProvider } from './CartContext';
 import AuthPage from './AuthPage.jsx';
@@ -17,7 +18,7 @@ import TermsAndConditions from './TermsAndConditions.jsx';
 import ShippingPolicy from './ShippingPolicy.jsx';
 import ContactUs from './ContactUs.jsx';
 import ProductImage from './components/ProductImage.jsx';
-import { ASSETS } from './assets.js'; // Import the new assets file
+import { ASSETS } from './assets.js';
 
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
@@ -510,6 +511,10 @@ function AppContent() {
 
     return (
         <div className="font-sans bg-soft-beige text-charcoal-gray">
+             <Helmet>
+                <title>Neera - Handwoven Sarees of Timeless Elegance</title>
+                <meta name="description" content="Discover Neera, a world of pure, handwoven sarees that blend traditional craftsmanship with modern style. Shop our exclusive collection of silk, cotton, and mangalagiri sarees." />
+            </Helmet>
             <Header session={session} fabrics={fabrics} products={products} />
             <main>
                 <Routes>
