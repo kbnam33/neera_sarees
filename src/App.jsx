@@ -8,6 +8,7 @@ import CartPage from './CartPage.jsx';
 import CheckoutPage from './CheckoutPage.jsx';
 import OrderConfirmationPage from './OrderConfirmationPage.jsx';
 import ProfilePage from './ProfilePage.jsx';
+import OrderDetailPage from './OrderDetailPage.jsx'; // Import the new component
 import ProductPage from './ProductPage.jsx';
 import FabricPage from './FabricPage.jsx';
 import SearchPage from './SearchPage.jsx';
@@ -528,6 +529,7 @@ function AppContent() {
                     <Route path="/checkout" element={<CheckoutPage session={session} onOrderSuccess={handleOrderSuccess} />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/profile" element={<ProfilePage session={session} />} />
+                    <Route path="/order/:orderId" element={<OrderDetailPage session={session} />} /> {/* New Route */}
                     <Route path="/order-confirmation" element={<OrderConfirmationPage order={lastOrderDetails} />} />
                     <Route path="/refund-and-exchange-policy" element={<RefundAndExchangePolicy />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -548,4 +550,3 @@ export default function App() {
         </CartProvider>
     );
 }
-
