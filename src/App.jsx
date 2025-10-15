@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from './supabaseClient';
@@ -8,9 +8,10 @@ import CartPage from './CartPage.jsx';
 import CheckoutPage from './CheckoutPage.jsx';
 import OrderConfirmationPage from './OrderConfirmationPage.jsx';
 import ProfilePage from './ProfilePage.jsx';
-import OrderDetailPage from './OrderDetailPage.jsx'; // Import the new component
+import OrderDetailPage from './OrderDetailPage.jsx';
 import ProductPage from './ProductPage.jsx';
 import FabricPage from './FabricPage.jsx';
+import PrintPage from './PrintPage.jsx'; // Import the new PrintPage component
 import SearchPage from './SearchPage.jsx';
 import StoryPage from './StoryPage.jsx';
 import RefundAndExchangePolicy from './RefundAndExchangePolicy.jsx';
@@ -110,8 +111,9 @@ const SearchOverlay = ({ isOpen, onClose }) => {
 };
 
 // --- MOBILE MENU ---
-const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
+const MobileMenu = ({ isOpen, onClose, fabrics, prints, session }) => {
     const [isFabricOpen, setIsFabricOpen] = useState(false);
+    const [isPrintOpen, setIsPrintOpen] = useState(false);
     const navigate = useNavigate();
 
     if (!isOpen) return null;
@@ -129,7 +131,7 @@ const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
                 </button>
             </div>
             <nav className="flex flex-col h-full px-8 pb-8" onClick={(e) => e.stopPropagation()}>
-                <div className="flex-grow space-y-4 text-left">
+                <div className="flex-grow space-y-4 text-left overflow-y-auto">
                     <Link to="/products" className="block text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200" onClick={onClose}>All Sarees</Link>
                     <div>
                         <button onClick={() => setIsFabricOpen(!isFabricOpen)} className="w-full flex justify-between items-center text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200">
@@ -142,6 +144,23 @@ const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
                                     <li key={fabric.id}>
                                         <Link to={`/fabric/${fabric.name}`} className="text-charcoal-gray hover:text-deep-maroon transition-colors text-lg" onClick={onClose}>
                                             {fabric.name}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                     <div>
+                        <button onClick={() => setIsPrintOpen(!isPrintOpen)} className="w-full flex justify-between items-center text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200">
+                           <span>Shop by Print</span>
+                           <ChevronDownIcon className={`w-6 h-6 transition-transform duration-300 ${isPrintOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isPrintOpen && (
+                             <ul className="pl-4 pt-4 space-y-3 animate-fadeInDown" style={{animationDuration: '0.3s'}}>
+                                {prints.map(print => (
+                                    <li key={print.id}>
+                                        <Link to={`/print/${print.name}`} className="text-charcoal-gray hover:text-deep-maroon transition-colors text-lg" onClick={onClose}>
+                                            {print.name}
                                         </Link>
                                     </li>
                                 ))}
@@ -167,22 +186,36 @@ const MobileMenu = ({ isOpen, onClose, fabrics, session }) => {
 
 
 // --- HEADER ---
-const Header = ({ session, fabrics, products }) => {
+const Header = ({ session, fabrics, prints, products }) => {
     const { cartItems } = useCart();
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState(null); // 'fabric' or 'print'
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [hoveredFabric, setHoveredFabric] = useState(null);
+    const [hoveredPrint, setHoveredPrint] = useState(null);
     const [isNavSticky, setIsNavSticky] = useState(false);
     const location = useLocation();
+    const dropdownTimeoutRef = useRef(null);
+
+    const handleDropdownEnter = (type) => {
+        clearTimeout(dropdownTimeoutRef.current);
+        setActiveDropdown(type);
+    };
+
+    const handleDropdownLeave = () => {
+        dropdownTimeoutRef.current = setTimeout(() => {
+            setActiveDropdown(null);
+        }, 200);
+    };
 
     useEffect(() => {
         setIsMobileMenuOpen(false);
+        setActiveDropdown(null);
     }, [location.pathname]);
 
     useEffect(() => {
         const handleScroll = () => {
-            const logoBarHeight = 128; // Corresponds to h-32
+            const logoBarHeight = 128;
             setIsNavSticky(window.scrollY > logoBarHeight);
         };
         window.addEventListener('scroll', handleScroll);
@@ -192,22 +225,39 @@ const Header = ({ session, fabrics, products }) => {
     const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
-    const activeFabric = hoveredFabric ? fabrics.find(f => f.name === hoveredFabric) : null;
+    const latestProduct = useMemo(() => {
+        return products.length > 0 ? [...products].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] : null;
+    }, [products]);
+
+    const displayFabricProducts = useMemo(() => {
+        if (hoveredFabric) {
+            return products.filter(p => p.fabric_type === hoveredFabric).slice(0, 2);
+        }
+        return latestProduct ? [latestProduct] : [];
+    }, [hoveredFabric, products, latestProduct]);
+
+    const displayPrintProducts = useMemo(() => {
+        if (hoveredPrint) {
+            // Assumes a 'print_type' column on your products table
+            return products.filter(p => p.print_type === hoveredPrint).slice(0, 2);
+        }
+        return latestProduct ? [latestProduct] : [];
+    }, [hoveredPrint, products, latestProduct]);
 
     return (
         <>
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} session={session} />
+            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} prints={prints} session={session} />
             
             <header className="relative z-50 h-48">
-                <div className="fixed top-0 left-0 right-0 bg-soft-beige/95 backdrop-blur-sm shadow-sm">
+                <div className="fixed top-0 left-0 right-0 bg-soft-beige shadow-sm">
                     <div className="h-32 flex items-center justify-center transition-transform duration-300" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
                         <Link to="/" className="flex items-center">
                             <img src={ASSETS.LOGO_URL} alt="Neera" className="h-32 w-auto" />
                         </Link>
                     </div>
-                    <div className={`absolute left-0 right-0 bg-soft-beige/95 backdrop-blur-sm transition-all duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-128px)' : 'translateY(0)' }}>
-                        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-16 border-t border-gray-200">
+                    <div className={`absolute left-0 right-0 bg-soft-beige transition-all duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-128px)' : 'translateY(0)' }}>
+                        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-16 border-t border-gray-200 relative">
                             <div className="flex-1 flex justify-start">
                                 <div className="md:hidden">
                                     <button onClick={() => setIsMobileMenuOpen(true)}>
@@ -216,47 +266,76 @@ const Header = ({ session, fabrics, products }) => {
                                 </div>
                                 <nav className="hidden md:flex items-center gap-x-8 font-sans">
                                     <Link to="/products" className={navLinkClasses}>All Sarees</Link>
-                                    <div className="relative" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+                                    <div onMouseEnter={() => handleDropdownEnter('fabric')} onMouseLeave={handleDropdownLeave}>
                                         <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
                                            Shop by Fabric <ChevronDownIcon />
                                         </button>
-                                        {isDropdownOpen && (
-                                            <div className="absolute top-full left-[-200px] pt-5 w-[60vw] max-w-2xl opacity-0 animate-fadeIn" style={{ animationDelay: '50ms' }}>
-                                                <div className="bg-soft-beige text-charcoal-gray border border-gray-200 shadow-2xl p-8 grid grid-cols-2 gap-8">
-                                                    <div className="col-span-1" onMouseLeave={() => setHoveredFabric(null)}>
-                                                        <h3 className="font-serif text-lg mb-4">Fabric Types</h3>
-                                                        <ul className="space-y-3">
-                                                            {fabrics.map(fabric => (
-                                                                <li key={fabric.id} onMouseEnter={() => setHoveredFabric(fabric.name)}>
-                                                                    <Link to={`/fabric/${fabric.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setIsDropdownOpen(false)}>
-                                                                        {fabric.name}
-                                                                    </Link>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                    <div className="col-span-1">
-                                                        {activeFabric && activeFabric.image_url ? (
-                                                            <Link to={`/fabric/${activeFabric.name}`} className="group" onClick={() => setIsDropdownOpen(false)}>
-                                                                <div className="overflow-hidden bg-gray-100 mb-2">
-                                                                    <img src={activeFabric.image_url} alt={activeFabric.name} className="w-full h-full object-cover aspect-[4/5] transition-transform duration-300 group-hover:scale-105" />
-                                                                </div>
-                                                                <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors">{activeFabric.name}</h4>
-                                                                <p className="text-xs text-gray-500">Shop Now</p>
-                                                            </Link>
-                                                        ) : (
-                                                            <div className="flex items-center justify-center h-full text-center text-gray-400 text-sm">
-                                                                <p>Hover over a fabric to see a preview.</p>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                    </div>
+                                    <div onMouseEnter={() => handleDropdownEnter('print')} onMouseLeave={handleDropdownLeave}>
+                                        <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
+                                           Shop by Print <ChevronDownIcon />
+                                        </button>
                                     </div>
                                      <Link to="/story" className={navLinkClasses}>Our Story</Link>
                                 </nav>
                             </div>
+
+                             {activeDropdown && (
+                                <div 
+                                    onMouseEnter={() => handleDropdownEnter(activeDropdown)}
+                                    onMouseLeave={handleDropdownLeave}
+                                    className="absolute top-full left-0 right-0 bg-soft-beige border-b border-gray-200 shadow-lg opacity-0 animate-fadeIn" 
+                                    style={{ animationDelay: '50ms' }}
+                                >
+                                    <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        <div className="md:col-span-1">
+                                            <h3 className="font-serif text-lg mb-4">{activeDropdown === 'fabric' ? 'Fabric Types' : 'Print Types'}</h3>
+                                            <ul className="space-y-3" onMouseLeave={() => { setHoveredFabric(null); setHoveredPrint(null); }}>
+                                                {(activeDropdown === 'fabric' ? fabrics : prints).map(item => (
+                                                    <li key={item.id} onMouseEnter={() => activeDropdown === 'fabric' ? setHoveredFabric(item.name) : setHoveredPrint(item.name)}>
+                                                        <Link to={`/${activeDropdown}/${item.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setActiveDropdown(null)}>
+                                                            {item.name}
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="md:col-span-2 grid grid-cols-2 gap-6">
+                                            {(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts).length > 0 ? (
+                                                <>
+                                                    <Link to={`/products/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].fabric_type}/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].slug}`} className="group" onClick={() => setActiveDropdown(null)}>
+                                                        <div className="overflow-hidden bg-gray-100 mb-2">
+                                                            <img src={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].images?.[0] || 'https://placehold.co/400x500'} alt={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].name} className="w-full h-full object-cover aspect-[4/5] max-h-[450px] transition-transform duration-300 group-hover:scale-105" />
+                                                        </div>
+                                                        <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors truncate">{(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].name}</h4>
+                                                        <p className="text-xs text-gray-500">{!(hoveredFabric || hoveredPrint) ? 'Latest Arrival' : 'Shop Now'}</p>
+                                                    </Link>
+                                                    {(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts).length > 1 ? (
+                                                        <Link to={`/products/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].fabric_type}/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].slug}`} className="group" onClick={() => setActiveDropdown(null)}>
+                                                            <div className="overflow-hidden bg-gray-100 mb-2">
+                                                                <img src={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].images?.[0] || 'https://placehold.co/400x500'} alt={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].name} className="w-full h-full object-cover aspect-[4/5] max-h-[450px] transition-transform duration-300 group-hover:scale-105" />
+                                                            </div>
+                                                            <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors truncate">{(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].name}</h4>
+                                                            <p className="text-xs text-gray-500">Shop Now</p>
+                                                        </Link>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center bg-gray-100 aspect-[4/5] group max-h-[450px]">
+                                                            <Link to={(hoveredFabric || hoveredPrint) ? `/${activeDropdown}/${hoveredFabric || hoveredPrint}` : '/products'} className="text-center" onClick={() => setActiveDropdown(null)}>
+                                                                <p className="text-xs text-gray-500 p-4 group-hover:text-deep-maroon transition-colors">Explore the Collection</p>
+                                                            </Link>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <div className="col-span-2 flex items-center justify-center h-full text-center text-gray-400 text-sm">
+                                                    <p>No products found.</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="flex-1 flex justify-end items-center gap-x-4 sm:gap-x-6">
                                 <button onClick={() => setIsSearchOpen(true)}><SearchIcon /></button>
                                 {session ? (<Link to="/profile"><UserIcon /></Link>) : (<Link to="/auth"><UserIcon /></Link>)}
@@ -311,7 +390,6 @@ const StoryHighlight = () => {
         <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-center">
                 
-                {/* Image */}
                 <div className="lg:col-span-10">
                     <AnimatedUncrop>
                         <div className="p-2 border border-black">
@@ -455,6 +533,7 @@ function AppContent() {
     const [session, setSession] = useState(null);
     const [products, setProducts] = useState([]);
     const [fabrics, setFabrics] = useState([]);
+    const [prints, setPrints] = useState([]); // New state for prints
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const location = useLocation();
@@ -472,21 +551,27 @@ function AppContent() {
     useEffect(() => {
         const fetchData = async () => {
             if (!supabase) {
-                setError("Supabase credentials are not configured. Please check your .env file and restart the server.");
+                setError("Supabase credentials are not configured.");
                 setLoading(false);
                 return;
             }
             setLoading(true);
+            
             const { data: productsData, error: productsError } = await supabase.from('products').select('*');
             if (productsError) { setError(productsError.message); setLoading(false); return; }
 
             const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
 
+            // Fetch prints - assumes you have a 'prints' table
+            const { data: printsData, error: printsError } = await supabase.from('prints').select('*');
+            if (printsError) { console.warn("Could not fetch prints. Create a 'prints' table in Supabase."); }
+
             const productsWithSlugs = (productsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
             
             setProducts(productsWithSlugs);
             setFabrics(fabricsData || []);
+            setPrints(printsData || []); // Set prints state
             setLoading(false);
         };
         fetchData();
@@ -516,12 +601,13 @@ function AppContent() {
                 <title>Neera - Handwoven Sarees of Timeless Elegance</title>
                 <meta name="description" content="Discover Neera, a world of pure, handwoven sarees that blend traditional craftsmanship with modern style. Shop our exclusive collection of silk, cotton, and mangalagiri sarees." />
             </Helmet>
-            <Header session={session} fabrics={fabrics} products={products} />
+            <Header session={session} fabrics={fabrics} prints={prints} products={products} />
             <main>
                 <Routes>
                     <Route path="/" element={<><HomeProductSection title="New Arrivals" products={products.slice(0, 3)} /><StoryHighlight /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
+                    <Route path="/print/:printName" element={<PrintPage allProducts={products} />} /> {/* New route for prints */}
                     <Route path="/products/:fabric_type/:slug" element={<ProductPage allProducts={products} session={session} />} />
                     <Route path="/story" element={<StoryPage />} />
                     <Route path="/search" element={<SearchPage allProducts={products} />} />
@@ -529,7 +615,7 @@ function AppContent() {
                     <Route path="/checkout" element={<CheckoutPage session={session} onOrderSuccess={handleOrderSuccess} />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/profile" element={<ProfilePage session={session} />} />
-                    <Route path="/order/:orderId" element={<OrderDetailPage session={session} />} /> {/* New Route */}
+                    <Route path="/order/:orderId" element={<OrderDetailPage session={session} />} />
                     <Route path="/order-confirmation" element={<OrderConfirmationPage order={lastOrderDetails} />} />
                     <Route path="/refund-and-exchange-policy" element={<RefundAndExchangePolicy />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />

@@ -9,17 +9,23 @@ const BackArrowIcon = ({ className = "w-4 h-4" }) => (
     </svg>
 );
 
-const LoadingOverlay = () => (
+const LoadingOverlay = ({ message }) => (
     <div className="fixed inset-0 bg-soft-beige bg-opacity-90 z-[200] flex flex-col items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-deep-maroon"></div>
-        <p className="mt-4 text-lg font-serif text-deep-maroon">Placing Your Order...</p>
+        <p className="mt-4 text-lg font-serif text-deep-maroon">{message}</p>
     </div>
 );
-
 
 const CheckoutPage = ({ session, onOrderSuccess }) => {
     const { cartItems, clearCart } = useCart();
     const navigate = useNavigate();
+
+    const [phone, setPhone] = useState('');
+    const [otp, setOtp] = useState('');
+    const [otpSent, setOtpSent] = useState(false);
+    const [isVerified, setIsVerified] = useState(false);
+    const [fullName, setFullName] = useState('');
+
     const [shippingInfo, setShippingInfo] = useState({
         name: '',
         address: '',
@@ -27,15 +33,41 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         state: '',
         postalCode: '',
         email: '',
-        phone: '',
     });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [isPlacingOrder, setIsPlacingOrder] = useState(false); // New state for post-payment loading
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+    const [pendingOrderId, setPendingOrderId] = useState(null);
+
+    const [countdown, setCountdown] = useState(60);
+    const [canResend, setCanResend] = useState(false);
+
+    useEffect(() => {
+        let timer;
+        if (otpSent && countdown > 0) {
+            timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+        } else if (countdown === 0 && otpSent) {
+            setCanResend(true);
+        }
+        return () => clearTimeout(timer);
+    }, [otpSent, countdown]);
 
     useEffect(() => {
         if (session) {
-            setShippingInfo(prev => ({ ...prev, email: session.user.email }));
+            setIsVerified(true);
+            const meta = session.user.user_metadata;
+            const userPhone = session.user.phone ? session.user.phone.replace('+91', '') : '';
+            
+            setFullName(meta.full_name || '');
+            setPhone(userPhone);
+
+            setShippingInfo(prev => ({
+                ...prev,
+                name: meta.full_name || '',
+                email: session.user.email || '',
+                ...meta.shipping_address
+            }));
         }
     }, [session]);
 
@@ -45,115 +77,160 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         const { id, value } = e.target;
         setShippingInfo(prev => ({ ...prev, [id]: value }));
     };
+    
+    const handlePhoneSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        if (!fullName.trim()) {
+            setError("Please enter your full name.");
+            return;
+        }
+        if (!/^\d{10}$/.test(phone)) {
+            setError("Please enter a valid 10-digit phone number.");
+            return;
+        }
+        setLoading(true);
+        setCountdown(60);
+        setCanResend(false);
+        const { error } = await supabase.auth.signInWithOtp({
+            phone: `+91${phone}`,
+        });
+        setLoading(false);
+        if (error) {
+            setError(error.message);
+        } else {
+            setOtpSent(true);
+        }
+    };
+
+    const handleOtpSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
+        const { data, error } = await supabase.auth.verifyOtp({
+            phone: `+91${phone}`,
+            token: otp,
+            type: 'sms'
+        });
+        setLoading(false);
+        if (error) {
+            setError(error.message);
+        } else if (data.session) {
+            const { data: { user } } = await supabase.auth.getUser();
+            if ((!user.user_metadata?.full_name || user.user_metadata.full_name === "") && fullName.trim() !== "") {
+                await supabase.auth.updateUser({ data: { full_name: fullName } });
+            }
+            setIsVerified(true);
+        }
+    };
+
+    const handleResendOtp = async () => {
+        setError(null);
+        setLoading(true);
+        setCountdown(60);
+        setCanResend(false);
+        const { error } = await supabase.auth.signInWithOtp({ phone: `+91${phone}` });
+        setLoading(false);
+        if (error) setError(error.message);
+    };
 
     const handleSubmitOrder = async (e) => {
         e.preventDefault();
-        if (!session) {
-            setError("You must be logged in to place an order.");
+        if (!isVerified || !session) {
+            setError("Please verify your phone number to proceed.");
             return;
         }
-
         setLoading(true);
         setError(null);
 
-        if (typeof subtotal !== 'number' || subtotal <= 0) {
-            setError("Cannot process an order with an invalid or zero total. Please check your cart.");
-            setLoading(false);
-            return;
-        }
-
         try {
+            const finalShippingInfo = { ...shippingInfo, name: fullName, phone: phone };
+            
+            await supabase.auth.updateUser({ data: { shipping_address: finalShippingInfo } });
+
+            const orderPayload = {
+                user_id: session.user.id,
+                total_price: subtotal,
+                shipping_address: finalShippingInfo,
+                products: cartItems,
+                payment_status: 'pending',
+            };
+
+            const { data: pendingOrderData, error: pendingOrderError } = await supabase
+                .from('orders')
+                .insert([orderPayload])
+                .select()
+                .single();
+
+            if (pendingOrderError) throw pendingOrderError;
+            setPendingOrderId(pendingOrderData.id);
+
             const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
                 body: { amount: subtotal },
             });
-            
             if (orderError) throw new Error(orderError.message);
             if (!orderData.id) throw new Error("Failed to create Razorpay order.");
-
-            const razorpayOrderId = orderData.id;
 
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: 'INR',
                 name: 'Neera Sarees',
-                description: 'Saree Purchase',
+                description: `Order #${pendingOrderData.id}`,
                 image: '/Neera logo.png',
-                order_id: razorpayOrderId,
+                order_id: orderData.id,
                 handler: async (response) => {
-                    setIsPlacingOrder(true); // Show loading overlay
+                    setIsPlacingOrder(true);
                     try {
-                        const { data: verificationData, error: verificationError } = await supabase.functions.invoke('verify-razorpay-payment', {
+                        await supabase.functions.invoke('verify-razorpay-payment', {
                             body: {
-                                order_id: razorpayOrderId,
+                                order_id: orderData.id,
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_signature: response.razorpay_signature,
                             },
                         });
-
-                        if (verificationError || verificationData.status !== 'ok') {
-                            throw new Error(verificationError?.message || "Payment verification failed.");
-                        }
                         
-                        const orderPayload = {
-                            user_id: session.user.id,
-                            total_price: subtotal,
-                            shipping_address: shippingInfo,
-                            products: cartItems,
-                            payment_status: 'paid',
-                            razorpay_order_id: razorpayOrderId,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature,
-                        };
-
-                        const { data: dbData, error: dbError } = await supabase
+                        const { data: updatedDbData, error: updateDbError } = await supabase
                             .from('orders')
-                            .insert([orderPayload])
-                            .select();
+                            .update({
+                                payment_status: 'paid',
+                                razorpay_order_id: orderData.id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                            })
+                            .eq('id', pendingOrderData.id)
+                            .select()
+                            .single();
 
-                        if (dbError) throw dbError;
+                        if (updateDbError) throw updateDbError;
                         
                         clearCart();
-                        onOrderSuccess({ ...orderPayload, id: dbData[0].id, created_at: dbData[0].created_at });
+                        onOrderSuccess(updatedDbData);
 
                     } catch (handlerError) {
                         setError(`An error occurred after payment: ${handlerError.message}`);
-                        setIsPlacingOrder(false); // Hide loading overlay on error
+                        setIsPlacingOrder(false);
                     }
                 },
                 prefill: {
-                    name: shippingInfo.name,
+                    name: fullName,
                     email: shippingInfo.email,
-                    contact: shippingInfo.phone,
+                    contact: phone,
                 },
                 notes: {
                     address: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} - ${shippingInfo.postalCode}`,
                 },
-                theme: {
-                    color: '#5B1A32',
-                },
+                theme: { color: '#5B1A32' },
                 config: {
                     display: {
-                      blocks: {
-                        banks: {
-                          name: 'Pay using Card or UPI',
-                          instruments: [
-                            { method: 'card' },
-                            { method: 'upi' }
-                          ],
-                        },
-                      },
+                      blocks: { banks: { name: 'Pay using Card or UPI', instruments: [{ method: 'card' }, { method: 'upi' }] } },
                       sequence: ['block.banks'],
-                      preferences: {
-                        show_default_blocks: false,
-                      },
+                      preferences: { show_default_blocks: false },
                     },
                 },
             };
-
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
-
         } catch (error) {
             setError(error.message);
         } finally {
@@ -163,62 +240,100 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     
     return (
         <div className="bg-soft-beige min-h-screen pt-16 pb-16 font-sans">
-            {isPlacingOrder && <LoadingOverlay />}
+            {isPlacingOrder && <LoadingOverlay message="Placing Your Order..." />}
+            {loading && !isPlacingOrder && <LoadingOverlay message="Processing..." />}
+
             <div className="max-w-6xl mx-auto px-4 sm:px-8">
                 <button onClick={() => navigate('/cart')} className="text-sm text-charcoal-gray hover:text-deep-maroon mb-8 flex items-center gap-x-2 transition-colors">
                     <BackArrowIcon />
                     <span>Back to Cart</span>
                 </button>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
-                    {/* Shipping Form */}
                     <div className="lg:order-1">
-                        <h2 className="text-2xl font-serif text-deep-maroon mb-6">Contact & Shipping</h2>
-                        <form onSubmit={handleSubmitOrder} className="space-y-5">
+                        {!isVerified ? (
                             <div>
-                                <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL</label>
-                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                <h2 className="text-2xl font-serif text-deep-maroon mb-2">Contact Information</h2>
+                                <p className="text-sm text-charcoal-gray/80 mb-6">Enter your details to get started.</p>
+                                {!otpSent ? (
+                                    <form onSubmit={handlePhoneSubmit} className="space-y-5">
+                                        <div>
+                                            <label htmlFor="fullName" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
+                                            <input type="text" id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE NUMBER</label>
+                                            <div className="flex">
+                                                <span className="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">+91</span>
+                                                <input type="tel" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-r-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                            </div>
+                                        </div>
+                                        <button type="submit" disabled={loading} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
+                                            {loading ? 'SENDING OTP...' : 'CONTINUE'}
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleOtpSubmit} className="space-y-5">
+                                        <div>
+                                            <label htmlFor="otp" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ONE-TIME PASSWORD</label>
+                                            <input type="text" id="otp" value={otp} onChange={(e) => setOtp(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                        </div>
+                                        <button type="submit" disabled={loading} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
+                                            {loading ? 'VERIFYING...' : 'VERIFY & CONTINUE'}
+                                        </button>
+                                        <div className="text-center text-xs">
+                                            {canResend ? (
+                                                <button type="button" onClick={handleResendOtp} disabled={loading} className="text-deep-maroon hover:underline">Resend OTP</button>
+                                            ) : (
+                                                <p className="text-gray-500">Resend OTP in {countdown}s</p>
+                                            )}
+                                        </div>
+                                    </form>
+                                )}
                             </div>
-                            <div>
-                                <label htmlFor="name" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
-                                <input type="text" id="name" value={shippingInfo.name} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                            </div>
-                             <div>
-                                <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
-                                <input type="tel" id="phone" value={shippingInfo.phone} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                            </div>
-                            <div>
-                                <label htmlFor="address" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ADDRESS</label>
-                                <input type="text" id="address" placeholder="Street address, apartment, etc." value={shippingInfo.address} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div>
-                                    <label htmlFor="city" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">CITY</label>
-                                    <input type="text" id="city" value={shippingInfo.city} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                        ) : (
+                            <form onSubmit={handleSubmitOrder} className="space-y-5">
+                                 <h2 className="text-2xl font-serif text-deep-maroon mb-6">Shipping Address</h2>
+                                 <div>
+                                    <label htmlFor="name" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
+                                    <input type="text" id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
                                 </div>
                                 <div>
-                                    <label htmlFor="state" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">STATE</label>
-                                    <input type="text" id="state" value={shippingInfo.state} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                    <label htmlFor="phoneDisplay" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
+                                    <input type="tel" id="phoneDisplay" value={phone} readOnly className="w-full p-3 bg-gray-100 border border-gray-300 rounded-sm text-gray-500" />
                                 </div>
-                            </div>
-                             <div>
-                                <label htmlFor="postalCode" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">POSTAL CODE</label>
-                                <input type="text" id="postalCode" value={shippingInfo.postalCode} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                            </div>
-
-                            <div className="pt-4">
-                                 <button
-                                    type="submit"
-                                    disabled={loading || cartItems.length === 0}
-                                    className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold"
-                                >
-                                    {loading ? 'INITIALIZING...' : `PAY ₹${subtotal.toFixed(2)}`}
-                                </button>
-                            </div>
-                            {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-                        </form>
+                                <div>
+                                    {/* --- LABEL UPDATED --- */}
+                                    <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL</label>
+                                    <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                </div>
+                                <div>
+                                    <label htmlFor="address" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ADDRESS</label>
+                                    <input type="text" id="address" placeholder="Street address, apartment, etc." value={shippingInfo.address} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label htmlFor="city" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">CITY</label>
+                                        <input type="text" id="city" value={shippingInfo.city} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="state" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">STATE</label>
+                                        <input type="text" id="state" value={shippingInfo.state} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                    </div>
+                                </div>
+                                 <div>
+                                    <label htmlFor="postalCode" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">POSTAL CODE</label>
+                                    <input type="text" id="postalCode" value={shippingInfo.postalCode} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                </div>
+                                <div className="pt-4">
+                                     <button type="submit" disabled={loading || cartItems.length === 0} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
+                                        {loading ? 'INITIALIZING...' : `PROCEED TO PAYMENT`}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
                     </div>
 
-                    {/* Order Summary */}
                     <div className="lg:order-2 bg-white/60 p-8 rounded-lg border border-gray-200 h-fit">
                         <h2 className="text-2xl font-serif text-deep-maroon border-b border-gray-300 pb-4 mb-6">Your Order</h2>
                         <div className="space-y-4">

@@ -17,10 +17,12 @@ const ProfilePage = ({ session }) => {
             }
             setLoading(true);
             try {
+                // --- MODIFICATION: Only select orders where payment_status is 'paid' ---
                 const { data, error } = await supabase
                     .from('orders')
                     .select('*')
                     .eq('user_id', session.user.id)
+                    .eq('payment_status', 'paid') // This is the new filter
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
