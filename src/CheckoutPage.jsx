@@ -19,13 +19,7 @@ const LoadingOverlay = ({ message }) => (
 const CheckoutPage = ({ session, onOrderSuccess }) => {
     const { cartItems, clearCart } = useCart();
     const navigate = useNavigate();
-
-    const [phone, setPhone] = useState('');
-    const [otp, setOtp] = useState('');
-    const [otpSent, setOtpSent] = useState(false);
-    const [isVerified, setIsVerified] = useState(false);
-    const [fullName, setFullName] = useState('');
-
+    
     const [shippingInfo, setShippingInfo] = useState({
         name: '',
         address: '',
@@ -33,43 +27,33 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         state: '',
         postalCode: '',
         email: '',
+        phone: '',
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-    const [pendingOrderId, setPendingOrderId] = useState(null);
-
-    const [countdown, setCountdown] = useState(60);
-    const [canResend, setCanResend] = useState(false);
-
+    
     useEffect(() => {
-        let timer;
-        if (otpSent && countdown > 0) {
-            timer = setTimeout(() => setCountdown(c => c - 1), 1000);
-        } else if (countdown === 0 && otpSent) {
-            setCanResend(true);
+        // If there's no active session, redirect to the login page.
+        // Pass the current location so we can come back here after login.
+        if (!session) {
+            navigate('/auth', { state: { from: { pathname: '/checkout' } } });
+            return;
         }
-        return () => clearTimeout(timer);
-    }, [otpSent, countdown]);
 
-    useEffect(() => {
-        if (session) {
-            setIsVerified(true);
-            const meta = session.user.user_metadata;
-            const userPhone = session.user.phone ? session.user.phone.replace('+91', '') : '';
-            
-            setFullName(meta.full_name || '');
-            setPhone(userPhone);
-
-            setShippingInfo(prev => ({
-                ...prev,
-                name: meta.full_name || '',
-                email: session.user.email || '',
-                ...meta.shipping_address
-            }));
-        }
-    }, [session]);
+        // Pre-fill form with user data if available
+        const meta = session.user.user_metadata;
+        const userPhone = session.user.phone ? session.user.phone.replace('+91', '') : '';
+        
+        setShippingInfo(prev => ({
+            ...prev,
+            name: meta.full_name || '',
+            email: session.user.email || '',
+            phone: userPhone,
+            ...meta.shipping_address // Load saved shipping address if it exists
+        }));
+    }, [session, navigate]);
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
@@ -77,81 +61,24 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         const { id, value } = e.target;
         setShippingInfo(prev => ({ ...prev, [id]: value }));
     };
-    
-    const handlePhoneSubmit = async (e) => {
-        e.preventDefault();
-        setError(null);
-        if (!fullName.trim()) {
-            setError("Please enter your full name.");
-            return;
-        }
-        if (!/^\d{10}$/.test(phone)) {
-            setError("Please enter a valid 10-digit phone number.");
-            return;
-        }
-        setLoading(true);
-        setCountdown(60);
-        setCanResend(false);
-        const { error } = await supabase.auth.signInWithOtp({
-            phone: `+91${phone}`,
-        });
-        setLoading(false);
-        if (error) {
-            setError(error.message);
-        } else {
-            setOtpSent(true);
-        }
-    };
-
-    const handleOtpSubmit = async (e) => {
-        e.preventDefault();
-        setError(null);
-        setLoading(true);
-        const { data, error } = await supabase.auth.verifyOtp({
-            phone: `+91${phone}`,
-            token: otp,
-            type: 'sms'
-        });
-        setLoading(false);
-        if (error) {
-            setError(error.message);
-        } else if (data.session) {
-            const { data: { user } } = await supabase.auth.getUser();
-            if ((!user.user_metadata?.full_name || user.user_metadata.full_name === "") && fullName.trim() !== "") {
-                await supabase.auth.updateUser({ data: { full_name: fullName } });
-            }
-            setIsVerified(true);
-        }
-    };
-
-    const handleResendOtp = async () => {
-        setError(null);
-        setLoading(true);
-        setCountdown(60);
-        setCanResend(false);
-        const { error } = await supabase.auth.signInWithOtp({ phone: `+91${phone}` });
-        setLoading(false);
-        if (error) setError(error.message);
-    };
 
     const handleSubmitOrder = async (e) => {
         e.preventDefault();
-        if (!isVerified || !session) {
-            setError("Please verify your phone number to proceed.");
+        if (!session) {
+            setError("You must be logged in to place an order.");
             return;
         }
         setLoading(true);
         setError(null);
 
         try {
-            const finalShippingInfo = { ...shippingInfo, name: fullName, phone: phone };
-            
-            await supabase.auth.updateUser({ data: { shipping_address: finalShippingInfo } });
+            // Save the latest shipping info to the user's metadata for future checkouts
+            await supabase.auth.updateUser({ data: { shipping_address: shippingInfo } });
 
             const orderPayload = {
                 user_id: session.user.id,
                 total_price: subtotal,
-                shipping_address: finalShippingInfo,
+                shipping_address: shippingInfo,
                 products: cartItems,
                 payment_status: 'pending',
             };
@@ -163,7 +90,6 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                 .single();
 
             if (pendingOrderError) throw pendingOrderError;
-            setPendingOrderId(pendingOrderData.id);
 
             const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
                 body: { amount: subtotal },
@@ -213,9 +139,9 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                     }
                 },
                 prefill: {
-                    name: fullName,
+                    name: shippingInfo.name,
                     email: shippingInfo.email,
-                    contact: phone,
+                    contact: shippingInfo.phone,
                 },
                 notes: {
                     address: `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} - ${shippingInfo.postalCode}`,
@@ -238,6 +164,11 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         }
     };
     
+    // Render nothing or a loader while redirecting
+    if (!session) {
+        return <div className="bg-soft-beige min-h-screen flex items-center justify-center font-serif text-deep-maroon text-lg">Redirecting to login...</div>;
+    }
+    
     return (
         <div className="bg-soft-beige min-h-screen pt-16 pb-16 font-sans">
             {isPlacingOrder && <LoadingOverlay message="Placing Your Order..." />}
@@ -250,87 +181,44 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                 </button>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
                     <div className="lg:order-1">
-                        {!isVerified ? (
-                            <div>
-                                <h2 className="text-2xl font-serif text-deep-maroon mb-2">Contact Information</h2>
-                                <p className="text-sm text-charcoal-gray/80 mb-6">Enter your details to get started.</p>
-                                {!otpSent ? (
-                                    <form onSubmit={handlePhoneSubmit} className="space-y-5">
-                                        <div>
-                                            <label htmlFor="fullName" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
-                                            <input type="text" id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE NUMBER</label>
-                                            <div className="flex">
-                                                <span className="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">+91</span>
-                                                <input type="tel" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-r-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                            </div>
-                                        </div>
-                                        <button type="submit" disabled={loading} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
-                                            {loading ? 'SENDING OTP...' : 'CONTINUE'}
-                                        </button>
-                                    </form>
-                                ) : (
-                                    <form onSubmit={handleOtpSubmit} className="space-y-5">
-                                        <div>
-                                            <label htmlFor="otp" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ONE-TIME PASSWORD</label>
-                                            <input type="text" id="otp" value={otp} onChange={(e) => setOtp(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                        </div>
-                                        <button type="submit" disabled={loading} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
-                                            {loading ? 'VERIFYING...' : 'VERIFY & CONTINUE'}
-                                        </button>
-                                        <div className="text-center text-xs">
-                                            {canResend ? (
-                                                <button type="button" onClick={handleResendOtp} disabled={loading} className="text-deep-maroon hover:underline">Resend OTP</button>
-                                            ) : (
-                                                <p className="text-gray-500">Resend OTP in {countdown}s</p>
-                                            )}
-                                        </div>
-                                    </form>
-                                )}
+                        <form onSubmit={handleSubmitOrder} className="space-y-5">
+                             <h2 className="text-2xl font-serif text-deep-maroon mb-6">Shipping Address</h2>
+                             <div>
+                                <label htmlFor="name" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
+                                <input type="text" id="name" value={shippingInfo.name} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
                             </div>
-                        ) : (
-                            <form onSubmit={handleSubmitOrder} className="space-y-5">
-                                 <h2 className="text-2xl font-serif text-deep-maroon mb-6">Shipping Address</h2>
-                                 <div>
-                                    <label htmlFor="name" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
-                                    <input type="text" id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                            <div>
+                                <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
+                                <input type="tel" id="phone" value={shippingInfo.phone} readOnly className="w-full p-3 bg-gray-100 border border-gray-300 rounded-sm text-gray-500 cursor-not-allowed" />
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL FOR ORDER CONFIRMATION</label>
+                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                            </div>
+                            <div>
+                                <label htmlFor="address" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ADDRESS</label>
+                                <input type="text" id="address" placeholder="Street address, apartment, etc." value={shippingInfo.address} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label htmlFor="city" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">CITY</label>
+                                    <input type="text" id="city" value={shippingInfo.city} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
                                 </div>
                                 <div>
-                                    <label htmlFor="phoneDisplay" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
-                                    <input type="tel" id="phoneDisplay" value={phone} readOnly className="w-full p-3 bg-gray-100 border border-gray-300 rounded-sm text-gray-500" />
+                                    <label htmlFor="state" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">STATE</label>
+                                    <input type="text" id="state" value={shippingInfo.state} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
                                 </div>
-                                <div>
-                                    {/* --- LABEL UPDATED --- */}
-                                    <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL</label>
-                                    <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                </div>
-                                <div>
-                                    <label htmlFor="address" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ADDRESS</label>
-                                    <input type="text" id="address" placeholder="Street address, apartment, etc." value={shippingInfo.address} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <div>
-                                        <label htmlFor="city" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">CITY</label>
-                                        <input type="text" id="city" value={shippingInfo.city} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="state" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">STATE</label>
-                                        <input type="text" id="state" value={shippingInfo.state} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                    </div>
-                                </div>
-                                 <div>
-                                    <label htmlFor="postalCode" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">POSTAL CODE</label>
-                                    <input type="text" id="postalCode" value={shippingInfo.postalCode} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
-                                </div>
-                                <div className="pt-4">
-                                     <button type="submit" disabled={loading || cartItems.length === 0} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
-                                        {loading ? 'INITIALIZING...' : `PROCEED TO PAYMENT`}
-                                    </button>
-                                </div>
-                            </form>
-                        )}
+                            </div>
+                             <div>
+                                <label htmlFor="postalCode" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">POSTAL CODE</label>
+                                <input type="text" id="postalCode" value={shippingInfo.postalCode} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                            </div>
+                            <div className="pt-4">
+                                 <button type="submit" disabled={loading || cartItems.length === 0} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
+                                    {loading ? 'INITIALIZING...' : `PROCEED TO PAYMENT`}
+                                </button>
+                            </div>
+                        </form>
                         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
                     </div>
 
