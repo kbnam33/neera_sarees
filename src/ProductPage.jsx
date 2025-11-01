@@ -77,11 +77,26 @@ const ProductImageCarousel = ({ images, productName }) => {
 // --- PRODUCT INFO TABS ---
 const ProductInfoTabs = ({product}) => {
     const [activeTab, setActiveTab] = useState('DETAILS');
+
+    // --- MODIFICATION: Tabs now read from product properties with fallbacks ---
     const tabs = {
-        DETAILS: { title: 'Details & Craftsmanship', text: product.description || 'This exquisite piece is handcrafted by master artisans, featuring traditional weaving techniques passed down through generations. Made from the finest silk, its unique texture and drape are a testament to its quality. Kindly note, product tones may vary slightly due to the natural dyeing process and lighting.' },
-        CARE: { title: 'Care Instructions', text: 'To preserve the beauty of your saree, we recommend dry cleaning only. Store in a cool, dry place away from direct sunlight. Fold carefully and avoid using metal hangers to maintain the integrity of the fabric.' },
-        SHIPPING: { title: 'Shipping & Returns', text: 'Enjoy complimentary shipping within India. For international orders, charges and duties may apply. We accept returns for unused items within 14 days of receipt. Please refer to our detailed policy for more information.' }
+        DETAILS: { 
+            title: 'Details & Craftsmanship', 
+            // This reads from product.description. If it's empty, it shows the default text.
+            text: product.description || 'This exquisite piece is handcrafted by master artisans, featuring traditional weaving techniques passed down through generations. Made from the finest silk, its unique texture and drape are a testament to its quality. Kindly note, product tones may vary slightly due to the natural dyeing process and lighting.' 
+        },
+        CARE: { 
+            title: 'Care Instructions', 
+            // This reads from product.care_instructions. If it's empty, it shows the default text.
+            text: product.care_instructions || 'To preserve the beauty of your saree, we recommend dry cleaning only. Store in a cool, dry place away from direct sunlight. Fold carefully and avoid using metal hangers to maintain the integrity of the fabric.' 
+        },
+        SHIPPING: { 
+            title: 'Shipping & Returns', 
+            // This reads from product.shipping_returns. If it's empty, it shows the default text.
+            text: product.shipping_returns || 'Enjoy complimentary shipping within India. For international orders, charges and duties may apply. We only offer exchanges for products that are defective or damaged upon receipt. Please refer to our detailed Refund and Exchange Policy for more information.'
+        }
     };
+    // --- END MODIFICATION ---
 
     return (
         <div className="mt-16">
@@ -206,9 +221,14 @@ const ProductPage = ({ allProducts, session }) => {
                      {/* --- Details Section --- */}
                     <div className="w-full lg:sticky top-28 self-start">
                         <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight">{product.name}</h1>
+                        
+                        {/* --- MODIFICATION: Using product.short_description --- */}
                         <p className="text-md text-charcoal-gray/80 mt-3 mb-6 max-w-prose">
-                            A timeless piece of artistry, this saree is handwoven with passion and precision, embodying both tradition and modernity.
+                            {/* This now reads from the database FIRST, then shows the fallback text */}
+                            {product.short_description || 'A timeless piece of artistry, this saree is handwoven with passion and precision, embodying both tradition and modernity.'}
                         </p>
+                        {/* --- END MODIFICATION --- */}
+
                         <p className="text-2xl text-charcoal-gray mb-10 font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
                         
                         <div className="border-y border-gray-200 py-8">
@@ -251,6 +271,7 @@ const ProductPage = ({ allProducts, session }) => {
                             </div>
                         </div>
 
+                        {/* This component will now pass the full product object to the tabs */}
                         <ProductInfoTabs product={product} />
                     </div>
                 </div>
@@ -280,4 +301,3 @@ const ProductPage = ({ allProducts, session }) => {
 };
 
 export default ProductPage;
-
