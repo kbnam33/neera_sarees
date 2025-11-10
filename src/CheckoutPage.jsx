@@ -170,7 +170,8 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     }
     
     return (
-        <div className="bg-soft-beige min-h-screen pt-16 pb-16 font-sans">
+        // FIX: Changed pt-16 pb-16 to py-16
+        <div className="bg-soft-beige min-h-screen py-16 font-sans">
             {isPlacingOrder && <LoadingOverlay message="Placing Your Order..." />}
             {loading && !isPlacingOrder && <LoadingOverlay message="Processing..." />}
 

@@ -51,7 +51,8 @@ const StoryPage = () => {
     return (
         <div className="bg-soft-beige text-charcoal-gray font-sans overflow-x-hidden">
             <AnimatedSection>
-                <section className="h-screen flex items-center justify-center pt-20">
+                {/* Fill viewport below the currently visible header height */}
+                <section className="flex items-center justify-center" style={{ height: 'calc(100vh - var(--header-visible-height, 192px))' }}>
                     <div className="text-center p-4">
                         <h1 className="text-6xl md:text-8xl font-serif text-deep-maroon leading-none">
                             Purity in Every Thread.
@@ -127,4 +128,3 @@ const StoryPage = () => {
 };
 
 export default StoryPage;
-

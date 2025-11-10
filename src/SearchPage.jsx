@@ -38,7 +38,8 @@ const SearchPage = ({ allProducts }) => {
     }, [query, allProducts]);
 
     return (
-        <div className="bg-soft-beige pt-32 pb-20 min-h-screen">
+        // FIX: Changed pt-32 to pt-12 for consistent spacing
+        <div className="bg-soft-beige pt-12 pb-20 min-h-screen">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-8 mb-12">
                     <h1 className="text-4xl font-serif text-deep-maroon">Search Results</h1>
@@ -75,4 +76,3 @@ const SearchPage = ({ allProducts }) => {
 };
 
 export default SearchPage;
-

@@ -181,7 +181,8 @@ const ProductPage = ({ allProducts, session }) => {
         : 'Discover beautiful, handwoven sarees from Neera.';
 
     return (
-        <div className="bg-soft-beige pt-16">
+        // FIX: Removed pt-16, added pt-8 for breadcrumb spacing
+        <div className="bg-soft-beige pt-8">
             <Helmet>
                 <title>{`${product.name} - Neera`}</title>
                 <meta name="description" content={metaDescription} />

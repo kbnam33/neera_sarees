@@ -12,7 +12,8 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="bg-soft-beige min-h-screen pt-16 pb-24 font-sans">
+        // FIX: Changed pt-16 to pt-12 for consistent spacing
+        <div className="bg-soft-beige min-h-screen pt-12 pb-24 font-sans">
             <div className="max-w-5xl mx-auto px-4 sm:px-8">
                 {/* --- Header Section --- */}
                 <div className="text-center mb-16 md:mb-20">

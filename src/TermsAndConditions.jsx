@@ -2,7 +2,8 @@ import React from 'react';
 
 const TermsAndConditions = () => {
     return (
-        <div className="bg-soft-beige min-h-screen pt-16 pb-16 font-sans">
+        // FIX: Changed pt-16 to pt-12 for consistent spacing
+        <div className="bg-soft-beige min-h-screen pt-12 pb-16 font-sans">
             <div className="max-w-4xl mx-auto px-4 sm:px-8">
                 <h1 className="text-3xl font-serif text-center text-deep-maroon mb-12">Terms and Conditions</h1>
                 <div className="space-y-8 text-charcoal-gray">

@@ -17,7 +17,8 @@ const CartPage = ({ session }) => {
     };
 
     return (
-        <div className="bg-white min-h-screen pt-16 pb-16">
+        // FIX: Changed pt-16 to py-16 for consistent spacing
+        <div className="bg-white min-h-screen py-16">
             <div className="max-w-4xl mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-8 mb-8">
                     <h1 className="text-4xl font-serif text-deep-maroon">Your Bag</h1>

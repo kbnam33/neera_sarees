@@ -46,7 +46,8 @@ const ProfilePage = ({ session }) => {
     }
 
     return (
-        <div className="bg-soft-beige min-h-screen pt-32 pb-24 font-sans">
+        // FIX: Changed pt-32 to pt-12 for consistent spacing
+        <div className="bg-soft-beige min-h-screen pt-12 pb-24 font-sans">
             <div className="max-w-screen-lg mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-10 mb-16">
                     <h1 className="text-5xl font-serif text-deep-maroon">Order History</h1>

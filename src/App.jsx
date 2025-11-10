@@ -194,8 +194,10 @@ const Header = ({ session, fabrics, prints, products }) => {
     const [hoveredFabric, setHoveredFabric] = useState(null);
     const [hoveredPrint, setHoveredPrint] = useState(null);
     const [isNavSticky, setIsNavSticky] = useState(false);
+    const [navBarHeight, setNavBarHeight] = useState(64);
     const location = useLocation();
     const dropdownTimeoutRef = useRef(null);
+    const navBarRef = useRef(null);
 
     const handleDropdownEnter = (type) => {
         clearTimeout(dropdownTimeoutRef.current);
@@ -221,6 +223,20 @@ const Header = ({ session, fabrics, prints, products }) => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Dynamically set the visible header height so main content starts exactly below it
+    useEffect(() => {
+        const updateHeaderOffset = () => {
+            const logoBarHeight = 128; // matches h-32
+            const navHeight = navBarRef.current ? navBarRef.current.offsetHeight : navBarHeight;
+            setNavBarHeight(navHeight || 64);
+            const visibleHeight = isNavSticky ? navHeight : logoBarHeight + navHeight;
+            document.documentElement.style.setProperty('--header-visible-height', `${visibleHeight}px`);
+        };
+        updateHeaderOffset();
+        window.addEventListener('resize', updateHeaderOffset);
+        return () => window.removeEventListener('resize', updateHeaderOffset);
+    }, [isNavSticky, navBarHeight]);
 
     const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
@@ -249,14 +265,15 @@ const Header = ({ session, fabrics, prints, products }) => {
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} prints={prints} session={session} />
             
-            <header className="relative z-50 h-48">
-                <div className="fixed top-0 left-0 right-0 bg-soft-beige shadow-sm">
-                    <div className="h-32 flex items-center justify-center transition-transform duration-300" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
+            {/* FIX: Removed h-48 class. The header no longer takes up layout space. */}
+            <header className="relative z-50">
+                <div className="fixed top-0 left-0 right-0 bg-soft-beige shadow-sm" style={{ height: `var(--header-visible-height, ${128 + navBarHeight}px)`, transition: 'height 300ms ease-in-out', willChange: 'height' }}>
+                    <div className="h-32 flex items-center justify-center transition-transform duration-300 ease-in-out will-change-transform" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
                         <Link to="/" className="flex items-center">
                             <img src={ASSETS.LOGO_URL} alt="Neera" className="h-32 w-auto" />
                         </Link>
                     </div>
-                    <div className={`absolute left-0 right-0 bg-soft-beige transition-all duration-300 ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-128px)' : 'translateY(0)' }}>
+                    <div ref={navBarRef} className={`absolute left-0 right-0 bg-soft-beige transition-all duration-300 ease-in-out will-change-transform ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-128px)' : 'translateY(0)' }}>
                         <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-16 border-t border-gray-200 relative">
                             <div className="flex-1 flex justify-start">
                                 <div className="md:hidden">
@@ -471,7 +488,7 @@ const CustomSortDropdown = ({ sortOption, setSortOption }) => {
 // --- ALL PRODUCTS GRID ---
 const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
     return (
-        <div className="bg-soft-beige pt-16 pb-20">
+        <div className="bg-soft-beige pt-12 pb-20">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-200 pb-4 gap-4">
                     <h1 className="text-3xl font-serif text-deep-maroon">All Sarees</h1>
@@ -602,7 +619,8 @@ function AppContent() {
                 <meta name="description" content="Discover Neera, a world of pure, handwoven sarees that blend traditional craftsmanship with modern style. Shop our exclusive collection of silk, cotton, and mangalagiri sarees." />
             </Helmet>
             <Header session={session} fabrics={fabrics} prints={prints} products={products} />
-            <main>
+            {/* Use dynamic header height so content starts immediately below header */}
+            <main style={{ paddingTop: 'var(--header-visible-height, 192px)', transition: 'padding-top 300ms ease-in-out' }}>
                 <Routes>
                     <Route path="/" element={<><HomeProductSection title="New Arrivals" products={products.slice(0, 3)} /><StoryHighlight /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />

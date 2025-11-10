@@ -65,7 +65,8 @@ const OrderDetailPage = ({ session }) => {
     const { shipping_address: address, products, total_price, created_at } = order;
     
     return (
-        <div className="bg-soft-beige min-h-screen py-24 px-4 sm:px-8 font-sans">
+        // FIX: Changed py-24 to pt-12 pb-24 for consistent spacing
+        <div className="bg-soft-beige min-h-screen pt-12 pb-24 px-4 sm:px-8 font-sans">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="md:flex justify-between items-center mb-16">
