@@ -1,0 +1,44 @@
+Before we move forward, I have created files named @user_preference.md @learnings.md , where you have to write you learnings in each of the files in markdown format based on the following instructions either after completeing a list of to-do tasks or upon my explicit instruction to do it. And when you are about to update these files by yourself upon completeing a to do list, you will still ask my permission whether to update or not.
+
+Instructions:
+
+Use all relevant ways to communicate (hierarchy) of the lessons that you are entering.
+ -> Update learnings in @learnings.md based on the following:
+
+1) context snapshot:
+
+- What was the context of the iteration / each tasks in the list?
+- Purpose and who (user persona) was the center of solving this problem and what was the solution?
+- What these tell about the use case?
+
+2) goal(s) & success criteria:
+
+- explicit primary goal(s) and how success was measured or would be measured (metrics / acceptance criteria).
+
+3) decisions & rationale
+
+- each decision / important decision, why it was chosen, alternatives considered, tradeoffs.
+
+4) constraints & surprises
+
+- known constraints (time, performance, device targets), unexpected blockers and how handled.
+
+5) outcome & metrics
+
+- observable results (load time delta, feature working / broken, user feedback, test pass/fail counts). If no precise metric, approximate or note “not measured”.
+
+6) UX/Feature reasoning
+
+- how the visible UI/UX solves specific user problems. Map features → problems → impact.
+- Does any part of the UI/UX is for additional experience rather than core problem solving and what they do more than just solving the problems?
+
+
+-> Update the learnings in @user_preference.md based on the below:
+
+-- User preference learnings--
+what did I(You as the agent) learn? (insights)
+
+concise lessons about process, design, and product decisions (behavioral or process patterns).
+- learnings regarding my preferences and approach to building a project like this(as the input user, who is interacting with curosr to build the project - Instruction: Don't mention whatever is in this brecquets "()" everytime you enter your learnings as this is just for instructions purpose), suggestions for effective approach(if required), strengths of my approach and my potential drawbacks.
+
+You will have to remember what exactly you have to do everytime you are asked to enter these files. 

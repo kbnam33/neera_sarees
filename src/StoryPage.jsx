@@ -66,7 +66,7 @@ const StoryPage = () => {
                     <div className="max-w-screen-xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         <div>
                             <div className="p-2 border border-charcoal-gray-dark shadow-2xl">
-                                 <img src={ASSETS.THEME_IMAGE_URL} alt="A rich, textured saree in a traditional setting" className="w-full h-full object-cover" />
+                                 <img src={ASSETS.THEME_IMAGE_URL} alt="A rich, textured saree in a traditional setting" loading="lazy" decoding="async" width={1600} height={1000} className="w-full h-full object-cover" />
                             </div>
                         </div>
                         <div className="flex flex-col justify-center h-full">
@@ -94,7 +94,7 @@ const StoryPage = () => {
                         </div>
                    </div>
                    <div className="w-full mt-16">
-                       <img src={ASSETS.FLYING_SAREE_URL} alt="A flowing saree symbolizing grace" className="w-full h-auto object-cover" />
+                       <img src={ASSETS.FLYING_SAREE_URL} alt="A flowing saree symbolizing grace" loading="lazy" decoding="async" width={1600} height={900} className="w-full h-auto object-cover" />
                    </div>
                </section>
             </AnimatedSection>
@@ -110,7 +110,7 @@ const StoryPage = () => {
                          </div>
                     </div>
                     <div className="w-full mt-16">
-                        <img src={ASSETS.ORANGE_MANGALAGIRI_URL} alt="A woman wearing a Neera saree with confidence" className="w-full h-auto object-cover" />
+                        <img src={ASSETS.ORANGE_MANGALAGIRI_URL} alt="A woman wearing a Neera saree with confidence" loading="lazy" decoding="async" width={1600} height={900} className="w-full h-auto object-cover" />
                     </div>
                 </section>
             </AnimatedSection>

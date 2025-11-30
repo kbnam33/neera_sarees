@@ -232,7 +232,7 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                                 <div key={item.id} className="flex justify-between items-center text-sm">
                                     <div className="flex items-center gap-x-4">
                                         <div className="w-16 h-20 bg-gray-100 rounded-md overflow-hidden relative">
-                                            <img src={imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                                            <img src={imageUrl} alt={item.name} loading="lazy" decoding="async" width={64} height={80} className="w-full h-full object-cover" />
                                             <span className="absolute -top-2 -right-2 bg-charcoal-gray text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">{item.quantity}</span>
                                         </div>
                                         <p className="text-charcoal-gray flex-1">{item.name}</p>

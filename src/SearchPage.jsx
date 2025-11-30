@@ -54,7 +54,7 @@ const SearchPage = ({ allProducts }) => {
                             return (
                                  <Link to={`/products/${product.fabric_type}/${product.slug}`} key={product.id} className="group text-left">
                                     <div className="overflow-hidden mb-4 bg-gray-100">
-                                        <img src={imageUrl} alt={product.name} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105" />
+                                        <img src={imageUrl} alt={product.name} loading="lazy" decoding="async" width={900} height={1200} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 transform scale-[1.12] group-hover:scale-[1.16]" />
                                     </div>
                                     <h3 className="text-md font-serif text-charcoal-gray">{product.name}</h3>
                                     <p className="text-md text-deep-maroon font-sans">₹ {product.price.toFixed(2)}</p>

@@ -98,7 +98,7 @@ const OrderDetailPage = ({ session }) => {
                                 <div key={item.id} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center border-b border-gray-200 pb-8 last:border-b-0 last:pb-0">
                                     <Link to={`/products/${item.fabric_type}/${item.slug}`} className="group">
                                         <div className="w-full md:w-32 h-48 bg-gray-100 rounded-md overflow-hidden">
-                                            <img src={imageUrl} alt={item.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                                            <img src={imageUrl} alt={item.name} loading="lazy" decoding="async" width={128} height={192} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                                         </div>
                                     </Link>
                                     <div className="md:col-span-2">

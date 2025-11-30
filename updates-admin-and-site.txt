@@ -1,0 +1,52 @@
+Neera Home Experience + Admin Curation Integration — 2025-11-30
+
+Summary of site changes in this iteration
+- Hero redesign (top section):
+  - Switched to cinematic full-bleed hero with background image: /public/orange-saree-display.png
+  - Lightened vignette for better legibility
+  - Content repositioned to bottom-left on desktop; bottom-centered on mobile
+  - Enforced full viewport height and width without horizontal overflow
+  - Removed “Our Story” CTA from the hero
+- Weavers section:
+  - Anchored overlay content to the bottom for consistent presentation
+- Classic hero:
+  - Restored previous three-column “model + center content + model” hero as the 3rd section on the home page
+- Product grids:
+  - Expanded container width (max-w to ~1600px equivalent) for a more premium layout
+  - Updated grids to 4 columns on large screens for both “New Arrivals” and “All Sarees”
+- New Arrivals count:
+  - Home “New Arrivals” now shows 4 items to match the 4-column layout
+- New Arrivals curation logic (site):
+  - Implemented curated list selection with a fallback to newest
+  - Prefers items where products.is_home_featured = true, ordered by products.home_featured_rank asc, limited to 4
+  - If none are featured, falls back to top 4 by created_at desc
+
+Supabase updates required (run once)
+- Add admin-controllable columns to products:
+  - is_home_featured boolean not null default false
+  - home_featured_rank smallint (optional ordering; lower = higher priority)
+- Suggested SQL:
+  - alter table public.products
+      add column if not exists is_home_featured boolean not null default false,
+      add column if not exists home_featured_rank smallint;
+  - create index if not exists products_is_home_featured_rank_idx
+      on public.products (is_home_featured, home_featured_rank);
+- RLS policy (recommended pattern):
+  - Keep SELECT readable as per your current policy
+  - Allow UPDATE on the two columns only for users listed in public.admins (user_id UUID referencing auth.users)
+
+Admin tool updates to implement
+- Product editing UI:
+  - Add “Show on Home New Arrivals” toggle (maps to products.is_home_featured)
+  - Add “Home New Arrivals Rank” numeric input (maps to products.home_featured_rank, recommended range 1–4)
+  - Validation: when the toggle is ON, require a rank; optionally prevent duplicate ranks 1–4
+- Optional admin UX:
+  - Add a “Home New Arrivals” management view to drag/sort the 4 slots and toggle inclusion
+  - Provide a quick filter for featured items
+- API/DB writes:
+  - On save, update products.is_home_featured and products.home_featured_rank for the chosen products
+
+Notes
+- The website automatically prefers the admin-selected products; no further site changes are needed after the above Supabase schema + admin UI updates.
+
+

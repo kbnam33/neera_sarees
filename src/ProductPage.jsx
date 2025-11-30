@@ -17,9 +17,12 @@ const formatCssColor = (colorName) => {
 // --- SWIPEABLE IMAGE CAROUSEL FOR MOBILE ---
 const ProductImageCarousel = ({ images, productName }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [shouldLoad, setShouldLoad] = useState(false);
+    const prefetchedRef = useRef(new Set());
     const touchStartX = useRef(0);
     const touchEndX = useRef(0);
     const sliderRef = useRef(null);
+    const containerRef = useRef(null);
 
     const handleTouchStart = (e) => {
         touchStartX.current = e.targetTouches[0].clientX;
@@ -45,8 +48,37 @@ const ProductImageCarousel = ({ images, productName }) => {
         }
     }, [currentIndex]);
 
+    const prefetch = (idx) => {
+        if (!images || !images[idx]) return;
+        const url = images[idx];
+        if (prefetchedRef.current.has(url)) return;
+        prefetchedRef.current.add(url);
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+    };
+
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setShouldLoad(true);
+                    // Preload the first couple of frames for snappy swipes
+                    prefetch(0);
+                    prefetch(1);
+                    prefetch(2);
+                    io.disconnect();
+                }
+            });
+        }, { rootMargin: '600px 0px' });
+        io.observe(el);
+        return () => io.disconnect();
+    }, []);
+
     return (
-        <div className="relative overflow-hidden w-full bg-gray-100">
+        <div ref={containerRef} className="relative overflow-hidden w-full bg-gray-100">
             <div
                 ref={sliderRef}
                 className="flex transition-transform duration-300 ease-in-out"
@@ -56,7 +88,17 @@ const ProductImageCarousel = ({ images, productName }) => {
             >
                 {images.map((img, index) => (
                     <div key={index} className="w-full flex-shrink-0">
-                        <img src={img} alt={`${productName} view ${index + 1}`} className="w-full h-full object-cover aspect-[3/4]" />
+                        {shouldLoad && (
+                            <img 
+                                src={img} 
+                                alt={`${productName} view ${index + 1}`} 
+                                loading={index === 0 ? 'eager' : 'lazy'}
+                                decoding="async"
+                                width={900}
+                                height={1200}
+                                className="w-full h-full object-cover aspect-[3/4] transform scale-[1.12]" 
+                            />
+                        )}
                     </div>
                 ))}
             </div>
@@ -201,19 +243,19 @@ const ProductPage = ({ allProducts, session }) => {
                             {product.images && product.images.length > 0 ? (
                                 <ProductImageCarousel images={product.images} productName={product.name} />
                             ) : (
-                                <div className="bg-gray-100"><img src={'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera'} alt={product.name} className="w-full h-full object-cover aspect-[3/4]" /></div>
+                                <div className="bg-gray-100"><img src={'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera'} alt={product.name} loading="lazy" decoding="async" width={900} height={1200} className="w-full h-full object-cover aspect-[3/4]" /></div>
                             )}
                         </div>
 
                         {/* Desktop Thumbnails */}
                         <div className="hidden lg:block">
-                            <div className="bg-gray-100 mb-4">
-                                <img src={mainImage} alt={product.name} className="w-full h-full object-cover aspect-[3/4]" />
+                            <div className="bg-gray-100 mb-4 overflow-hidden">
+                                <img src={mainImage} alt={product.name} decoding="async" width={900} height={1200} className="w-full h-full object-cover aspect-[3/4] transform scale-[1.12]" />
                             </div>
                             <div className="flex gap-4">
                                 {product.images && product.images.map((img, index) => (
                                     <div key={index} className="w-24 h-32 bg-gray-100 cursor-pointer" onMouseEnter={() => setMainImage(img)}>
-                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} className={`w-full h-full object-cover transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
+                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} loading="lazy" decoding="async" width={96} height={128} className={`w-full h-full object-cover transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
                                     </div>
                                 ))}
                             </div>

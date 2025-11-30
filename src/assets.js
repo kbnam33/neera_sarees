@@ -16,7 +16,8 @@ const getPublicUrl = (filename) => {
 // Define all static theme assets here.
 // This is the single source of truth for these images.
 export const ASSETS = {
-  LOGO_URL: getPublicUrl("Neera logo.png"),
+  LOGO_PNG_URL: getPublicUrl("Neera logo.png"),
+  LOGO_WEBP_URL: getPublicUrl("Neera logo.webp"),
   STORY_HIGHLIGHT_URL: getPublicUrl("cinemtic-bg.png"),
   THEME_IMAGE_URL: getPublicUrl("theme-image.png"),
   FLYING_SAREE_URL: getPublicUrl("flying-saree.png"),

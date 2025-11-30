@@ -22,6 +22,9 @@ import ContactUs from './ContactUs.jsx';
 import ProductImage from './components/ProductImage.jsx';
 import { ASSETS } from './assets.js';
 
+// Premium hero/header background (subtle terracotta)
+const HERO_BG = '#E9D9CA';
+
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
 const UserIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> );
@@ -195,9 +198,11 @@ const Header = ({ session, fabrics, prints, products }) => {
     const [hoveredPrint, setHoveredPrint] = useState(null);
     const [isNavSticky, setIsNavSticky] = useState(false);
     const [navBarHeight, setNavBarHeight] = useState(64);
+    const [logoBarHeight, setLogoBarHeight] = useState(0);
     const location = useLocation();
     const dropdownTimeoutRef = useRef(null);
     const navBarRef = useRef(null);
+    const logoBarRef = useRef(null);
 
     const handleDropdownEnter = (type) => {
         clearTimeout(dropdownTimeoutRef.current);
@@ -216,27 +221,23 @@ const Header = ({ session, fabrics, prints, products }) => {
     }, [location.pathname]);
 
     useEffect(() => {
-        const handleScroll = () => {
-            const logoBarHeight = 128;
-            setIsNavSticky(window.scrollY > logoBarHeight);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        // Navbar is not sticky for this design
+        setIsNavSticky(false);
     }, []);
 
     // Dynamically set the visible header height so main content starts exactly below it
     useEffect(() => {
-        const updateHeaderOffset = () => {
-            const logoBarHeight = 128; // matches h-32
-            const navHeight = navBarRef.current ? navBarRef.current.offsetHeight : navBarHeight;
-            setNavBarHeight(navHeight || 64);
-            const visibleHeight = isNavSticky ? navHeight : logoBarHeight + navHeight;
-            document.documentElement.style.setProperty('--header-visible-height', `${visibleHeight}px`);
+        // Fix header height to a single unified row (no growth or oscillation)
+        const VISIBLE_HEADER = 96;
+        document.documentElement.style.setProperty('--header-visible-height', `${VISIBLE_HEADER}px`);
+        setLogoBarHeight(VISIBLE_HEADER);
+        setNavBarHeight(0);
+        const onResize = () => {
+            document.documentElement.style.setProperty('--header-visible-height', `${VISIBLE_HEADER}px`);
         };
-        updateHeaderOffset();
-        window.addEventListener('resize', updateHeaderOffset);
-        return () => window.removeEventListener('resize', updateHeaderOffset);
-    }, [isNavSticky, navBarHeight]);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
@@ -265,23 +266,26 @@ const Header = ({ session, fabrics, prints, products }) => {
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} prints={prints} session={session} />
             
-            {/* FIX: Removed h-48 class. The header no longer takes up layout space. */}
+            {/* Two-line header (logo row + nav row), not sticky. Background matches hero/home, white on products. */}
             <header className="relative z-50">
-                <div className="fixed top-0 left-0 right-0 bg-soft-beige shadow-sm" style={{ height: `var(--header-visible-height, ${128 + navBarHeight}px)`, transition: 'height 300ms ease-in-out', willChange: 'height' }}>
-                    <div className="h-32 flex items-center justify-center transition-transform duration-300 ease-in-out will-change-transform" style={{ transform: isNavSticky ? 'translateY(-100%)' : 'translateY(0)' }}>
+                <div className="w-full" style={{ backgroundColor: location.pathname === '/products' ? '#FFFFFF' : HERO_BG }}>
+                    {/* Top logo row */}
+                    <div className="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-center">
                         <Link to="/" className="flex items-center">
-                            <img src={ASSETS.LOGO_URL} alt="Neera" className="h-32 w-auto" />
+                            <picture>
+                                <source type="image/webp" srcSet={ASSETS.LOGO_WEBP_URL} />
+                                <img src={ASSETS.LOGO_PNG_URL} alt="Neera" decoding="async" width={256} height={256} className="h-32 w-auto" />
+                            </picture>
                         </Link>
                     </div>
-                    <div ref={navBarRef} className={`absolute left-0 right-0 bg-soft-beige transition-all duration-300 ease-in-out will-change-transform ${isNavSticky ? 'shadow-md' : ''}`} style={{ transform: isNavSticky ? 'translateY(-128px)' : 'translateY(0)' }}>
-                        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex justify-between items-center h-16 border-t border-gray-200 relative">
-                            <div className="flex-1 flex justify-start">
-                                <div className="md:hidden">
-                                    <button onClick={() => setIsMobileMenuOpen(true)}>
-                                        <MenuIcon />
-                                    </button>
-                                </div>
-                                <nav className="hidden md:flex items-center gap-x-8 font-sans">
+                    {/* Bottom navigation row */}
+                    <div className={`w-full transition-colors duration-300 ease-out ${activeDropdown ? 'bg-soft-beige' : 'bg-transparent'}`}>
+                        <div
+                            className={`max-w-[1400px] mx-auto px-8 h-16 grid items-center ${activeDropdown ? '' : 'border-t border-gray-700/30'}`}
+                            style={{ gridTemplateColumns: '1fr auto 1fr' }}
+                        >
+                            {/* Left: primary nav */}
+                            <nav className="hidden md:flex items-center gap-x-10 font-sans col-[1/2] justify-self-start">
                                     <Link to="/products" className={navLinkClasses}>All Sarees</Link>
                                     <div onMouseEnter={() => handleDropdownEnter('fabric')} onMouseLeave={handleDropdownLeave}>
                                         <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
@@ -295,65 +299,10 @@ const Header = ({ session, fabrics, prints, products }) => {
                                     </div>
                                      <Link to="/story" className={navLinkClasses}>Our Story</Link>
                                 </nav>
-                            </div>
-
-                             {activeDropdown && (
-                                <div 
-                                    onMouseEnter={() => handleDropdownEnter(activeDropdown)}
-                                    onMouseLeave={handleDropdownLeave}
-                                    className="absolute top-full left-0 right-0 bg-soft-beige border-b border-gray-200 shadow-lg opacity-0 animate-fadeIn" 
-                                    style={{ animationDelay: '50ms' }}
-                                >
-                                    <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                        <div className="md:col-span-1">
-                                            <h3 className="font-serif text-lg mb-4">{activeDropdown === 'fabric' ? 'Fabric Types' : 'Print Types'}</h3>
-                                            <ul className="space-y-3" onMouseLeave={() => { setHoveredFabric(null); setHoveredPrint(null); }}>
-                                                {(activeDropdown === 'fabric' ? fabrics : prints).map(item => (
-                                                    <li key={item.id} onMouseEnter={() => activeDropdown === 'fabric' ? setHoveredFabric(item.name) : setHoveredPrint(item.name)}>
-                                                        <Link to={`/${activeDropdown}/${item.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setActiveDropdown(null)}>
-                                                            {item.name}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="md:col-span-2 grid grid-cols-2 gap-6">
-                                            {(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts).length > 0 ? (
-                                                <>
-                                                    <Link to={`/products/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].fabric_type}/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].slug}`} className="group" onClick={() => setActiveDropdown(null)}>
-                                                        <div className="overflow-hidden bg-gray-100 mb-2">
-                                                            <img src={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].images?.[0] || 'https://placehold.co/400x500'} alt={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].name} className="w-full h-full object-cover aspect-[4/5] max-h-[450px] transition-transform duration-300 group-hover:scale-105" />
-                                                        </div>
-                                                        <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors truncate">{(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[0].name}</h4>
-                                                        <p className="text-xs text-gray-500">{!(hoveredFabric || hoveredPrint) ? 'Latest Arrival' : 'Shop Now'}</p>
-                                                    </Link>
-                                                    {(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts).length > 1 ? (
-                                                        <Link to={`/products/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].fabric_type}/${(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].slug}`} className="group" onClick={() => setActiveDropdown(null)}>
-                                                            <div className="overflow-hidden bg-gray-100 mb-2">
-                                                                <img src={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].images?.[0] || 'https://placehold.co/400x500'} alt={(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].name} className="w-full h-full object-cover aspect-[4/5] max-h-[450px] transition-transform duration-300 group-hover:scale-105" />
-                                                            </div>
-                                                            <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors truncate">{(activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)[1].name}</h4>
-                                                            <p className="text-xs text-gray-500">Shop Now</p>
-                                                        </Link>
-                                                    ) : (
-                                                        <div className="flex flex-col items-center justify-center bg-gray-100 aspect-[4/5] group max-h-[450px]">
-                                                            <Link to={(hoveredFabric || hoveredPrint) ? `/${activeDropdown}/${hoveredFabric || hoveredPrint}` : '/products'} className="text-center" onClick={() => setActiveDropdown(null)}>
-                                                                <p className="text-xs text-gray-500 p-4 group-hover:text-deep-maroon transition-colors">Explore the Collection</p>
-                                                            </Link>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            ) : (
-                                                <div className="col-span-2 flex items-center justify-center h-full text-center text-gray-400 text-sm">
-                                                    <p>No products found.</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="flex-1 flex justify-end items-center gap-x-4 sm:gap-x-6">
+                            {/* Center spacer to preserve logo’s optical centering */}
+                            <div className="col-[2/3]" />
+                            {/* Right: actions */}
+                            <div className="flex items-center gap-x-6 col-[3/4] justify-self-end">
                                 <button onClick={() => setIsSearchOpen(true)}><SearchIcon /></button>
                                 {session ? (<Link to="/profile"><UserIcon /></Link>) : (<Link to="/auth"><UserIcon /></Link>)}
                                 <Link to="/cart" className="relative">
@@ -363,9 +312,253 @@ const Header = ({ session, fabrics, prints, products }) => {
                             </div>
                         </div>
                     </div>
+                    {/* Hover dropdown panel (always mounted for smooth animation) */}
+                    <div
+                        onMouseEnter={() => activeDropdown && handleDropdownEnter(activeDropdown)}
+                        onMouseLeave={handleDropdownLeave}
+                        className={`absolute left-0 right-0 transform transition-all duration-300 ease-out ${activeDropdown ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'} bg-soft-beige`}
+                    >
+                        <div className="max-w-[1400px] mx-auto px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="md:col-span-1">
+                                <h3 className="font-serif text-lg mb-4">{activeDropdown === 'fabric' ? 'Fabric Types' : activeDropdown === 'print' ? 'Print Types' : ''}</h3>
+                                <ul className="space-y-3">
+                                    {(activeDropdown === 'fabric' ? fabrics : prints).map(item => (
+                                        <li
+                                            key={item.id}
+                                            onMouseEnter={() => activeDropdown === 'fabric' ? setHoveredFabric(item.name) : setHoveredPrint(item.name)}
+                                        >
+                                            <Link to={`/${activeDropdown || 'fabric'}/${item.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setActiveDropdown(null)}>
+                                                {item.name}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="md:col-span-2 grid grid-cols-2 gap-6">
+                                {((activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts).filter(p => p?.images?.[0]).slice(0,2).length > 0) ? (
+                                    (activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)
+                                        .filter(p => p?.images?.[0])
+                                        .slice(0, 2)
+                                        .map((p, idx) => (
+                                            <Link
+                                                key={p.id || idx}
+                                                to={`/products/${p.fabric_type}/${p.slug}`}
+                                                className="group"
+                                                onClick={() => setActiveDropdown(null)}
+                                            >
+                                                <div className="mb-2 overflow-hidden flex items-center justify-center aspect-[3/4] w-full max-w-[420px] mx-auto">
+                                                    <img
+                                                        src={p.images[0]}
+                                                        alt={p.name || 'preview'}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    />
+                                                </div>
+                                                <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors truncate">
+                                                    {p.name || ''}
+                                                </h4>
+                                                <p className="text-xs text-gray-500">Shop Now</p>
+                                            </Link>
+                                        ))
+                                ) : (
+                                    <div className="col-span-2 flex items-center justify-center h-full text-center text-gray-400 text-sm">
+                                        <p>No products found.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </header>
         </>
+    );
+};
+
+// --- BRAND HERO (cinematic background with bottom-anchored content) ---
+const BrandHero = ({ products }) => {
+    return (
+        <section
+            className="relative overflow-hidden text-white"
+            style={{ height: '100vh', width: '100%' }}
+            aria-label="Neera hero"
+        >
+            {/* Background image */}
+            <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: "url('/orange-saree-display.png')" }}
+            />
+            {/* Lighter gradient veil for legibility */}
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/10 via-black/20 to-black/40" />
+
+            {/* Premium placement: bottom-left on desktop, bottom center on mobile */}
+            <div className="absolute inset-0 z-10 flex items-end justify-center md:items-end md:justify-start">
+                <div className="w-full md:w-auto px-6 md:px-10 pb-12 md:pb-20 text-center md:text-left md:ml-6 lg:ml-8 xl:ml-10">
+                    <h1 className="font-serif text-5xl md:text-6xl leading-[1.05]">
+                        Purity in Every Thread.
+                    </h1>
+                    <p className="mt-5 text-white/90 max-w-md mx-auto md:mx-0">
+                        Handwoven sarees crafted with quiet luxury—timeless, modern, unmistakably Neera.
+                    </p>
+                    <div className="mt-10 flex items-center justify-center md:justify-start gap-3">
+                        <Link
+                            to="/products"
+                            className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
+                            aria-label="Shop New Arrivals"
+                        >
+                            Shop New Arrivals
+                            <span className="ml-2 inline-block">
+                                <ArrowRightIcon className="w-5 h-5" />
+                            </span>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// --- CLASSIC HERO (previous three-column layout with product images) ---
+const ClassicHero = ({ products }) => {
+    const leftProduct = useMemo(() => {
+        const target = 'black with orange mul mul saree';
+        const list = Array.isArray(products) ? products : [];
+        return list.find(p => (p.name || '').toLowerCase() === target && Array.isArray(p.images) && p.images.length > 0)
+            || list.find(p => Array.isArray(p.images) && p.images.length > 0);
+    }, [products]);
+    const rightProduct = useMemo(() => {
+        const target = 'dark blue printed mul mul saree';
+        const list = Array.isArray(products) ? products : [];
+        return list.find(p => (p.name || '').toLowerCase() === target && Array.isArray(p.images) && p.images.length > 0)
+            || list.filter(p => Array.isArray(p.images) && p.images.length > 0)[1];
+    }, [products]);
+
+    return (
+        <section
+            className="relative overflow-hidden text-charcoal-gray"
+            style={{ 
+                height: '100vh',
+                width: '100%',
+                backgroundColor: HERO_BG
+            }}
+            aria-label="Neera classic hero"
+        >
+            <div className="w-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-0 items-stretch">
+                    {/* Left model/image (edge-aligned) */}
+                    <div className="hidden md:block" style={{ height: '100vh' }}>
+                        {leftProduct && (
+                            <div className="relative overflow-hidden w-full h-full">
+                                <img
+                                    src={leftProduct.images[0]}
+                                    alt={leftProduct.name}
+                                    loading="lazy"
+                                    decoding="async"
+                                    width={900}
+                                    height={1200}
+                                    className="w-full h-full object-cover transform scale-[1.10]"
+                                    style={{ objectPosition: 'center' }}
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Center text panel */}
+                    <div className="flex items-center justify-center px-6 md:px-10" style={{ height: '100vh' }}>
+                        <div className="text-left max-w-md">
+                            <h1 className="font-serif text-5xl md:text-6xl leading-[1.05] text-deep-maroon">
+                                Purity in Every Thread.
+                            </h1>
+                            <p className="mt-5 text-charcoal-gray/80 max-w-md">
+                                Handwoven sarees crafted with quiet luxury—timeless, modern, unmistakably Neera.
+                            </p>
+                            <div className="mt-10 flex flex-wrap gap-3">
+                                <Link
+                                    to="/products"
+                                    className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
+                                    aria-label="Shop New Arrivals"
+                                >
+                                    Shop New Arrivals
+                                    <span className="ml-2 inline-block">
+                                        <ArrowRightIcon className="w-5 h-5" />
+                                    </span>
+                                </Link>
+                                <Link
+                                    to="/story"
+                                    className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase border border-charcoal-gray text-charcoal-gray hover:bg-charcoal-gray hover:text-white transition-colors"
+                                    aria-label="Discover Our Story"
+                                >
+                                    Discover Our Story
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right model/image (edge-aligned) */}
+                    <div className="hidden md:block" style={{ height: '100vh' }}>
+                        {rightProduct && (
+                            <div className="relative overflow-hidden w-full h-full">
+                                <img
+                                    src={rightProduct.images[0]}
+                                    alt={rightProduct.name}
+                                    loading="lazy"
+                                    decoding="async"
+                                    width={900}
+                                    height={1200}
+                                    className="w-full h-full object-cover transform scale-[1.10]"
+                                    style={{ objectPosition: 'center' }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+// --- WEAVERS STORY SECTION ---
+const WeaversStory = () => {
+    return (
+        <section
+            className="relative overflow-hidden w-full"
+            aria-label="Weavers at work"
+            style={{ minHeight: '100vh' }}
+        >
+            <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: "url('/weavers-hand-bg.png')" }}
+            />
+            {/* Premium gradient veil for legibility (mirrors hero feel) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70" />
+
+            {/* Minimal, impact-centric overlay */}
+            <div className="absolute inset-0 z-10 flex items-end justify-center">
+                <div className="w-full px-4 pb-10 text-center">
+                    <h2 className="font-serif text-white text-5xl md:text-6xl leading-[1.05] tracking-tight">
+                        Weavers. Heritage. Neera.
+                    </h2>
+                    <p className="mt-3 text-white/90 text-sm md:text-base max-w-xl mx-auto">
+                        Quiet luxury, handwoven. The purity of every thread, composed for modern elegance.
+                    </p>
+                    <div className="mt-8 flex items-center justify-center gap-3">
+                        <Link
+                            to="/products"
+                            className="inline-flex items-center justify-center px-8 py-3 text-[12px] tracking-[0.28em] uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
+                            aria-label="Explore collections"
+                        >
+                            Explore Collections
+                        </Link>
+                        <Link
+                            to="/story"
+                            className="inline-flex items-center justify-center px-8 py-3 text-[12px] tracking-[0.28em] uppercase border border-white/80 text-white hover:bg-white hover:text-black transition-colors"
+                            aria-label="Discover our story"
+                        >
+                            Our Story
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 };
 
@@ -374,9 +567,9 @@ const HomeProductSection = ({ title, products }) => {
     if (!products || products.length === 0) return null;
     return (
         <section className="bg-soft-beige pt-12 pb-20">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 text-left">
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-10 text-left">
                 <h2 className="text-2xl font-serif text-deep-maroon tracking-wider mb-8">{title}</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 lg:gap-x-8 gap-y-10 sm:gap-y-12">
                     {products.map((product) => (
                         <div key={product.id}>
                             <ProductImage 
@@ -413,6 +606,10 @@ const StoryHighlight = () => {
                             <img 
                                 src={ASSETS.STORY_HIGHLIGHT_URL} 
                                 alt="A serene, sunlit room with a draped saree."
+                                loading="lazy"
+                                decoding="async"
+                                width={1600}
+                                height={1000}
                                 className="w-full h-auto object-cover"
                             />
                         </div>
@@ -489,12 +686,12 @@ const CustomSortDropdown = ({ sortOption, setSortOption }) => {
 const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
     return (
         <div className="bg-soft-beige pt-12 pb-20">
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-10">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-200 pb-4 gap-4">
                     <h1 className="text-3xl font-serif text-deep-maroon">All Sarees</h1>
                     <CustomSortDropdown sortOption={sortOption} setSortOption={setSortOption} />
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-12">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 lg:gap-x-8 gap-y-12">
                     {products.map((product) => (
                         <div key={product.id}>
                             <ProductImage 
@@ -524,7 +721,10 @@ const Footer = () => {
         <div className="max-w-screen-xl mx-auto px-8 py-16">
             <div className="text-center mb-12">
                 <Link to="/">
-                     <img src={ASSETS.LOGO_URL} alt="Neera" className="h-32 w-auto mx-auto mb-8" />
+                     <picture>
+                        <source type="image/webp" srcSet={ASSETS.LOGO_WEBP_URL} />
+                        <img src={ASSETS.LOGO_PNG_URL} alt="Neera" decoding="async" width={256} height={256} className="h-32 w-auto mx-auto mb-8" />
+                     </picture>
                 </Link>
                 <nav className="flex justify-center flex-wrap gap-x-6 gap-y-3 text-xs uppercase tracking-widest text-charcoal-gray/80">
                     <Link to="/products" className="hover:text-deep-maroon transition-colors">ALL SAREES</Link>
@@ -609,6 +809,22 @@ function AppContent() {
         }
     });
     
+    // Curated "Home New Arrivals": prefer admin-selected featured items, fallback to newest
+    const homeNewArrivals = useMemo(() => {
+        const featured = (products || [])
+            .filter(p => p?.is_home_featured)
+            .sort((a, b) => {
+                const ar = a?.home_featured_rank ?? 999;
+                const br = b?.home_featured_rank ?? 999;
+                return ar - br;
+            })
+            .slice(0, 4);
+        if (featured.length > 0) return featured;
+        return [...(products || [])]
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 4);
+    }, [products]);
+    
     if (loading) return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Neera...</p></div>;
     if (error && !products.length) return <div className="h-screen flex justify-center items-center bg-soft-beige text-center p-8"><p className="text-red-600 font-semibold">{error}</p></div>
 
@@ -619,10 +835,10 @@ function AppContent() {
                 <meta name="description" content="Discover Neera, a world of pure, handwoven sarees that blend traditional craftsmanship with modern style. Shop our exclusive collection of silk, cotton, and mangalagiri sarees." />
             </Helmet>
             <Header session={session} fabrics={fabrics} prints={prints} products={products} />
-            {/* Use dynamic header height so content starts immediately below header */}
-            <main style={{ paddingTop: 'var(--header-visible-height, 192px)', transition: 'padding-top 300ms ease-in-out' }}>
+            {/* Header is not fixed; no top padding required */}
+            <main>
                 <Routes>
-                    <Route path="/" element={<><HomeProductSection title="New Arrivals" products={products.slice(0, 3)} /><StoryHighlight /></>} />
+                    <Route path="/" element={<><BrandHero products={products} /><WeaversStory /><ClassicHero products={products} /><HomeProductSection title="New Arrivals" products={homeNewArrivals} /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
                     <Route path="/print/:printName" element={<PrintPage allProducts={products} />} /> {/* New route for prints */}

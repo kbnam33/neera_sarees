@@ -52,7 +52,7 @@ const OrderConfirmationPage = ({ order }) => {
                                 const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://placehold.co/64x80/F8F5EF/5B1A32?text=Neera';
                                 return (
                                 <div key={item.id} className="flex items-center gap-x-4">
-                                    <img src={imageUrl} alt={item.name} className="w-16 h-20 object-cover rounded-md" />
+                                    <img src={imageUrl} alt={item.name} loading="lazy" decoding="async" width={64} height={80} className="w-16 h-20 object-cover rounded-md" />
                                     <div className="flex-grow">
                                         <p className="font-semibold text-charcoal-gray text-sm">{item.name}</p>
                                         <p className="text-xs text-gray-500">Qty: {item.quantity}</p>

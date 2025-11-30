@@ -95,7 +95,7 @@ const ProfilePage = ({ session }) => {
                                                 const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/80x107/F8F5EF/5B1A32?text=Neera';
                                                 return (
                                                     <div key={`${order.id}-${product.id}-${index}`} className="w-16 h-24 bg-gray-100 rounded-md overflow-hidden shadow-sm border-2 border-white">
-                                                        <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                                                        <img src={imageUrl} alt={product.name} loading="lazy" decoding="async" width={64} height={96} className="w-full h-full object-cover" />
                                                     </div>
                                                 );
                                             })}

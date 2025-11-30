@@ -42,7 +42,7 @@ const CartPage = ({ session }) => {
                                 return (
                                 <div key={item.id} className="flex gap-x-6 items-center border-b border-gray-200 pb-6">
                                     <div className="w-24 h-36 bg-gray-100 flex-shrink-0">
-                                        <img src={imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                                        <img src={imageUrl} alt={item.name} loading="lazy" decoding="async" width={96} height={144} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-grow">
                                         <p className="font-serif text-lg text-charcoal-gray">{item.name}</p>
