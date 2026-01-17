@@ -13,7 +13,7 @@ export default {
         'xl': '1280px',
       },
       colors: {
-        'soft-beige': '#F8F5EF',
+        'soft-beige': '#F7F4EF',
         'deep-maroon': '#5B1A32',
         'deep-maroon-dark': '#4a1528',
         'lotus-gold': '#C9A24A',

@@ -266,9 +266,9 @@ const Header = ({ session, fabrics, prints, products }) => {
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} prints={prints} session={session} />
             
-            {/* Two-line header (logo row + nav row), not sticky. Background matches hero/home, white on products. */}
+            {/* Two-line header (logo row + nav row), not sticky. Background inherits from body. */}
             <header className="relative z-50">
-                <div className="w-full" style={{ backgroundColor: location.pathname === '/products' ? '#FFFFFF' : HERO_BG }}>
+                <div className="w-full">
                     {/* Top logo row */}
                     <div className="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-center">
                         <Link to="/" className="flex items-center">
@@ -279,13 +279,13 @@ const Header = ({ session, fabrics, prints, products }) => {
                         </Link>
                     </div>
                     {/* Bottom navigation row */}
-                    <div className={`w-full transition-colors duration-300 ease-out ${activeDropdown ? 'bg-soft-beige' : 'bg-transparent'}`}>
+                    <div className={`w-full transition-colors duration-300 ease-out ${activeDropdown ? 'bg-soft-beige' : ''}`}>
                         <div
                             className={`max-w-[1400px] mx-auto px-8 h-16 grid items-center ${activeDropdown ? '' : 'border-t border-gray-700/30'}`}
-                            style={{ gridTemplateColumns: '1fr auto 1fr' }}
+                            style={{ gridTemplateColumns: '1fr auto 1fr', color: '#3A3530' }}
                         >
                             {/* Left: primary nav */}
-                            <nav className="hidden md:flex items-center gap-x-10 font-sans col-[1/2] justify-self-start">
+                            <nav className="hidden md:flex items-center gap-x-10 font-sans col-[1/2] justify-self-start" style={{ color: '#3A3530' }}>
                                     <Link to="/products" className={navLinkClasses}>All Sarees</Link>
                                     <div onMouseEnter={() => handleDropdownEnter('fabric')} onMouseLeave={handleDropdownLeave}>
                                         <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
@@ -395,10 +395,10 @@ const BrandHero = ({ products }) => {
             <div className="absolute inset-0 z-10 flex items-end justify-center md:items-end md:justify-start">
                 <div className="w-full md:w-auto px-6 md:px-10 pb-12 md:pb-20 text-center md:text-left md:ml-6 lg:ml-8 xl:ml-10">
                     <h1 className="font-serif text-5xl md:text-6xl leading-[1.05]">
-                        Purity in Every Thread.
+                        Composed in Silence.
                     </h1>
                     <p className="mt-5 text-white/90 max-w-md mx-auto md:mx-0">
-                        Handwoven sarees crafted with quiet luxury—timeless, modern, unmistakably Neera.
+                        Clothing shaped by patience, restraint, and clarity.
                     </p>
                     <div className="mt-10 flex items-center justify-center md:justify-start gap-3">
                         <Link
@@ -464,15 +464,15 @@ const ClassicHero = ({ products }) => {
                     </div>
 
                     {/* Center text panel */}
-                    <div className="flex items-center justify-center px-6 md:px-10" style={{ height: '100vh' }}>
+                    <div className="flex items-center justify-start px-6 md:px-10" style={{ height: '100vh' }}>
                         <div className="text-left max-w-md">
-                            <h1 className="font-serif text-5xl md:text-6xl leading-[1.05] text-deep-maroon">
-                                Purity in Every Thread.
+                            <h1 className="font-serif text-5xl md:text-6xl leading-[1.05] text-deep-maroon mb-4">
+                                New Arrivals
                             </h1>
-                            <p className="mt-5 text-charcoal-gray/80 max-w-md">
-                                Handwoven sarees crafted with quiet luxury—timeless, modern, unmistakably Neera.
+                            <p className="text-charcoal-gray/80 max-w-md mb-8">
+                                New expressions, grounded in continuity.
                             </p>
-                            <div className="mt-10 flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-3">
                                 <Link
                                     to="/products"
                                     className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
@@ -482,13 +482,6 @@ const ClassicHero = ({ products }) => {
                                     <span className="ml-2 inline-block">
                                         <ArrowRightIcon className="w-5 h-5" />
                                     </span>
-                                </Link>
-                                <Link
-                                    to="/story"
-                                    className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase border border-charcoal-gray text-charcoal-gray hover:bg-charcoal-gray hover:text-white transition-colors"
-                                    aria-label="Discover Our Story"
-                                >
-                                    Discover Our Story
                                 </Link>
                             </div>
                         </div>
@@ -535,10 +528,10 @@ const WeaversStory = () => {
             <div className="absolute inset-0 z-10 flex items-end justify-center">
                 <div className="w-full px-4 pb-10 text-center">
                     <h2 className="font-serif text-white text-5xl md:text-6xl leading-[1.05] tracking-tight">
-                        Weavers. Heritage. Neera.
+                        Tradition, refined for now.
                     </h2>
                     <p className="mt-3 text-white/90 text-sm md:text-base max-w-xl mx-auto">
-                        Quiet luxury, handwoven. The purity of every thread, composed for modern elegance.
+                        An inherited language, expressed with modern restraint
                     </p>
                     <div className="mt-8 flex items-center justify-center gap-3">
                         <Link
@@ -620,19 +613,12 @@ const StoryHighlight = () => {
                         <div className="p-8 md:p-12 border border-black bg-soft-beige">
                             <div className="max-w-xl">
                                 <h2 className="text-4xl lg:text-5xl font-serif text-black leading-tight mb-6 font-normal">
-                                    Purity in every thread.
+                                    New Arrivals
                                 </h2>
                                 <p className="text-charcoal-gray-dark leading-relaxed mb-10">
-                                    Inspired by the Sanskrit word for 'pure water,' our sarees are designed to drape with the effortless grace of flowing water—a fluid expression of artistry that is both timeless and modern.
+                                    New expressions, grounded in continuity.
                                 </p>
-                                <Link 
-                                    to="/story" 
-                                    className="group inline-block text-sm font-semibold tracking-widest text-deep-maroon uppercase"
-                                >
-                                    <span className="relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-deep-maroon after:transition-all after:duration-300 group-hover:after:w-full">
-                                        Discover Our Story
-                                    </span>
-                                </Link>
+                                
                             </div>
                         </div>
                     </AnimatedUncrop>

@@ -159,10 +159,28 @@ const ProductInfoTabs = ({product}) => {
                     ))}
                 </nav>
             </div>
-            <div className="py-8">
-                <p className="text-sm text-gray-600 leading-relaxed max-w-prose animate-fadeIn">
-                    {tabs[activeTab].text}
-                </p>
+            <div className="py-8 h-64 overflow-y-auto hover:pr-2 transition-all duration-200" 
+                style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#D1D5DB transparent'
+                }}>
+                <div className="text-sm leading-relaxed max-w-prose animate-fadeIn pr-2"
+                    style={{
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word'
+                    }}
+                    dangerouslySetInnerHTML={{
+                        __html: tabs[activeTab].text
+                            // Section headers (lines ending with colon at the start or lines like "Product Details:")
+                            .replace(/^([A-Z][^:\n]*:)$/gm, '<div class="font-serif text-base font-semibold text-charcoal-gray mt-5 mb-1.5 tracking-wide first:mt-0">$1</div>')
+                            // Label-value pairs (e.g., "Fabric: 100% Pure Cotton")
+                            .replace(/^([A-Za-z\s&]+):\s*(.+)$/gm, '<div class="mb-1"><span class="font-semibold text-charcoal-gray tracking-wider text-xs uppercase">$1:</span> <span class="text-gray-600 ml-1">$2</span></div>')
+                            // Bullet points
+                            .replace(/^[•·]\s*(.+)$/gm, '<div class="flex items-start mb-0.5 ml-1"><span class="text-deep-maroon mr-2 flex-shrink-0">•</span><span class="text-gray-600">$1</span></div>')
+                            // Regular paragraphs (lines that don't match above patterns)
+                            .replace(/^(?!<div)([^<\n].+)$/gm, '<p class="text-gray-600 mb-1.5">$1</p>')
+                    }}
+                />
             </div>
         </div>
     );

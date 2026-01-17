@@ -1,0 +1,9 @@
+/* Global styles for Next.js app shell. Integrate Tailwind or existing CSS here if needed. */
+html, body, #__next {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
