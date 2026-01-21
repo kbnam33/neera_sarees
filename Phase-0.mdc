@@ -1,0 +1,556 @@
+---
+description: Phase 0 - Project Initialization and Setup for Neera Sarees Transformation
+---
+
+# PHASE 0: PROJECT INITIALIZATION & SETUP
+
+## Objective
+
+Establish the project baseline by creating progress tracking, safety backup, and verifying data access before any transformation work begins.
+
+**Success looks like:**
+- PROGRESS.md tracking file created and initialized
+- Backup branch created for rollback safety
+- Supabase credentials verified and connection working
+- Product data accessible (130+ products expected)
+- Git repository in clean, workable state
+- Ready to begin Next.js migration
+
+***
+
+## Execute These Steps
+
+### Step 1: Create Progress Tracking File
+
+Create a new file named PROGRESS.md in the project root directory.
+
+**Initialize with this structure:**
+- Title: NEERA SAREES TRANSFORMATION - PROGRESS LOG
+- Start Date and Start Time fields
+- Current Phase: Phase 0 - Project Initialization
+- Status: In Progress
+- Phase 0 section with IN PROGRESS status
+- Current Metrics section (all zeros initially)
+- Blockers section (empty initially)
+- User Actions Required section (empty initially)
+
+**After creating:**
+- Verify PROGRESS.md exists in project root
+- Open file and confirm content is present
+- Leave file open for ongoing updates
+
+***
+
+### Step 2: Create Backup Branch for Safety
+
+Create a Git backup of the current React SPA codebase before making any changes.
+
+**Actions:**
+1. Verify current Git branch name
+2. Confirm you're on main or master branch (if not, checkout main)
+3. Create new branch named backup-react-spa from current state
+4. Push backup-react-spa branch to remote repository
+5. Return to main branch
+6. Verify backup branch exists in local branch list
+7. Verify backup branch exists in remote branch list
+
+**After executing:**
+- Confirm backup branch appears when listing branches
+- Verify you're back on main branch
+- Check GitHub repository online to confirm backup-react-spa branch exists remotely
+
+**Purpose:** If transformation fails catastrophically, rollback to this backup by checking out the backup-react-spa branch.
+
+***
+
+### Step 3: Check for Supabase Credentials
+
+Look for environment variables file containing Supabase connection credentials.
+
+**Check for .env.local file in project root.**
+
+**Scenario A: If .env.local EXISTS**
+
+Verify it contains required variables:
+- Check for NEXT_PUBLIC_SUPABASE_URL variable
+- Check for NEXT_PUBLIC_SUPABASE_ANON_KEY variable
+
+**If both variables found:**
+- Proceed to Step 4
+
+**If variables missing from existing .env.local:**
+- Continue to Scenario B below
+
+***
+
+**Scenario B: If .env.local DOES NOT EXIST or Variables Missing**
+
+**⏸️ PAUSE WORKFLOW - User Action Required**
+
+Display this message:
+
+═══════════════════════════════════════════════════════════════════
+⏸️  ACTION REQUIRED: Supabase Credentials Needed
+═══════════════════════════════════════════════════════════════════
+
+The workflow needs Supabase credentials to access product data.
+
+📋 Please complete these steps:
+
+1. Create a file named .env.local in the project root directory
+   (Same directory where package.json is located)
+
+2. Add the following two lines to the file:
+
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+3. Replace "your_supabase_project_url" with your actual Supabase project URL
+   (Found in Supabase Dashboard → Project Settings → API → Project URL)
+
+4. Replace "your_supabase_anon_key" with your actual anonymous key
+   (Found in Supabase Dashboard → Project Settings → API → anon public key)
+
+5. Save the .env.local file
+
+6. Create or update user.md file with the text:
+   "Supabase credentials added"
+
+The workflow will automatically resume after you confirm completion.
+═══════════════════════════════════════════════════════════════════
+
+**⏳ Monitor user.md for confirmation**
+
+Wait for user to update user.md with confirmation signal.
+
+**Accepted signals:**
+- "Supabase credentials added"
+- "done"
+- "added"
+- "credentials in place"
+- "completed"
+- "ready"
+- "all set"
+- Or any similar confirmation language
+
+**When confirmation detected:**
+- Resume workflow
+- Proceed to Step 4
+
+***
+
+### Step 4: Test Supabase Connection
+
+Verify that Supabase credentials work and product data is accessible.
+
+**Test the connection:**
+1. Create Supabase client using credentials from .env.local
+2. Query the products table with count request
+3. Check if query succeeds without authentication errors
+4. Log the product count returned
+
+**Expected Result:**
+- Connection succeeds (no authentication errors)
+- Product count is returned as a number
+- Count should be 130+ products (or close to it)
+
+***
+
+**If Connection FAILS:**
+
+**⏸️ PAUSE WORKFLOW - Credentials Invalid**
+
+Display message:
+
+═══════════════════════════════════════════════════════════════════
+⏸️  CONNECTION FAILED: Supabase Credentials Invalid
+═══════════════════════════════════════════════════════════════════
+
+The Supabase connection test failed.
+
+Error: [Display actual error message]
+
+📋 Please verify:
+
+1. NEXT_PUBLIC_SUPABASE_URL in .env.local is correct
+   (Check Supabase Dashboard → Project Settings → API → Project URL)
+
+2. NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local is correct
+   (Check Supabase Dashboard → Project Settings → API → anon public key)
+
+3. Supabase project is active and accessible
+   (Try logging into Supabase Dashboard)
+
+4. Update the credentials in .env.local if needed
+
+5. Update user.md with: "Credentials verified and working"
+
+The workflow will retry the connection test after your confirmation.
+═══════════════════════════════════════════════════════════════════
+
+**Monitor user.md for confirmation**
+
+**After confirmation:**
+- Re-run connection test (Step 4)
+- If succeeds, proceed to Step 5
+- If fails again after 2 retries, escalate to critical failure
+
+***
+
+**If Connection SUCCEEDS:**
+
+**Log results to PROGRESS.md:**
+
+Update the Phase 0 section in PROGRESS.md:
+- Change status to IN PROGRESS (if not already)
+- Add action: "Supabase connection verified ✓"
+- Add action: "Product count: [X] products"
+
+Proceed to Step 5.
+
+***
+
+### Step 5: Verify Product Data Structure
+
+Confirm the products table has required fields for this transformation.
+
+**Query one sample product to check schema:**
+1. Fetch one product from products table
+2. Check what fields are present in the returned data
+3. Compare against required fields list
+
+**Required fields for transformation:**
+- id (or unique identifier)
+- name (product name)
+- slug (URL-friendly identifier)
+- fabric_category (for categorization and routing)
+- price (product price)
+- images (array or JSON of image URLs)
+- description (product description - can be basic, will be optimized)
+
+**Check which fields exist in sample product.**
+
+**If critical fields missing (id, name, slug, fabric_category):**
+- Log warning in PROGRESS.md
+- Note: "Product schema missing fields: [list missing fields]"
+- This may affect Phase 1-2 execution
+- Continue initialization (not a blocker for Phase 0)
+
+**If all fields present:**
+- Log confirmation in PROGRESS.md: "Product schema: All required fields present"
+- Proceed to Step 6
+
+***
+
+### Step 6: Verify Git Repository Status
+
+Ensure Git repository is in clean, workable state for transformation.
+
+**Check repository status:**
+1. View current Git status
+2. Check which branch you're on
+3. Check for uncommitted changes
+4. Check for merge conflicts
+5. Verify repository has remote origin configured
+
+**Verify:**
+- Currently on main or master branch (not a feature branch)
+- No critical uncommitted changes (config files with credentials, important code changes)
+- Repository connected to remote origin
+- No merge conflicts
+- .git directory exists (repository is initialized)
+
+**If minor issues (untracked IDE config files, node_modules ignored):**
+- Acceptable, continue
+
+**If major issues (uncommitted important changes, merge conflicts, not on main branch):**
+- Log in PROGRESS.md as warning
+- Note: "Git repository has uncommitted changes - may need attention before deployment"
+- Continue initialization (not a blocker for Phase 0)
+
+**If Git not initialized or repository corrupt:**
+- Log as critical issue in PROGRESS.md
+- This will block later phases (backup, version control needed)
+- Continue Phase 0 initialization but note blocker
+
+***
+
+## Verify These Results
+
+**Go through this checklist carefully. Every item must be checked before Phase 0 is complete.**
+
+- [ ] PROGRESS.md exists in project root
+- [ ] PROGRESS.md initialized with tracking template and start date/time
+- [ ] Backup branch backup-react-spa created locally
+- [ ] Backup branch backup-react-spa pushed to remote repository
+- [ ] Currently on main or master branch
+- [ ] .env.local file exists in project root
+- [ ] NEXT_PUBLIC_SUPABASE_URL present in .env.local
+- [ ] NEXT_PUBLIC_SUPABASE_ANON_KEY present in .env.local
+- [ ] Supabase connection test executed successfully
+- [ ] Product count logged in PROGRESS.md
+- [ ] Product schema verified (required fields logged)
+- [ ] Git repository status acceptable (no critical issues)
+
+***
+
+## Decision
+
+### ✅ If ALL 12 Checkboxes Are Checked
+
+**Phase 0 Self-Check: PASS**
+
+**Update PROGRESS.md:**
+
+Change the Phase 0 section to show completion:
+- Status: Change from 🔄 IN PROGRESS to ✅ COMPLETED
+- Add Completed timestamp
+- Add Duration (from start to completion)
+- List Key Actions: PROGRESS.md initialized, backup created and pushed, Supabase verified, product count logged, schema verified, Git clean
+- Issues: None
+- Next: Phase 1 - Technical Foundation
+
+Add Phase 1 section below Phase 0:
+- Status: ⏳ PENDING
+- Estimated Start: After Phase 0 completes
+
+**Phase 0 execution is COMPLETE.**
+
+The workflow orchestrator (generate.mdc) will now run external verification before proceeding to Phase 1.
+
+***
+
+### ⚠️ If 1-2 Checkboxes Are NOT Checked
+
+**Phase 0 Self-Check: PARTIAL**
+
+**Identify which items failed.**
+
+For each unchecked item, determine which step it corresponds to:
+- PROGRESS.md items → Step 1
+- Backup branch items → Step 2
+- Credentials items → Step 3
+- Connection items → Step 4
+- Data verification → Step 5
+- Git status → Step 6
+
+**Retry failed steps:**
+
+1. Identify the step number for each failed checkbox
+2. Re-execute only those specific steps
+3. Maximum 2 retry attempts per step
+4. After retries, re-check the verification checklist
+
+**Example:** If "Backup pushed to remote" is unchecked:
+- Re-execute Step 2 backup push command
+- Re-check if backup branch now exists remotely
+- If now checked: Continue
+- If still unchecked after 2 retries: Escalate to critical failure
+
+**After retries:**
+- Re-check all 12 boxes in "Verify These Results" section above
+- If now all checked → Follow "All Checkboxes Checked" path above
+- If still 1-2 unchecked after retries → Escalate to critical failure below
+- If 3+ still unchecked → Proceed to critical failure below
+
+***
+
+### ❌ If 3+ Checkboxes Are NOT Checked OR Critical Failure
+
+**Phase 0 Self-Check: FAILED**
+
+This indicates serious issues that cannot be auto-resolved.
+
+**Update PROGRESS.md:**
+
+Change the Phase 0 section to show failure:
+- Status: ❌ FAILED
+- Failed At: Current timestamp
+- Duration: Start to failure time
+- Failed Checks: List each unchecked checkbox
+- Issues: Describe what went wrong for each failed check
+- Blockers: Cannot proceed to Phase 1 without resolving these issues
+
+Update BLOCKERS section:
+- Add: "Phase 0 initialization failed with [X] unresolved issues"
+- Add: "Manual intervention required before proceeding"
+
+Update USER ACTIONS REQUIRED section:
+- Add: "Resolve Phase 0 initialization failures"
+- Add: "Review failed checks above"
+- Add: "Update user.md when resolved"
+
+**⛔ STOP WORKFLOW EXECUTION**
+
+Display detailed message to user:
+
+═══════════════════════════════════════════════════════════════════
+⛔ PHASE 0 BLOCKED - Manual Intervention Required
+═══════════════════════════════════════════════════════════════════
+
+Phase 0 initialization has failed with multiple issues that require
+your attention before the transformation can proceed.
+
+❌ FAILED CHECKS:
+[List each unchecked checkbox from verification]
+
+📋 RESOLUTION STEPS:
+
+For PROGRESS.md issues:
+- Ensure you have write permissions in project directory
+- Verify disk space available
+- Try creating PROGRESS.md manually if automated creation failed
+
+For Backup branch issues:
+- Verify Git is installed and working
+- Check remote repository access permissions
+- Ensure you have push permissions to repository
+- Try creating and pushing backup branch manually
+
+For Supabase credential issues:
+- Double-check credentials in Supabase Dashboard
+- Ensure .env.local format is correct (no extra spaces)
+- Verify Supabase project is active (not paused)
+- Test connection directly in Supabase Dashboard
+
+For Git repository issues:
+- Resolve any merge conflicts
+- Commit or stash uncommitted changes
+- Ensure on main or master branch
+- Verify repository is not corrupted
+
+After resolving all issues above:
+
+1. Re-check the verification checklist manually
+2. Confirm all 12 items can now be checked
+3. Update user.md with: "Phase 0 issues resolved - ready to retry"
+
+The workflow will re-run Phase 0 verification after your confirmation.
+
+═══════════════════════════════════════════════════════════════════
+
+**⏳ Wait for user.md confirmation**
+
+Monitor user.md for resolution signal.
+
+**Accepted signals:**
+- "Phase 0 issues resolved - ready to retry"
+- "issues resolved"
+- "ready to retry"
+- "fixed"
+- "all resolved"
+- Or similar confirmation language
+
+**After user confirms resolution:**
+
+1. Re-run the entire "Verify These Results" checklist (all 12 checks)
+2. If all boxes now checked → Follow "All Checkboxes Checked" path
+3. If still failing → Log as unresolvable and end workflow with error report
+
+***
+
+## Expected Duration
+
+**Estimated Time:** 5-10 minutes
+
+**Breakdown:**
+- Step 1 (Create PROGRESS.md): 1 minute
+- Step 2 (Create backup): 1-2 minutes
+- Step 3 (Check credentials): 30 seconds
+- Step 4 (Test connection): 1 minute
+- Step 5 (Verify data): 1 minute
+- Step 6 (Check Git): 30 seconds
+- Verification checklist: 2-3 minutes
+
+**Note:** Duration excludes user wait time if credentials need to be provided. If user action required, add time for user to locate credentials and update user.md.
+
+***
+
+## Common Issues & Solutions
+
+### Issue 1: Backup branch already exists from previous attempt
+**Solution:** This is acceptable. Verify the branch exists and is pushed to remote. No need to delete and recreate. The existing backup serves the same purpose. Check the box and continue.
+
+***
+
+### Issue 2: Product count is less than 130
+
+**Solution:** Log the actual count in PROGRESS.md and continue. The transformation will work with any number of products. 130 is expected based on current data, but fewer products don't block initialization. Note the discrepancy but don't treat as failure. Continue with actual product count.
+
+***
+
+### Issue 3: .env.local already exists but connection fails
+
+**Solution:** Credentials are incorrect or Supabase project has issues.
+
+**Actions:**
+
+1. Verify credentials in Supabase Dashboard (Project Settings → API)
+2. Check if Supabase project is paused (free tier inactivity)
+3. Try logging into Supabase Dashboard to confirm account access
+4. Copy fresh credentials from dashboard
+5. Update .env.local with verified credentials
+6. Retry connection test
+
+***
+
+### Issue 4: Git shows working tree clean but backup fails to push
+
+**Solution:** Remote repository access issue.
+
+**Actions:**
+
+1. Check remote repository URL is configured
+2. Verify you have push access to repository
+3. Check authentication (GitHub credentials or SSH keys)
+4. If authentication fails, update Git credentials
+5. Retry push to remote
+
+***
+
+### Issue 5: Permission denied when creating PROGRESS.md
+
+**Solution:** File system permission issue in project directory.
+
+**Actions:**
+
+1. Check directory permissions
+2. Verify you have write access to project directory
+3. Try creating file manually
+4. If manual creation works, retry Step 1
+5. If permission denied, resolve directory permissions
+
+***
+
+### Issue 6: Products table doesn't exist in Supabase
+
+**Solution:** Database not set up or wrong Supabase project.
+
+**Actions:**
+
+1. Verify correct Supabase project URL in .env.local
+2. Check Supabase Dashboard → Table Editor → Confirm "products" table exists
+3. If table missing, this is critical blocker for entire transformation
+4. PAUSE workflow, inform user that products table must exist
+5. Cannot proceed without product data
+
+***
+
+### Issue 7: How to create user.md for confirmations
+
+**Solution:** user.md doesn't exist initially. User creates it when workflow pauses.
+
+**Actions:**
+
+1. When workflow pauses and requests confirmation
+2. User creates new file named user.md in project root
+3. User adds confirmation text (any natural language)
+4. User saves file
+5. Workflow detects file update and reads content
+6. Workflow looks for confirmation intent and resumes
+
+**Note:** user.md is created by user on-demand, not by workflow.
+
+***
+
+
