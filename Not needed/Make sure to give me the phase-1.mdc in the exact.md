@@ -1,0 +1,323 @@
+description: Phase 1 - Technical Foundation for Neera Sarees Transformation
+
+***
+
+# PHASE 1: TECHNICAL FOUNDATION (NEXT.JS MIGRATION)
+
+## Objective
+
+Migrate the existing React SPA to Next.js 14+ with App Router, establish the core technical foundation, and ensure all critical functionality is preserved while enabling SSG for product pages and SSR for category pages. [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+**Success looks like:**
+
+- Next.js 14+ project initialized with App Router
+- Core layout, navigation, and styling migrated
+- Product and category routes implemented in App Router
+- Supabase data fetching wired into Next.js pages
+- SSG enabled for all product pages
+- SSR enabled for all category pages
+- Dev and prod builds run without critical errors
+- Core e-commerce functionality preserved (cart, navigation, basic flows) [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+## Execute These Steps
+
+### Step 1: Verify or Initialize Next.js 14+ Project
+
+1. Check if a Next.js project already exists:
+    - Look for next.config.mjs in the project root
+    - Look for app directory (App Router)
+2. If Next.js project exists:
+    - Check next version in package.json
+    - If version is 14 or higher:
+        - Note in PROGRESS.md: “Next.js project already initialized (version: [X])”
+    - If version is below 14:
+        - Note in PROGRESS.md: “Next.js version below 14 (version: [X]) – upgrade required in later phase”
+        - Continue with current version for now (do not block Phase 1 solely on version)
+3. If Next.js project does NOT exist:
+    - Initialize a new Next.js 14+ project with:
+        - App Router (app directory)
+        - TypeScript (if preferred)
+        - Tailwind CSS
+    - Ensure:
+        - Dev server runs (`next dev` or equivalent)
+        - Basic starter page renders without errors
+4. Update PROGRESS.md (Phase 1 section):
+    - Add: “Next.js project status: [Already existed vX.X.X / Initialized vX.X.X / Issues encountered]” [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 2: Configure Core Project Settings
+
+1. Open next.config.mjs:
+    - Confirm App Router usage via app directory (no special flag needed, just structure)
+    - Configure images domains for your CDNs or asset hosts
+    - Ensure compression and any required experimental flags are set according to project needs
+2. Check TypeScript configuration (if using TS):
+    - tsconfig.json exists
+    - No blocking TypeScript errors on build
+3. Verify Tailwind CSS integration:
+    - tailwind.config.js present
+    - Global stylesheet (e.g., app/globals.css) imports Tailwind base, components, utilities
+    - A simple Tailwind class (e.g., text-red-500) renders correctly
+4. Log to PROGRESS.md:
+    - “Core configuration: [Verified / Issues Found]”
+    - If issues found, briefly describe them under Phase 1 issues [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 3: Migrate Layout and Shell
+
+1. Identify layout elements from the existing React SPA:
+    - Header
+    - Footer
+    - Primary navigation
+    - Any global wrappers
+2. Implement Next.js layout structure:
+    - Create app/layout.(tsx|jsx) with:
+
+```
+- \<html> and \<body> tags
+```
+
+        - Imported global styles
+        - Header and footer components
+        - Slot for children
+3. Ensure:
+    - Header and footer appear consistently on all pages
+    - Navigation links function correctly in the App Router
+4. Verify homepage:
+    - app/page.(tsx|jsx) renders the intended homepage content (or a minimal stub if full migration is later)
+5. Log to PROGRESS.md:
+    - “Layout \& shell migration: [Completed / Partial / Blocked]”
+    - Note any missing components or visual regressions [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 4: Implement Product and Category Routes
+
+1. From the existing React SPA, determine the intended URL patterns for:
+    - Product detail pages
+    - Category listing pages
+2. Implement App Router routes (example structure):
+    - app/products/[fabric]/[slug]/page.(tsx|jsx) for product details
+    - app/categories/[fabric]/page.(tsx|jsx) for category listings
+    - Adjust naming as needed to stay consistent with SEO.md and PRD decisions
+3. Ensure routes:
+    - Either preserve existing URLs
+    - Or improve them with a plan to add 301 redirects in the URL structure phase
+4. Manually test:
+    - Navigate to a valid product URL
+    - Navigate to a valid category URL
+5. Log to PROGRESS.md:
+    - “Route structure implemented: [Yes / Partial / No]”
+    - List any missing routes [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 5: Wire Supabase Data Fetching
+
+1. Ensure Supabase client setup:
+    - Shared client (e.g., lib/supabase) configured using environment variables from .env.local
+2. Product detail pages:
+    - In app/products/[fabric]/[slug]/page:
+        - Fetch product by slug and fabric (or equivalent unique identifier)
+        - Render real product data (name, price, images, etc.)
+3. Category pages:
+    - In app/categories/[fabric]/page:
+        - Fetch all products for the given fabric_category
+        - Render a list/grid of products
+4. Confirm:
+    - Product pages do NOT use hardcoded placeholder data
+    - Category pages list real data from Supabase
+5. Log to PROGRESS.md:
+    - “Supabase data fetching (products): [Working / Partial / Broken]”
+    - “Supabase data fetching (categories): [Working / Partial / Broken]” [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 6: Enable SSG for Products and SSR for Categories
+
+1. Product pages (SSG):
+    - Implement generateStaticParams (or equivalent App Router pattern) in product routes
+    - Use Supabase to fetch all product identifiers (slugs, fabric, etc.)
+    - Ensure all product pages are pre-rendered at build time
+2. Category pages (SSR):
+    - Use server-side data fetching pattern (e.g., async function directly in page) for category pages
+    - Make sure data is fetched on each request or with appropriate caching
+3. Verify behavior:
+    - For a product page:
+        - View page source and confirm HTML contains product content without client-side JS execution
+    - For a category page:
+        - Confirm content loads correctly on first request
+4. Log to PROGRESS.md:
+    - “SSG (products): [Enabled / Not Enabled]”
+    - “SSR (categories): [Enabled / Not Enabled]” [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 7: Preserve Core Functionality
+
+1. Identify critical behaviors from the existing SPA:
+    - Cart add/remove/update
+    - Auth flows (if present)
+    - Key navigation flows (home → category → product → cart/checkout)
+2. Test these flows in the Next.js app:
+    - Perform a typical browsing + add-to-cart sequence
+    - Confirm navigation behaves as expected
+3. Note any regressions:
+    - Non-working cart
+    - Broken links
+    - Missing UI elements
+4. Log to PROGRESS.md:
+    - “Core functionality preserved: [Yes / Partial / No]”
+    - Document known regressions under Phase 1 issues [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+### Step 8: Verify Builds and Basic Stability
+
+1. Run development server:
+    - Start dev server
+    - Visit:
+        - Homepage
+        - At least one category page
+        - At least one product page
+2. Run production build:
+    - Run `next build`
+    - Run `next start` (or equivalent)
+3. Check for:
+    - Build-time errors
+    - Runtime errors in server logs
+    - Critical console errors in browser
+4. Log to PROGRESS.md:
+    - “Dev build: [Pass / Fail]”
+    - “Prod build: [Pass / Fail]”
+    - Briefly describe any critical issues [functions.mcp_tool_github-mcp-direct_get_file_contents:1]
+
+***
+
+## Verify These Results
+
+Use this checklist to perform Phase 1 self-check. All items should be checked before marking Phase 1 as completed.
+
+### Project Initialization \& Config
+
+- [ ] Next.js project exists in the repository
+- [ ] Next.js version is 14 or higher (or version < 14 noted as a blocker)
+- [ ] App Router (app directory) is in use
+- [ ] Tailwind CSS is configured and rendering correctly
+
+
+### Layout \& Shell
+
+- [ ] app/layout.(tsx|jsx) is implemented
+- [ ] Global styles are applied correctly
+- [ ] Header and footer render on all pages
+- [ ] Homepage (app/page) renders without errors
+
+
+### Routing \& Data
+
+- [ ] Product detail route implemented (e.g., app/products/[fabric]/[slug]/page)
+- [ ] Category route implemented (e.g., app/categories/[fabric]/page)
+- [ ] Supabase client is configured in the Next.js app
+- [ ] Product pages fetch real data from Supabase
+- [ ] Category pages fetch real data from Supabase
+
+
+### SSG \& SSR Behavior
+
+- [ ] generateStaticParams (or equivalent) implemented for product pages
+- [ ] Product pages are statically generated at build time
+- [ ] Category pages use server-side data fetching
+- [ ] HTML source for a product page shows pre-rendered content (non-empty HTML)
+
+
+### Functionality \& Stability
+
+- [ ] Cart functionality works (if applicable)
+- [ ] Core navigation path works (home → category → product → cart)
+- [ ] Development build runs without critical errors
+- [ ] Production build runs without critical errors
+
+
+### Logging \& Progress
+
+- [ ] Phase 1 section exists in PROGRESS.md
+- [ ] Key actions logged (init, routes, data, SSG/SSR, builds)
+- [ ] Any issues or regressions noted in PROGRESS.md[^1]
+
+***
+
+## Decision
+
+### ✅ If ALL Checkboxes Are Checked
+
+**Phase 1 Self-Check: PASS**
+
+Update PROGRESS.md (Phase 1 section):
+
+- Status: Change from 🔄 IN PROGRESS to ✅ COMPLETED
+- Add Completed timestamp
+- Add Duration (start to completion)
+- Key Achievements:
+    - Next.js project running with App Router
+    - Layout and navigation migrated
+    - Product and category routes implemented
+    - Supabase data fetching working for products and categories
+    - SSG for product pages and SSR for category pages confirmed
+    - Dev and prod builds free of critical errors
+- Issues: List any minor non-blocking issues (for later phases to address)
+
+Phase 1 is now ready for external verification by generate.mdc before moving to Phase 2.
+
+***
+
+### ⚠️ If 1–5 Checkboxes Are NOT Checked
+
+**Phase 1 Self-Check: PARTIAL**
+
+1. Identify which checklist items are unchecked.
+2. Map each unchecked item back to the corresponding step (1–8).
+3. Re-execute only those specific steps.
+4. Allow up to 2 retry attempts per failed area.
+5. After retries, re-run the full checklist.
+
+- If after retries all checkboxes are checked:
+    - Follow the PASS path above.
+- If after retries 1–5 checkboxes remain unchecked:
+    - Update PROGRESS.md:
+        - Status: ⚠️ INCOMPLETE
+        - Unresolved Items: List each unchecked item
+        - Notes: Explain why each item could not be completed
+    - Mark these unresolved items as blockers or risks for subsequent phases that depend on them (e.g., content and SEO work relying on stable routes and data).[^1]
+
+***
+
+### ❌ If 6+ Checkboxes Are NOT Checked or Critical Failures Occur
+
+**Phase 1 Self-Check: FAILED**
+
+Critical failures include (but are not limited to):
+
+- Next.js project cannot build or run
+- Product and category data cannot be fetched at all
+- SSG for product pages cannot be established
+- Category pages fail to render consistently
+
+Update PROGRESS.md:
+
+- Status: ❌ FAILED
+- Failed At: Current timestamp
+- Failed Checks: List all unchecked checklist items
+- Critical Issues: Describe major problems and suspected root causes
+- Blockers: Explicitly state that Phase 1 is a hard blocker for Phase 2 and beyond
+
+Phase 1 cannot be considered complete until these critical issues are resolved. External verification in generate.mdc will detect the FAILED status and prevent progression to Phase 2. [functions.mcp_tool_github-mcp-direct_get_file_contents:2]
+
+<div align="center">⁂</div>
+
+[^1]: https://www.perplexity.ai/search/98c9de93-8128-4b30-9683-ed73348d937a
+

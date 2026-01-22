@@ -2,8 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    // Add external domains if/when using next/image with remote URLs
-    // domains: [],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'xanrkptipcdhvklrvcia.supabase.co',
+      },
+    ],
   },
   // If you need backend proxies during dev, uncomment and configure:
   // async rewrites() {

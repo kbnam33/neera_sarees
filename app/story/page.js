@@ -1,10 +1,9 @@
 'use client';
 
-import StoryPage from '../../src/StoryPage.jsx';
+import dynamic from 'next/dynamic';
 
-export const metadata = {
-  title: 'Our Story | Neera',
-};
+// Dynamically import to avoid SSR issues with React Router
+const StoryPage = dynamic(() => import('../../src/StoryPage.jsx'), { ssr: false });
 
 export default function Story() {
   return <StoryPage />;
