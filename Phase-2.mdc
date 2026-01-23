@@ -1,0 +1,327 @@
+# PHASE 2: CONTENT OPTIMIZATION
+
+## Objective
+
+Optimize content across all product pages, category pages, and key landing pages for search engines and users. Implement comprehensive meta tags, structured headings, alt text for images, and enhanced product descriptions for all 137 products.
+
+**Success looks like:**
+
+- All 137 product pages have unique, optimized meta titles and descriptions
+- All product images have descriptive alt text
+- H1, H2, H3 heading structure implemented site-wide
+- Product descriptions enhanced with keyword-rich, user-focused content
+- Category pages have optimized content and meta tags
+- Homepage and key landing pages optimized
+- Schema markup for products verified and enhanced
+- All content changes logged and tracked in PROGRESS.md
+
+***
+
+## Execute These Steps
+
+### Step 1: Audit Current Content State
+
+1. Review existing content across the site:
+    - Check how many products currently have meta titles and descriptions
+    - Check how many product images have alt text
+    - Review current product description quality and length
+    - Assess heading structure on key pages
+2. Document baseline in PROGRESS.md:
+    - "Content audit: [X] products with meta tags, [Y] images with alt text, [Z] products with descriptions"
+    - Note any patterns (e.g., certain categories better optimized than others)
+3. Identify priority areas:
+    - Products with missing meta data
+    - High-value products needing enhanced descriptions
+    - Category pages needing content
+4. Log to PROGRESS.md:
+    - "Content audit completed: [summary of findings]"
+    - "Priority areas identified: [list]"
+
+***
+
+### Step 2: Implement Meta Tags for Product Pages
+
+1. For each product page, implement dynamic meta tags:
+    - Meta Title format: "[Product Name] - [Fabric Type] Saree | Neera Sarees"
+    - Meta Description format: "Shop [Product Name], a beautiful [fabric_type] saree. [Short description]. Free shipping, authentic quality. View details and buy online."
+    - Ensure character limits: Title ≤60 chars, Description ≤155 chars
+2. Implementation approach:
+    - Use Next.js metadata API (generateMetadata function in product page)
+    - Fetch product data (name, fabric_type, short_description) from Supabase
+    - Dynamically generate unique meta tags per product
+3. Verify for a sample of 5-10 products:
+    - View page source to confirm meta tags are in <head>
+    - Check uniqueness (no duplicate titles/descriptions)
+    - Ensure tags are pre-rendered (visible in HTML source without JS)
+4. Log to PROGRESS.md:
+    - "Product page meta tags: [Implemented / Partial / Issues]"
+    - "Sample verification: [X/Y products checked, all unique]"
+
+***
+
+### Step 3: Implement Meta Tags for Category and Key Pages
+
+1. Category pages:
+    - Meta Title: "[Fabric Type] Sarees - Shop Authentic Collection | Neera Sarees"
+    - Meta Description: "Explore our premium [fabric_type] sarees collection. [Brief category description]. Free shipping, quality guaranteed."
+2. Homepage:
+    - Meta Title: "Neera Sarees - Authentic Indian Silk \& Designer Sarees Online"
+    - Meta Description: "Shop premium silk, cotton, and designer sarees. Authentic quality, 137+ styles, free shipping across India. Traditional elegance delivered."
+3. Other key pages (if applicable):
+    - About page
+    - Contact page
+    - Collections/special pages
+4. Implement using Next.js metadata API in respective page files.
+5. Log to PROGRESS.md:
+    - "Category meta tags: [Implemented for X categories]"
+    - "Homepage meta tags: [Implemented / Issues]"
+    - "Other pages: [List of pages with meta tags implemented]"
+
+***
+
+### Step 4: Add Alt Text to All Product Images
+
+1. Identify all product images:
+    - From Supabase product data, list all image URLs
+    - Count total images needing alt text
+2. Define alt text format:
+    - Primary image: "[Product Name] - [Fabric Type] Saree"
+    - Additional images: "[Product Name] - [Fabric Type] Saree - [Detail/Angle]" (e.g., "close-up", "drape view", "border detail")
+3. Implement alt text:
+    - Update product page components to use alt attributes
+    - Fetch product name and fabric_type from Supabase
+    - Apply to all <Image> or <img> tags
+4. Verify for sample products:
+    - Inspect image elements in browser DevTools
+    - Confirm alt attributes are present and descriptive
+    - Check that alt text is unique per image
+5. Log to PROGRESS.md:
+    - "Image alt text: [Implemented for X products, Y total images]"
+    - "Sample verification: [Pass/Fail]"
+
+***
+
+### Step 5: Implement Heading Structure Site-Wide
+
+1. Product pages:
+    - H1: Product name (e.g., "Elegant Kanjeevaram Silk Saree")
+    - H2: Section headings (e.g., "Product Details", "Description", "Care Instructions")
+    - H3: Subsections if needed
+2. Category pages:
+    - H1: Category name (e.g., "Kanjeevaram Silk Sarees")
+    - H2: "Our Collection" or similar
+    - Product cards: Use semantic HTML (not heading tags for product names in grid)
+3. Homepage:
+    - H1: Main value proposition (e.g., "Authentic Indian Sarees - Premium Quality")
+    - H2: Section headings (e.g., "Featured Collections", "New Arrivals")
+4. Verify heading hierarchy:
+    - Use browser extensions or manual inspection to check heading order
+    - Ensure no heading levels are skipped (e.g., H1 → H3 without H2)
+    - Only one H1 per page
+5. Log to PROGRESS.md:
+    - "Heading structure: [Implemented / Partial / Issues]"
+    - "Pages verified: [Product pages, category pages, homepage]"
+
+***
+
+### Step 6: Enhance Product Descriptions
+
+1. Review current product descriptions:
+    - Assess length, quality, keyword usage
+    - Identify products with missing or weak descriptions
+2. Define description enhancement strategy:
+    - Minimum length: 150-200 words per product (if feasible)
+    - Include: Fabric details, design features, occasion suitability, care tips
+    - Natural keyword integration (fabric type, saree type, design elements)
+3. Implementation options:
+    - Option A: Enhance descriptions directly in Supabase (if you have content ready)
+    - Option B: Create a process/template for future enhancement
+    - Option C: Prioritize top 20-30 products for immediate enhancement
+4. For this phase, focus on:
+    - Ensuring all products have at least a short_description (from Supabase)
+    - Displaying descriptions on product pages with proper formatting
+    - Logging which products need manual content enhancement post-migration
+5. Log to PROGRESS.md:
+    - "Product descriptions: [X products have descriptions, Y need enhancement]"
+    - "Description display: [Implemented / Issues]"
+    - "Content enhancement plan: [Documented for post-Phase-2 work]"
+
+***
+
+### Step 7: Implement or Verify Product Schema Markup
+
+1. Check if product schema (JSON-LD) exists from Phase 1:
+    - Review product page code for existing schema markup
+2. Ensure product schema includes:
+    - @type: "Product"
+    - name, image, description
+    - offers: price, priceCurrency, availability
+    - brand: "Neera Sarees"
+    - Optional: aggregateRating (if reviews exist), sku, gtin
+3. If not implemented, add JSON-LD script to product pages:
+    - Use Next.js script component or metadata API
+    - Fetch product data from Supabase
+    - Generate schema dynamically per product
+4. Validate schema:
+    - Use Google Rich Results Test or Schema Markup Validator
+    - Test 3-5 sample product URLs
+    - Ensure no errors, warnings acceptable if minor
+5. Log to PROGRESS.md:
+    - "Product schema: [Already implemented / Newly implemented / Issues]"
+    - "Schema validation: [Pass / Warnings / Errors]"
+
+***
+
+### Step 8: Run Content Quality Checks
+
+1. Automated checks:
+    - Build the site and verify no errors
+    - Check for any placeholder text or lorem ipsum
+    - Verify all meta tags are unique (no duplicates)
+2. Manual spot checks:
+    - Visit 10 random product pages:
+        - Verify meta title in browser tab
+        - View source to confirm meta description
+        - Check image alt text via DevTools
+        - Confirm heading structure
+    - Visit 3 category pages:
+        - Verify meta tags and headings
+    - Visit homepage:
+        - Verify meta tags and headings
+3. Content completeness:
+    - All 137 products have meta tags: [Yes/No]
+    - All product images have alt text: [Yes/No]
+    - Heading structure is correct: [Yes/No]
+    - Schema markup validated: [Yes/No]
+4. Log to PROGRESS.md:
+    - "Content quality checks: [Pass / Issues found]"
+    - "Spot check results: [Summary]"
+
+***
+
+## Verify These Results
+
+Use this checklist to perform Phase 2 self-check. All items should be checked before marking Phase 2 as completed.
+
+### Meta Tags
+
+- [ ] All 137 product pages have unique meta titles
+- [ ] All 137 product pages have unique meta descriptions
+- [ ] Meta titles are ≤60 characters
+- [ ] Meta descriptions are ≤155 characters
+- [ ] Category pages have meta tags (all fabric categories)
+- [ ] Homepage has meta tags
+- [ ] Meta tags are pre-rendered in HTML source (SSR/SSG working)
+
+
+### Image Optimization
+
+- [ ] All product primary images have alt text
+- [ ] Additional product images (if any) have descriptive alt text
+- [ ] Alt text follows naming convention and is descriptive
+- [ ] Sample verification confirms alt attributes are present
+
+
+### Heading Structure
+
+- [ ] Product pages have proper H1 (product name)
+- [ ] Product pages have H2 for section headings
+- [ ] Category pages have proper H1 (category name)
+- [ ] Homepage has proper H1
+- [ ] No heading levels are skipped site-wide
+- [ ] Only one H1 per page
+
+
+### Product Descriptions
+
+- [ ] All products display descriptions on product pages
+- [ ] Descriptions are formatted properly
+- [ ] Products needing content enhancement are documented
+
+
+### Schema Markup
+
+- [ ] Product schema (JSON-LD) implemented on product pages
+- [ ] Schema includes required fields (name, image, description, offers)
+- [ ] Schema validated via Google Rich Results Test (no critical errors)
+
+
+### Quality Checks
+
+- [ ] No placeholder or lorem ipsum text found
+- [ ] Spot checks of 10 products confirm meta tags and alt text
+- [ ] Build runs without errors
+- [ ] Content completeness confirmed for all 137 products
+
+
+### Logging \& Progress
+
+- [ ] Phase 2 section exists in PROGRESS.md
+- [ ] Key actions logged (audit, meta tags, alt text, headings, descriptions, schema)
+- [ ] Any issues or incomplete items noted in PROGRESS.md
+
+***
+
+## Decision
+
+### ✅ If ALL Checkboxes Are Checked
+
+**Phase 2 Self-Check: PASS**
+
+Update PROGRESS.md (Phase 2 section):
+
+- Status: Change from 🔄 IN PROGRESS to ✅ COMPLETED
+- Add Completed timestamp
+- Add Duration (start to completion)
+- Key Achievements:
+    - All 137 product pages optimized with unique meta tags
+    - Image alt text implemented across all product images
+    - Heading structure implemented site-wide (H1, H2, H3)
+    - Product descriptions displayed and enhancement plan documented
+    - Product schema markup validated
+    - Content quality checks passed
+- Issues: List any minor non-blocking issues (for later phases to address)
+
+Phase 2 is now ready for external verification by generate.mdc before moving to Phase 3.
+
+***
+
+### ⚠️ If 1–5 Checkboxes Are NOT Checked
+
+**Phase 2 Self-Check: PARTIAL**
+
+1. Identify which checklist items are unchecked.
+2. Map each unchecked item back to the corresponding step (1–8).
+3. Re-execute only those specific steps.
+4. Allow up to 2 retry attempts per failed area.
+5. After retries, re-run the full checklist.
+
+- If after retries all checkboxes are checked:
+    - Follow the PASS path above.
+- If after retries 1–5 checkboxes remain unchecked:
+    - Update PROGRESS.md:
+        - Status: ⚠️ INCOMPLETE
+        - Unresolved Items: List each unchecked item
+        - Notes: Explain why each item could not be completed
+    - Mark these unresolved items as risks for subsequent phases that depend on quality content (e.g., SEO performance in later phases).
+
+***
+
+### ❌ If 6+ Checkboxes Are NOT Checked or Critical Failures Occur
+
+**Phase 2 Self-Check: FAILED**
+
+Critical failures include (but are not limited to):
+
+- Meta tags cannot be generated or are all duplicate
+- Alt text implementation completely broken
+- Heading structure fundamentally incorrect across the site
+- Build failures preventing content deployment
+
+Update PROGRESS.md:
+
+- Status: ❌ FAILED
+- Failed At: Current timestamp
+- Failed Checks: List all unchecked checklist items
+- Critical Issues: Describe major problems and suspected root causes
+- Blockers: Explicitly state that Phase 2 is a blocker for SEO-dependent phases (Phase 3, 7, 8)

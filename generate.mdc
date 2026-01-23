@@ -6,494 +6,332 @@ alwaysApply: false
 - "components/**/*"
 - "lib/**/*"
 alwaysTry: false
-
 # NEERA SAREES: SEO \& TECHNICAL TRANSFORMATION
-
 ## Main Workflow Orchestrator - generate.mdc
-
-**Version:** 1.0 (Phase 0 Test)
-
+**Version:** 1.0
 ***
-
 ## EXECUTION OVERVIEW
-
-This orchestrator executes the complete SEO \& Technical Transformation for Neera Sarees. It follows a phase-by-phase progression with Ralph loop validation at every level.
-
-**Your Role as an agent:**
-
-- Always Execute only latest the step specified as `**Next Step**` in @PROGRESS.md
-- Do not execute any other phases unless the user explicitly instructs otherwise.
-
-
-## CONTEXT MANAGEMENT
-
-**Keep Loaded Throughout:**
-
-- This file (generate.mdc)
-- PROGRESS.md (once created in Phase 0)
-
-**Load Temporarily:**
-
-- phase-X.mdc files (one at a time, unload after phase)
-- Reference files (technical-migration.mdc, seo-optimization.mdc) only when explicitly referenced
-
-**Never Load:**
-
-- PRD.md (source document, not needed during execution)
-
+This orchestrator executes the complete SEO \& Technical Transformation for Neera Sarees.
+**Your Role as AI Agent:**
+- Always read @next-step.md to determine which phase to execute
+- Execute only the phase specified in next-step.md
+- Do not execute any other phases unless the user explicitly instructs otherwise
 ***
-
+## CONTEXT MANAGEMENT
+**Keep Loaded Throughout:**
+- This file (generate.mdc)
+- next-step.md (for routing)
+- PROGRESS.md (for audit and status tracking)
+**Load Temporarily:**
+- phase-X.mdc files (one at a time, unload after phase)
+- Reference files (technical-migration.mdc, seo-optimization.mdc) only when explicitly re
+**Never Load:**
+Done, now give me the new generate.mdc file, to
+achieve the format as discussed
+- PRD.md (source document, not needed during execution)
+***
 # PHASE 0: PROJECT INITIALIZATION
-
 ## Execute
-
 Load and run @phase-0.mdc
-
 Follow all instructions in phase-0.mdc from top to bottom:
-
 - Read Objective
 - Execute all steps (1 through 6)
 - If user action required, pause and monitor user.md
 - Complete verification checklist
 - Follow decision logic
-
 **After phase-0.mdc execution completes, return here for external verification.**
-
 ***
-
 ## Verify Phase 0 Completion
-
 ### Part 1: Progress Tracking Verification (Ralph Loop)
-
 #### PLAN
-
 **Vision:** Establish audit trail foundation
-
 **What We're Verifying:**
-
 - PROGRESS.md file exists and is accessible
 - File contains correct structure (headers, sections, metadata)
 - Initialization template is properly populated
-
 **Success Criteria:**
-
 - 5/5 checks pass → Part 1 PASS
 - 3-4/5 checks pass → Part 1 RETRY
 - <3/5 checks pass → Part 1 FAIL
-
-
 #### EXECUTE
-
 Run these verification checks:
-
 **Check 1.1: File Existence**
-
 - Verify PROGRESS.md file exists in project root directory
 - Expected: File is present and readable
-
 **Check 1.2: Header Structure**
-
 - Open PROGRESS.md file
 - Verify it contains "NEERA SAREES TRANSFORMATION - PROGRESS LOG" header
 - Expected: Header text found
-
 **Check 1.3: Phase 0 Entry**
-
 - Check PROGRESS.md contains "Phase 0: Project Initialization" section
 - Expected: Phase 0 section exists
-
 **Check 1.4: Metadata Fields**
-
 - Verify PROGRESS.md contains Start Date field
 - Verify PROGRESS.md contains Start Time field
 - Expected: Both fields present
-
 **Check 1.5: Content Quality**
-
 - Open PROGRESS.md and read content
 - Verify Start Date is populated (actual date, not placeholder)
 - Verify Start Time is populated (actual time, not placeholder)
 - Verify Phase 0 status shows either "IN PROGRESS" or "COMPLETED"
 - Expected: All fields have real values
-
 Record results for each check.
-
 #### VALIDATE
-
 **Expected Results:**
-
 - Check 1.1: ✓ (file exists)
 - Check 1.2: ✓ (header present)
 - Check 1.3: ✓ (Phase 0 entry exists)
 - Check 1.4: ✓ (metadata fields present)
 - Check 1.5: ✓ (fields populated with real values)
 - Total: 5/5 checks pass
-
 **Actual Results:**
 Count how many checks passed: [X]/5
-
 #### DECIDE
-
 **If 5/5 checks passed:**
-
 - Part 1 Status: ✅ PASS
 - Log: "Part 1 (Progress Tracking): All 5 checks passed"
 - Action: Continue to Part 2 verification
-
 **If 3-4/5 checks passed:**
-
 - Part 1 Status: ⚠️ PARTIAL
 - Action: Retry Part 1 verification once
-    - Re-check the failed items
-    - If now 5/5: Part 1 PASS, continue to Part 2
-    - If still 3-4/5: Escalate to Part 1 FAIL
-
+- Re-check the failed items
+- If now 5/5: Part 1 PASS, continue to Part 2
+- If still 3-4/5: Escalate to Part 1 FAIL
 **If <3/5 checks passed:**
-
 - Part 1 Status: ❌ FAIL
 - Action: Stop verification immediately
 - Reason: Progress tracking foundation not established
 - Cannot proceed without audit trail capability
 - Escalate to Phase 0 critical failure (skip remaining parts)
-
 ***
-
 ### Part 2: Backup Safety Verification (Ralph Loop)
-
 #### PLAN
-
 **Vision:** Ensure rollback capability exists
-
 **What We're Verifying:**
-
 - Backup branch exists locally
 - Backup branch pushed to remote repository
 - Branch is valid and accessible
-
 **Success Criteria:**
-
 - 3/3 checks pass → Part 2 PASS
 - 2/3 checks pass → Part 2 RETRY
 - <2/3 checks pass → Part 2 FAIL
-
-
 #### EXECUTE
-
 Run these verification checks:
-
 **Check 2.1: Local Branch Exists**
-
 - List all Git branches
 - Look for backup-react-spa in the branch list
 - Expected: Branch name appears
-
 **Check 2.2: Remote Branch Exists**
-
 - List remote branches
 - Look for backup-react-spa in remote branch list
 - Expected: origin/backup-react-spa or similar exists
-
 **Check 2.3: Branch Integrity**
-
 - Checkout backup-react-spa branch temporarily
 - Verify branch has commits (check git log)
 - Return to main branch
 - Expected: Branch is valid with commit history
-
 Record results for each check.
-
 #### VALIDATE
-
 **Expected Results:**
-
 - Check 2.1: ✓ (local branch exists)
 - Check 2.2: ✓ (remote branch exists)
 - Check 2.3: ✓ (branch is valid)
 - Total: 3/3 checks pass
-
 **Actual Results:**
 Count how many checks passed: [X]/3
-
 #### DECIDE
-
 **If 3/3 checks passed:**
-
 - Part 2 Status: ✅ PASS
 - Log: "Part 2 (Backup Safety): All 3 checks passed"
 - Action: Continue to Part 3 verification
-
 **If 2/3 checks passed:**
-
 - Part 2 Status: ⚠️ PARTIAL
 - Action: Retry Part 2 verification once
-    - Identify which check failed
-    - If Check 2.2 failed (remote push), retry: Push backup branch to remote
-    - If Check 2.3 failed (integrity), retry: Verify branch validity
-    - Re-check all 3 items
-    - If now 3/3: Part 2 PASS, continue to Part 3
-    - If still 2/3: Escalate to Part 2 FAIL
-
+- Identify which check failed
+- If Check 2.2 failed (remote push), retry: Push backup branch to remote
+- If Check 2.3 failed (integrity), retry: Verify branch validity
+- Re-check all 3 items
+- If now 3/3: Part 2 PASS, continue to Part 3
+- If still 2/3: Escalate to Part 2 FAIL
 **If <2/3 checks passed:**
-
 - Part 2 Status: ❌ FAIL
 - Action: Log failure but continue to Part 3
 - Reason: Backup is safety feature, not blocker for initialization
 - Note: Transformation will proceed without rollback capability (risky)
 - Log warning in PROGRESS.md
-
 ***
-
 ### Part 3: Data Access Verification (Ralph Loop)
-
 #### PLAN
-
 **Vision:** Confirm ability to access product data
-
 **What We're Verifying:**
-
 - Credentials file exists
 - Required variables present
 - Supabase connection works
 - Product data accessible
-
 **Success Criteria:**
-
 - 4/4 checks pass → Part 3 PASS
 - 3/4 checks pass → Part 3 RETRY
 - <3/4 checks pass → Part 3 FAIL
-
-
 #### EXECUTE
-
 Run these verification checks:
-
 **Check 3.1: Credentials File Exists**
-
 - Verify .env.local file exists in project root
 - Expected: File is present
-
 **Check 3.2: Supabase URL Present**
-
 - Check .env.local file contains NEXT_PUBLIC_SUPABASE_URL variable
 - Expected: Variable line found in file
-
 **Check 3.3: Supabase Key Present**
-
 - Check .env.local file contains NEXT_PUBLIC_SUPABASE_ANON_KEY variable
 - Expected: Variable line found in file
-
 **Check 3.4: Connection Successful**
-
 - Verify Supabase connection test in phase-0.mdc Step 4 succeeded
 - Check PROGRESS.md shows product count was logged
 - Expected: Connection worked, count is a number (any count acceptable)
-
 Record results for each check.
-
 #### VALIDATE
-
 **Expected Results:**
-
 - Check 3.1: ✓ (file exists)
 - Check 3.2: ✓ (URL variable present)
 - Check 3.3: ✓ (key variable present)
 - Check 3.4: ✓ (connection succeeded)
 - Total: 4/4 checks pass
-
 **Actual Results:**
 Count how many checks passed: [X]/4
-
 #### DECIDE
-
 **If 4/4 checks passed:**
-
 - Part 3 Status: ✅ PASS
 - Log: "Part 3 (Data Access): All 4 checks passed"
 - Action: Continue to Part 4 holistic verification
-
 **If 3/4 checks passed:**
-
 - Part 3 Status: ⚠️ PARTIAL
 - Action: Determine which check failed
-    - If Check 3.1-3.3 failed: Credentials issue, likely user needs to add them
-    - If Check 3.4 failed: Connection issue, credentials might be wrong
+- If Check 3.1-3.3 failed: Credentials issue, likely user needs to add them
+- If Check 3.4 failed: Connection issue, credentials might be wrong
 - Do NOT retry automatically (credentials need user verification)
 - Escalate to Part 3 FAIL
-
 **If <3/4 checks passed:**
-
 - Part 3 Status: ❌ FAIL
 - Action: Critical - cannot proceed without data access
 - This blocks entire transformation
 - Escalate to Phase 0 critical failure
-
 ***
-
 ### Part 4: Holistic Phase 0 Vision (Ralph Loop)
-
 #### PLAN
-
 **Vision:** Project baseline established and ready for technical transformation
-
 **What We're Verifying:**
-
 - All verification parts passed (Parts 1-3)
 - Git repository is in workable state
 - No critical blockers present
 - Foundation is solid for Next.js migration
-
 **Success Criteria:**
-
 - All parts PASS + No blockers → Phase 0 COMPLETE
 - 1 part PARTIAL/FAIL → Phase 0 NEEDS ATTENTION
 - 2+ parts FAIL → Phase 0 BLOCKED
-
-
 #### EXECUTE
-
 **Aggregate Part Results:**
-
 - Part 1 (Progress Tracking) status: [PASS/PARTIAL/FAIL]
 - Part 2 (Backup Safety) status: [PASS/PARTIAL/FAIL]
 - Part 3 (Data Access) status: [PASS/PARTIAL/FAIL]
-
 **Additional Holistic Checks:**
-
 **Check 4.1: Git Repository Ready**
-
 - Verify currently on main or master branch
 - Verify no critical uncommitted changes
 - Expected: Repository in clean state
-
 **Check 4.2: No Critical Blockers**
-
-- Review PROGRESS.md BLOCKERS section
+- Review PROGRESS.md Issues section
 - Expected: Empty or only minor warnings
-
 **Check 4.3: Foundation Complete**
-
 - Can we track progress? (Part 1 status)
 - Can we rollback if needed? (Part 2 status)
 - Can we access data? (Part 3 status)
 - Expected: All yes
-
-
 #### VALIDATE
-
 **Critical Path Assessment:**
-
 Can we safely proceed to Phase 1 (Next.js migration)?
-
 **Requirements:**
-
 - Progress tracking works (Part 1 PASS)
 - Data access works (Part 3 PASS)
 - Repository is stable (Check 4.1 PASS)
 - No critical blockers (Check 4.2 PASS)
-
 **Optional but Recommended:**
-
 - Backup exists (Part 2 PASS) - provides safety net
-
-
 #### DECIDE
-
 **Scenario A: Ideal Success**
-
 - Part 1: PASS
 - Part 2: PASS
 - Part 3: PASS
 - Checks 4.1-4.2: PASS
-
 **Result:** Phase 0 COMPLETE (all criteria met)
 **Action:** Proceed to final phase decision
-
 ***
-
 **Scenario B: Acceptable Success**
-
 - Part 1: PASS
 - Part 2: FAIL (backup not created - acceptable risk)
 - Part 3: PASS
 - Checks 4.1-4.2: PASS
-
 **Result:** Phase 0 COMPLETE (critical criteria met, backup optional)
-**Warning:** Log in PROGRESS.md that backup is missing, transformation proceeds at higher risk
+**Warning:** Log in PROGRESS.md that backup is missing, transformation proceeds at higher
 **Action:** Proceed to final phase decision
-
 ***
-
 **Scenario C: Needs Attention**
-
 - Part 1: PASS
 - Part 2: PASS/FAIL
 - Part 3: PARTIAL or FAIL
 - OR Check 4.1: FAIL (Git issues)
-
 **Result:** Phase 0 INCOMPLETE
 **Action:** Cannot proceed to Phase 1 without data access or stable repository
 **Escalate:** To Phase 0 blocked status
-
 ***
-
 **Scenario D: Critical Failure**
-
 - Part 1: FAIL (cannot track progress)
 - OR Part 3: FAIL (cannot access data)
 - OR Multiple parts FAIL
-
 **Result:** Phase 0 BLOCKED
 **Action:** Stop workflow, request user intervention
 **Escalate:** To Phase 0 critical failure
+***
+## Final Phase 0 Decision
+Based on Part 4 holistic verification outcome:
+### ✅ If Phase 0 COMPLETE (Scenarios A or B)
+**Step 1: Update next-step.md (FIRST)**
+Overwrite the entire next-step.md file with:
+`Execute Phase 1 by following @generate.mdc`
+
+**Step 2: Update PROGRESS.md (SECOND)**
+Append to PROGRESS.md within Phase 0 section:
+- Update **Phase-0 Status:** ✅ COMPLETED
+- Log orchestrator decision: "External verification: Phase 0 COMPLETE – all critical chec
+Do NOT add any banner blocks or "Next Steps" subsections.
+***
+### ⚠️ If Phase 0 NEEDS ATTENTION (Scenario C)
+**Step 1: Update next-step.md (FIRST)**
+Overwrite the entire next-step.md file with:
+`Re-execute Phase 0 by following @generate.mdc (address incomplete items)`
+
+**Step 2: Update PROGRESS.md (SECOND)**
+Append to PROGRESS.md within Phase 0 section:
+- Update **Phase-0 Status:** ⚠️ INCOMPLETE
+- List specific incomplete items
+- Log orchestrator decision with reasons
+***
+### ❌ If Phase 0 BLOCKED (Scenario D)
+**Step 1: Update next-step.md (FIRST)**
+Overwrite the entire next-step.md file with:
+`Fix critical issues in Phase 0 before proceeding`
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 0 section:
+
+- Update **Phase-0 Status:** ❌ FAILED
+- List blocking issues
+- Log orchestrator decision: "Phase 0 BLOCKED – critical foundation issues must be resolved"
 
 ***
 
-## Final Phase 0 Decision
+# PHASE 1: TECHNICAL FOUNDATION
 
-Based on Part 4 holistic verification outcome:
-
-### ✅ If Phase 0 COMPLETE (Scenarios A or B)
-
-**Update PROGRESS.md:**
-
-Change Phase 0 section to:
-
-- Status: Change to ✅ COMPLETED
-- Completed: Add current timestamp
-- Duration: Calculate from start to completion
-- Verification Results:
-    - Part 1 (Progress Tracking): PASS
-    - Part 2 (Backup Safety): PASS or FAIL with note
-    - Part 3 (Data Access): PASS
-    - Part 4 (Holistic): COMPLETE
-- All external verifications: PASSED
-- Next: Phase 1 - Technical Foundation
-
-**Add completion summary:**
-
-Update PROGRESS.md with:
-
-═══════════════════════════════════════════════════════════════════
-Phase 0: ✅ SUCCESSFULLY COMPLETED
-═══════════════════════════════════════════════════════════════════
-
-**Completion Time:** [timestamp]
-**Duration:** [X] minutes
-**Verifications:** All critical checks passed
-**Status:** Ready for Phase 1 execution
-
-**What Was Achieved:**
-✅ Progress tracking established (PROGRESS.md)
-✅ Safety backup created (backup-react-spa branch)
-✅ Supabase connection verified
-✅ Product data accessible ([X] products)
-✅ Repository baseline confirmed
-
-**Next Step:** Check the latest next step given in @progress.md to continue execution.
-
-## PHASE 1: TECHNICAL FOUNDATION
-
-### Execute
+## Execute
 
 Load and run @phase-1.mdc
 
@@ -508,13 +346,15 @@ Follow all instructions in phase-1.mdc from top to bottom:
 
 ***
 
-### Part 1: Project \& Configuration Verification (Ralph Loop)
+## Verify Phase 1 Completion
+
+### Part 1: Project & Configuration Verification (Ralph Loop)
 
 #### PLAN
 
 **Vision:** Confirm that the Next.js project, App Router, and core configuration are correctly established as the foundation for further work.
 
-**What We’re Verifying:**
+**What We're Verifying:**
 
 - Next.js project exists and is recognized in the repo
 - App Router (app directory) is in use
@@ -526,7 +366,6 @@ Follow all instructions in phase-1.mdc from top to bottom:
 - 4/4 checks pass → Part 1 PASS
 - 3/4 checks pass → Part 1 PARTIAL (retry once)
 - <3/4 checks pass → Part 1 FAIL
-
 
 #### EXECUTE
 
@@ -542,7 +381,7 @@ Run these verification checks:
 - Verify app directory exists in the project root (e.g., /app)
 - Expected: app directory present and used
 
-**Check 1.3: Tailwind \& Styles**
+**Check 1.3: Tailwind & Styles**
 
 - Confirm tailwind.config.js exists
 - Confirm global stylesheet (e.g., app/globals.css) includes Tailwind directives
@@ -552,8 +391,8 @@ Run these verification checks:
 
 - Open PROGRESS.md
 - Verify a Phase 1 section exists with at least:
-    - Status field (IN PROGRESS / COMPLETED / etc.)
-    - At least one log line related to Phase 1 (e.g., project initialization, configuration)
+  - Status field (IN PROGRESS / COMPLETED / etc.)
+  - At least one log line related to Phase 1 (e.g., project initialization, configuration)
 - Expected: Phase 1 entry present and populated
 
 Record the result of each check.
@@ -568,6 +407,7 @@ Record the result of each check.
 - Check 1.4: ✓ (Phase 1 entry in PROGRESS.md)
 
 **Actual Results:**
+
 Count how many checks passed: [X]/4
 
 #### DECIDE
@@ -575,35 +415,35 @@ Count how many checks passed: [X]/4
 **If 4/4 checks passed:**
 
 - Part 1 Status: ✅ PASS
-- Log: “Part 1 (Project \& Config): All 4 checks passed”
+- Log: "Part 1 (Project & Config): All 4 checks passed"
 - Action: Continue to Part 2 verification
 
 **If 3/4 checks passed:**
 
 - Part 1 Status: ⚠️ PARTIAL
 - Action:
-    - Retry Part 1 verification once:
-        - Focus on the failed check(s)
-        - Re-run all 4 checks
-    - If after retry 4/4 pass → Part 1 PASS, continue to Part 2
-    - If still 3/4 → Escalate to Part 1 FAIL
+  - Retry Part 1 verification once:
+    - Focus on the failed check(s)
+    - Re-run all 4 checks
+  - If after retry 4/4 pass → Part 1 PASS, continue to Part 2
+  - If still 3/4 → Escalate to Part 1 FAIL
 
 **If <3/4 checks passed:**
 
 - Part 1 Status: ❌ FAIL
 - Action:
-    - Log failure details in PROGRESS.md under Phase 1
-    - Continue to Part 2 (because routing/data can still be inspected), but Part 1 failure will weigh heavily in the final Phase 1 decision
+  - Log failure details in PROGRESS.md under Phase 1
+  - Continue to Part 2 (because routing/data can still be inspected), but Part 1 failure will weigh heavily in the final Phase 1 decision
 
 ***
 
-### Part 2: Routes \& Data Verification (Ralph Loop)
+### Part 2: Routes & Data Verification (Ralph Loop)
 
 #### PLAN
 
 **Vision:** Ensure that product and category routes exist and are connected to real data from Supabase.
 
-**What We’re Verifying:**
+**What We're Verifying:**
 
 - Product detail route implemented in App Router
 - Category route implemented in App Router
@@ -615,7 +455,6 @@ Count how many checks passed: [X]/4
 - 4/4 checks pass → Part 2 PASS
 - 3/4 checks pass → Part 2 PARTIAL (retry once)
 - <3/4 checks pass → Part 2 FAIL
-
 
 #### EXECUTE
 
@@ -634,14 +473,14 @@ Run these verification checks:
 **Check 2.3: Supabase Data for Products**
 
 - Check PROGRESS.md Phase 1 logs:
-    - Look for “Supabase data fetching (products): [Working/Partial/Broken]”
-- Expected for PASS: Marked as “Working” (or at least not “Broken”)
+  - Look for "Supabase data fetching (products): [Working/Partial/Broken]"
+- Expected for PASS: Marked as "Working" (or at least not "Broken")
 
 **Check 2.4: Supabase Data for Categories**
 
 - Check PROGRESS.md Phase 1 logs:
-    - Look for “Supabase data fetching (categories): [Working/Partial/Broken]”
-- Expected for PASS: Marked as “Working” (or at least not “Broken”)
+  - Look for "Supabase data fetching (categories): [Working/Partial/Broken]"
+- Expected for PASS: Marked as "Working" (or at least not "Broken")
 
 Record results for each check.
 
@@ -655,6 +494,7 @@ Record results for each check.
 - Check 2.4: ✓ (category data fetching Working/Partial)
 
 **Actual Results:**
+
 Count how many checks passed: [X]/4
 
 #### DECIDE
@@ -662,35 +502,35 @@ Count how many checks passed: [X]/4
 **If 4/4 checks passed:**
 
 - Part 2 Status: ✅ PASS
-- Log: “Part 2 (Routes \& Data): All 4 checks passed”
+- Log: "Part 2 (Routes & Data): All 4 checks passed"
 - Action: Continue to Part 3 verification
 
 **If 3/4 checks passed:**
 
 - Part 2 Status: ⚠️ PARTIAL
 - Action:
-    - Retry Part 2 verification once:
-        - Re-check missing route or broken data entry
-    - If after retry 4/4 pass → Part 2 PASS, continue to Part 3
-    - If still 3/4 → Escalate to Part 2 FAIL
+  - Retry Part 2 verification once:
+    - Re-check missing route or broken data entry
+  - If after retry 4/4 pass → Part 2 PASS, continue to Part 3
+  - If still 3/4 → Escalate to Part 2 FAIL
 
 **If <3/4 checks passed:**
 
 - Part 2 Status: ❌ FAIL
 - Action:
-    - Log failure in PROGRESS.md
-    - Note: Missing routes or broken data access are critical for SEO/content phases
-    - Continue to Part 3, but this will strongly influence final Phase 1 decision
+  - Log failure in PROGRESS.md
+  - Note: Missing routes or broken data access are critical for SEO/content phases
+  - Continue to Part 3, but this will strongly influence final Phase 1 decision
 
 ***
 
-### Part 3: SSG/SSR \& Builds Verification (Ralph Loop)
+### Part 3: SSG/SSR & Builds Verification (Ralph Loop)
 
 #### PLAN
 
 **Vision:** Confirm that SSG for product pages, SSR for category pages, and both dev and prod builds are working without critical errors.
 
-**What We’re Verifying:**
+**What We're Verifying:**
 
 - SSG enabled for products
 - SSR enabled for categories
@@ -703,7 +543,6 @@ Count how many checks passed: [X]/4
 - 3/4 checks pass → Part 3 PARTIAL (retry once)
 - <3/4 checks pass → Part 3 FAIL
 
-
 #### EXECUTE
 
 Run these verification checks:
@@ -711,26 +550,26 @@ Run these verification checks:
 **Check 3.1: SSG (Products)**
 
 - Check PROGRESS.md Phase 1 logs:
-    - “SSG (products): [Enabled/Not Enabled]”
-- Expected for PASS: “Enabled”
+  - "SSG (products): [Enabled/Not Enabled]"
+- Expected for PASS: "Enabled"
 
 **Check 3.2: SSR (Categories)**
 
 - Check PROGRESS.md Phase 1 logs:
-    - “SSR (categories): [Enabled/Not Enabled]”
-- Expected for PASS: “Enabled”
+  - "SSR (categories): [Enabled/Not Enabled]"
+- Expected for PASS: "Enabled"
 
 **Check 3.3: Dev Build**
 
 - Check PROGRESS.md Phase 1 logs:
-    - “Dev build: [Pass/Fail]”
-- Expected for PASS: “Pass”
+  - "Dev build: [Pass/Fail]"
+- Expected for PASS: "Pass"
 
 **Check 3.4: Prod Build**
 
 - Check PROGRESS.md Phase 1 logs:
-    - “Prod build: [Pass/Fail]”
-- Expected for PASS: “Pass”
+  - "Prod build: [Pass/Fail]"
+- Expected for PASS: "Pass"
 
 Record results for each check.
 
@@ -744,6 +583,7 @@ Record results for each check.
 - Check 3.4: ✓ (Prod build Pass)
 
 **Actual Results:**
+
 Count how many checks passed: [X]/4
 
 #### DECIDE
@@ -751,24 +591,24 @@ Count how many checks passed: [X]/4
 **If 4/4 checks passed:**
 
 - Part 3 Status: ✅ PASS
-- Log: “Part 3 (SSG/SSR \& Builds): All 4 checks passed”
+- Log: "Part 3 (SSG/SSR & Builds): All 4 checks passed"
 - Action: Continue to Part 4 holistic verification
 
 **If 3/4 checks passed:**
 
 - Part 3 Status: ⚠️ PARTIAL
 - Action:
-    - Retry Part 3 verification once:
-        - Focus on failed area (e.g., SSG not enabled, build failure)
-    - If after retry 4/4 pass → Part 3 PASS, continue to Part 4
-    - If still 3/4 → Escalate to Part 3 FAIL
+  - Retry Part 3 verification once:
+    - Focus on failed area (e.g., SSG not enabled, build failure)
+  - If after retry 4/4 pass → Part 3 PASS, continue to Part 4
+  - If still 3/4 → Escalate to Part 3 FAIL
 
 **If <3/4 checks passed:**
 
 - Part 3 Status: ❌ FAIL
 - Action:
-    - Log critical failures in PROGRESS.md
-    - Note: Build failures or missing SSG/SSR are hard blockers for later phases
+  - Log critical failures in PROGRESS.md
+  - Note: Build failures or missing SSG/SSR are hard blockers for later phases
 
 ***
 
@@ -778,7 +618,7 @@ Count how many checks passed: [X]/4
 
 **Vision:** Decide whether the technical foundation is solid enough to support Phase 2 (Content Optimization) and beyond.
 
-**What We’re Verifying:**
+**What We're Verifying:**
 
 - Part 1, Part 2, and Part 3 results together
 - Phase 1 Status in PROGRESS.md
@@ -790,14 +630,13 @@ Count how many checks passed: [X]/4
 - Any PARTIAL / minor issues only → Phase 1 NEEDS ATTENTION (but possibly usable)
 - Any FAIL in Parts 1–3 or critical blockers → Phase 1 BLOCKED
 
-
 #### EXECUTE
 
 Aggregate results:
 
-- Part 1 (Project \& Config): [PASS / PARTIAL / FAIL]
-- Part 2 (Routes \& Data): [PASS / PARTIAL / FAIL]
-- Part 3 (SSG/SSR \& Builds): [PASS / PARTIAL / FAIL]
+- Part 1 (Project & Config): [PASS / PARTIAL / FAIL]
+- Part 2 (Routes & Data): [PASS / PARTIAL / FAIL]
+- Part 3 (SSG/SSR & Builds): [PASS / PARTIAL / FAIL]
 
 Additional holistic checks:
 
@@ -805,16 +644,16 @@ Additional holistic checks:
 
 - Open PROGRESS.md
 - Verify Phase 1 Status field is set (IN PROGRESS / COMPLETED / INCOMPLETE / FAILED)
-- Expected for “COMPLETE” scenario: ✅ COMPLETED
+- Expected for "COMPLETE" scenario: ✅ COMPLETED
 
 **Check 4.2: Critical Blockers**
 
 - Review Phase 1 issues in PROGRESS.md
 - Look for:
-    - Build failures
-    - Missing routes
-    - Completely broken data fetching
-- Expected for “COMPLETE” scenario: No critical blockers listed
+  - Build failures
+  - Missing routes
+  - Completely broken data fetching
+- Expected for "COMPLETE" scenario: No critical blockers listed
 
 Record overall impression.
 
@@ -854,32 +693,525 @@ Record overall impression.
 
 **If Scenario A (Phase 1 COMPLETE):**
 
-- Update PROGRESS.md:
-    - Ensure Phase 1 Status: ✅ COMPLETED
-    - Add summary:
-        - “External verification: Phase 1 COMPLETE – technical foundation ready for Phase 2”
-- Action: Phase 2 is allowed in the next workflow execution.
-
-***
+Proceed to Final Phase 1 Decision below.
 
 **If Scenario B (Phase 1 NEEDS ATTENTION):**
 
-- Update PROGRESS.md:
-    - Status: ⚠️ NEEDS ATTENTION (or keep ✅ COMPLETED but add strong warnings)
-    - List specific issues and risks
-- Action:
-    - Note that Phase 2 can proceed, but with explicit awareness of technical debts.
-    - Recommend addressing issues early in later phases.
-
-***
+Proceed to Final Phase 1 Decision below.
 
 **If Scenario C (Phase 1 BLOCKED):**
 
-- Update PROGRESS.md:
-    - Status: ❌ FAILED (if not already)
-    - Add:
-        - “Phase 1 BLOCKED – technical foundation not stable”
-        - List of blocking issues
+Proceed to Final Phase 1 Decision below.
+
+***
+
+## Final Phase 1 Decision
+
+Based on Part 4 holistic verification outcome:
+
+### ✅ If Phase 1 COMPLETE (Scenario A)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+```
+
+Execute Phase 2 by following @generate.mdc
+
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 1 section:
+
+- Update **Phase-1 Status:** ✅ COMPLETED
+- Log orchestrator decision: "External verification: Phase 1 COMPLETE – technical foundation ready for Phase 2"
+
+Do NOT add any banner blocks or "Next Steps" subsections.
+
+***
+
+### ⚠️ If Phase 1 NEEDS ATTENTION (Scenario B)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+```
+
+Execute Phase 2 by following @generate.mdc (proceed with awareness of Phase 1 risks)
+
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 1 section:
+
+- Update **Phase-1 Status:** ⚠️ NEEDS ATTENTION
+- List specific issues and risks
+- Log orchestrator decision: "External verification: Phase 1 NEEDS ATTENTION – Phase 2 can proceed but address technical debts early"
+
+***
+
+### ❌ If Phase 1 BLOCKED (Scenario C)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+```
+
+Fix critical issues in Phase 1 before proceeding to Phase 2
+
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 1 section:
+
+- Update **Phase-1 Status:** ❌ FAILED
+- List blocking issues
+- Log orchestrator decision: "Phase 1 BLOCKED – technical foundation not stable, must resolve before Phase 2"
+```
+
+# PHASE 2: CONTENT OPTIMIZATION
+
+## Execute
+
+Load and run @phase-2.mdc
+
+Follow all instructions in phase-2.mdc from top to bottom:
+
+- Read Objective
+- Execute all steps (1 through 8)
+- Complete the Phase 2 self-check checklist
+- Follow Phase 2 DECISION logic (PASS / PARTIAL / FAILED)
+
+**After phase-2.mdc execution completes, return here for external verification.**
+
+***
+
+## Verify Phase 2 Completion
+
+### Part 1: Meta Tags \& SEO Fundamentals Verification (Ralph Loop)
+
+#### PLAN
+
+**Vision:** Confirm that all pages have unique, optimized meta tags that enable search engine visibility and click-through.
+
+**What We're Verifying:**
+
+- Product pages have unique meta titles and descriptions
+- Category pages have meta tags
+- Homepage and key pages have meta tags
+- Meta tags are within character limits and pre-rendered
+
+**Success Criteria:**
+
+- 4/4 checks pass → Part 1 PASS
+- 3/4 checks pass → Part 1 PARTIAL (retry once)
+- <3/4 checks pass → Part 1 FAIL
+
+
+#### EXECUTE
+
+Run these verification checks:
+
+**Check 1.1: Product Page Meta Tags**
+
+- Check PROGRESS.md Phase 2 logs for product meta tag status
+- Verify at least 3 random product pages have unique meta titles and descriptions in HTML source
+- Expected: Meta tags present, unique, and pre-rendered
+
+**Check 1.2: Meta Tag Character Limits**
+
+- Check PROGRESS.md logs for meta tag length compliance
+- Spot check 3 product pages:
+    - Meta title ≤60 characters
+    - Meta description ≤155 characters
+- Expected: All within limits
+
+**Check 1.3: Category \& Homepage Meta Tags**
+
+- Check PROGRESS.md Phase 2 logs for category and homepage meta implementation
+- Verify homepage has meta title and description in HTML source
+- Verify at least 2 category pages have meta tags
+- Expected: Meta tags present on category pages and homepage
+
+**Check 1.4: PROGRESS.md Phase 2 Entry**
+
+- Open PROGRESS.md
+- Verify Phase 2 section exists with meta tag implementation logged
+- Expected: Phase 2 entry present with meta tag status documented
+
+Record the result of each check.
+
+#### VALIDATE
+
+**Expected Results:**
+
+- Check 1.1: ✓ (product meta tags unique and pre-rendered)
+- Check 1.2: ✓ (character limits met)
+- Check 1.3: ✓ (category and homepage meta tags present)
+- Check 1.4: ✓ (Phase 2 entry in PROGRESS.md)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/4
+
+#### DECIDE
+
+**If 4/4 checks passed:**
+
+- Part 1 Status: ✅ PASS
+- Log: "Part 1 (Meta Tags \& SEO Fundamentals): All 4 checks passed"
+- Action: Continue to Part 2 verification
+
+**If 3/4 checks passed:**
+
+- Part 1 Status: ⚠️ PARTIAL
 - Action:
-    - Do NOT proceed to Phase 2.
-    - Require Phase 1 fixes and a re-run before continuing.
+    - Retry Part 1 verification once:
+        - Focus on the failed check(s)
+        - Re-run all 4 checks
+    - If after retry 4/4 pass → Part 1 PASS, continue to Part 2
+    - If still 3/4 → Escalate to Part 1 FAIL
+
+**If <3/4 checks passed:**
+
+- Part 1 Status: ❌ FAIL
+- Action:
+    - Log failure details in PROGRESS.md under Phase 2
+    - Meta tags are critical for SEO visibility
+    - Continue to Part 2, but Part 1 failure will weigh heavily in final Phase 2 decision
+
+***
+
+### Part 2: Image Optimization \& Accessibility Verification (Ralph Loop)
+
+#### PLAN
+
+**Vision:** Ensure all product images have descriptive alt text for accessibility and SEO.
+
+**What We're Verifying:**
+
+- Product images have alt text attributes
+- Alt text is descriptive and follows naming conventions
+- Alt text implementation is verified through sampling
+
+**Success Criteria:**
+
+- 3/3 checks pass → Part 2 PASS
+- 2/3 checks pass → Part 2 PARTIAL (retry once)
+- <2/3 checks pass → Part 2 FAIL
+
+
+#### EXECUTE
+
+Run these verification checks:
+
+**Check 2.1: Alt Text Implementation Status**
+
+- Check PROGRESS.md Phase 2 logs for image alt text status
+- Expected: Logged as "Implemented for X products, Y total images"
+
+**Check 2.2: Alt Text Quality Sample Check**
+
+- Manually inspect 5 random product pages in browser DevTools
+- Check that primary product image has alt attribute
+- Verify alt text is descriptive (not empty, not just "image" or generic text)
+- Expected: All 5 products have proper alt text
+
+**Check 2.3: Alt Text in HTML Source**
+
+- View HTML source for 2 product pages
+- Confirm alt attributes are present in <img> or Next.js <Image> tags
+- Expected: Alt attributes visible in source code
+
+Record results for each check.
+
+#### VALIDATE
+
+**Expected Results:**
+
+- Check 2.1: ✓ (alt text implementation logged in PROGRESS.md)
+- Check 2.2: ✓ (sample check shows descriptive alt text)
+- Check 2.3: ✓ (alt attributes present in HTML source)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/3
+
+#### DECIDE
+
+**If 3/3 checks passed:**
+
+- Part 2 Status: ✅ PASS
+- Log: "Part 2 (Image Optimization \& Accessibility): All 3 checks passed"
+- Action: Continue to Part 3 verification
+
+**If 2/3 checks passed:**
+
+- Part 2 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 2 verification once:
+        - Re-check missing or failed items
+    - If after retry 3/3 pass → Part 2 PASS, continue to Part 3
+    - If still 2/3 → Escalate to Part 2 FAIL
+
+**If <2/3 checks passed:**
+
+- Part 2 Status: ❌ FAIL
+- Action:
+    - Log failure in PROGRESS.md
+    - Note: Missing alt text impacts accessibility and image SEO
+    - Continue to Part 3, but this will influence final Phase 2 decision
+
+***
+
+### Part 3: Content Structure \& Schema Verification (Ralph Loop)
+
+#### PLAN
+
+**Vision:** Confirm proper heading hierarchy site-wide and validate product schema markup for rich results.
+
+**What We're Verifying:**
+
+- Heading structure (H1, H2, H3) implemented correctly
+- Product schema markup present and valid
+- Content quality checks passed
+
+**Success Criteria:**
+
+- 3/3 checks pass → Part 3 PASS
+- 2/3 checks pass → Part 3 PARTIAL (retry once)
+- <2/3 checks pass → Part 3 FAIL
+
+
+#### EXECUTE
+
+Run these verification checks:
+
+**Check 3.1: Heading Structure**
+
+- Check PROGRESS.md Phase 2 logs for heading structure status
+- Manually check 3 product pages:
+    - One H1 per page (product name)
+    - H2 tags for section headings
+    - No skipped heading levels
+- Expected: Proper heading hierarchy confirmed
+
+**Check 3.2: Product Schema Markup**
+
+- Check PROGRESS.md Phase 2 logs for schema implementation and validation status
+- Verify schema markup is mentioned as "Implemented" or "Validated"
+- Expected: Product schema present and validated (Pass or Warnings acceptable, no critical errors)
+
+**Check 3.3: Content Quality Checks**
+
+- Check PROGRESS.md Phase 2 logs for content quality check results
+- Expected: Logged as "Pass" or "Issues found and documented"
+
+Record results for each check.
+
+#### VALIDATE
+
+**Expected Results:**
+
+- Check 3.1: ✓ (heading structure correct)
+- Check 3.2: ✓ (product schema validated)
+- Check 3.3: ✓ (content quality checks passed)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/3
+
+#### DECIDE
+
+**If 3/3 checks passed:**
+
+- Part 3 Status: ✅ PASS
+- Log: "Part 3 (Content Structure \& Schema): All 3 checks passed"
+- Action: Continue to Part 4 holistic verification
+
+**If 2/3 checks passed:**
+
+- Part 3 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 3 verification once:
+        - Focus on failed area
+    - If after retry 3/3 pass → Part 3 PASS, continue to Part 4
+    - If still 2/3 → Escalate to Part 3 FAIL
+
+**If <2/3 checks passed:**
+
+- Part 3 Status: ❌ FAIL
+- Action:
+    - Log critical failures in PROGRESS.md
+    - Note: Heading structure and schema are important for SEO
+    - Continue to Part 4, but this impacts final decision
+
+***
+
+### Part 4: Holistic Phase 2 Vision (Ralph Loop)
+
+#### PLAN
+
+**Vision:** Decide whether content optimization is comprehensive enough to support strong SEO performance and user experience.
+
+**What We're Verifying:**
+
+- Part 1, Part 2, and Part 3 results together
+- Phase 2 Status in PROGRESS.md
+- Content completeness across all 137 products
+- Any critical content gaps
+
+**Success Criteria:**
+
+- Parts 1–3 all PASS + content complete → Phase 2 COMPLETE
+- Any PARTIAL / minor gaps only → Phase 2 NEEDS ATTENTION (but usable)
+- Any FAIL in Parts 1–3 or major content gaps → Phase 2 BLOCKED
+
+
+#### EXECUTE
+
+Aggregate results:
+
+- Part 1 (Meta Tags \& SEO Fundamentals): [PASS / PARTIAL / FAIL]
+- Part 2 (Image Optimization \& Accessibility): [PASS / PARTIAL / FAIL]
+- Part 3 (Content Structure \& Schema): [PASS / PARTIAL / FAIL]
+
+Additional holistic checks:
+
+**Check 4.1: Phase 2 Status in PROGRESS.md**
+
+- Open PROGRESS.md
+- Verify Phase 2 Status field is set (IN PROGRESS / COMPLETED / INCOMPLETE / FAILED)
+- Expected for "COMPLETE" scenario: ✅ COMPLETED
+
+**Check 4.2: Content Completeness**
+
+- Review Phase 2 logs in PROGRESS.md
+- Verify all 137 products are accounted for in content optimization
+- Expected: All products have meta tags, alt text, and are included in the optimization
+
+**Check 4.3: Critical Content Gaps**
+
+- Review Phase 2 issues in PROGRESS.md
+- Look for:
+    - Large numbers of products missing meta tags
+    - Widespread alt text failures
+    - Schema validation errors (critical, not warnings)
+- Expected for "COMPLETE" scenario: No critical gaps, only minor items for future enhancement
+
+Record overall impression.
+
+#### VALIDATE
+
+**Scenario A: Comprehensive Content Optimization**
+
+- Part 1: PASS
+- Part 2: PASS
+- Part 3: PASS
+- Check 4.1: Phase 2 status = ✅ COMPLETED
+- Check 4.2: All 137 products optimized
+- Check 4.3: No critical content gaps
+
+**Result:** Phase 2 COMPLETE
+
+***
+
+**Scenario B: Acceptable with Minor Gaps**
+
+- Parts 1–3: Mostly PASS, with at most one PARTIAL and no FAIL
+- Phase 2 status may be ✅ COMPLETED or ⚠️ INCOMPLETE
+- Minor gaps exist (e.g., a few products need manual description enhancement, non-critical schema warnings)
+
+**Result:** Phase 2 NEEDS ATTENTION, but content foundation is solid enough for Phase 3
+
+***
+
+**Scenario C: Blocked**
+
+- Any of Parts 1–3 = FAIL
+- Or Phase 2 status = ❌ FAILED in PROGRESS.md
+- Or critical content gaps (many products missing meta tags, widespread alt text failures, critical schema errors)
+
+**Result:** Phase 2 BLOCKED
+
+#### DECIDE
+
+**If Scenario A (Phase 2 COMPLETE):**
+
+Proceed to Final Phase 2 Decision below.
+
+**If Scenario B (Phase 2 NEEDS ATTENTION):**
+
+Proceed to Final Phase 2 Decision below.
+
+**If Scenario C (Phase 2 BLOCKED):**
+
+Proceed to Final Phase 2 Decision below.
+
+***
+
+## Final Phase 2 Decision
+
+Based on Part 4 holistic verification outcome:
+
+### ✅ If Phase 2 COMPLETE (Scenario A)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+
+```
+Execute Phase 3 by following @generate.mdc
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 2 section:
+
+- Update **Phase-2 Status:** ✅ COMPLETED
+- Log orchestrator decision: "External verification: Phase 2 COMPLETE – content optimization comprehensive, ready for Phase 3"
+
+Do NOT add any banner blocks or "Next Steps" subsections.
+
+***
+
+### ⚠️ If Phase 2 NEEDS ATTENTION (Scenario B)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+
+```
+Execute Phase 3 by following @generate.mdc (Phase 2 has minor gaps to address later)
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 2 section:
+
+- Update **Phase-2 Status:** ⚠️ NEEDS ATTENTION
+- List specific gaps or minor issues
+- Log orchestrator decision: "External verification: Phase 2 NEEDS ATTENTION – content foundation solid, Phase 3 can proceed but address gaps in parallel or post-launch"
+
+***
+
+### ❌ If Phase 2 BLOCKED (Scenario C)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+
+```
+Fix critical content issues in Phase 2 before proceeding to Phase 3
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase 2 section:
+
+- Update **Phase-2 Status:** ❌ FAILED
+- List blocking issues (missing meta tags, alt text failures, schema errors)
+- Log orchestrator decision: "Phase 2 BLOCKED – critical content optimization incomplete, must resolve before Phase 3"
