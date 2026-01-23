@@ -64,8 +64,44 @@ export default async function ProductPage({ params }) {
 
   const mainImage = images[0] || '/placeholder-saree.jpg';
 
+  // Generate Product Schema (JSON-LD) for SEO
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.name,
+    "image": mainImage.startsWith('http') ? mainImage : undefined,
+    "description": product.short_description || product.description || `${product.name} - Beautiful ${product.fabric_type || 'handloom'} saree`,
+    "brand": {
+      "@type": "Brand",
+      "name": "Neera Sarees"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://www.neerasarees.com/products/${fabric}/${slug}`,
+      "priceCurrency": "INR",
+      "price": product.price || 0,
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "Neera Sarees"
+      }
+    }
+  };
+
+  // Remove undefined fields
+  if (!productSchema.image) {
+    delete productSchema.image;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-12">
+    <>
+      {/* JSON-LD Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      
+      <div className="container mx-auto px-4 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Image Section */}
         <div className="space-y-4">
@@ -73,7 +109,7 @@ export default async function ProductPage({ params }) {
             {mainImage.startsWith('http') ? (
               <Image
                 src={mainImage}
-                alt={product.name}
+                alt={`${product.name} - ${product.fabric_type || 'Handloom'} Saree`}
                 fill
                 className="object-cover"
                 priority
@@ -88,13 +124,20 @@ export default async function ProductPage({ params }) {
           {/* Thumbnail gallery if multiple images */}
           {images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {images.slice(0, 4).map((img, idx) => (
-                <div key={idx} className="aspect-square relative bg-gray-100 rounded overflow-hidden">
-                  {img.startsWith('http') && (
-                    <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
-                  )}
-                </div>
-              ))}
+              {images.slice(0, 4).map((img, idx) => {
+                // Generate descriptive alt text for thumbnails
+                const thumbnailDescriptors = ['detail view', 'drape view', 'close-up', 'alternate view'];
+                const descriptor = thumbnailDescriptors[idx] || `view ${idx + 1}`;
+                const altText = `${product.name} - ${product.fabric_type || 'Handloom'} Saree - ${descriptor}`;
+                
+                return (
+                  <div key={idx} className="aspect-square relative bg-gray-100 rounded overflow-hidden">
+                    {img.startsWith('http') && (
+                      <Image src={img} alt={altText} fill className="object-cover" />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -121,14 +164,14 @@ export default async function ProductPage({ params }) {
 
           {product.description && (
             <div className="prose prose-sm">
-              <h3 className="text-lg font-semibold text-charcoal-gray">Description</h3>
+              <h2 className="text-lg font-semibold text-charcoal-gray">Description</h2>
               <p className="text-gray-600">{product.description}</p>
             </div>
           )}
 
           {product.care_instructions && (
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-charcoal-gray mb-2">Care Instructions</h3>
+              <h2 className="text-lg font-semibold text-charcoal-gray mb-2">Care Instructions</h2>
               <p className="text-sm text-gray-600">{product.care_instructions}</p>
             </div>
           )}
@@ -139,6 +182,7 @@ export default async function ProductPage({ params }) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
@@ -153,8 +197,32 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  // Format meta title: "[Product Name] - [Fabric Type] Saree | Neera Sarees"
+  // Ensure ≤60 characters
+  const fabricType = product.fabric_type || 'Handloom';
+  let metaTitle = `${product.name} - ${fabricType} Saree | Neera Sarees`;
+  if (metaTitle.length > 60) {
+    // Truncate product name if needed
+    const maxNameLength = 60 - ` - ${fabricType} Saree | Neera`.length;
+    const truncatedName = product.name.substring(0, maxNameLength);
+    metaTitle = `${truncatedName} - ${fabricType} Saree | Neera`;
+  }
+
+  // Format meta description: "Shop [Product Name], a beautiful [fabric_type] saree. [Short description]. Free shipping, authentic quality. View details and buy online."
+  // Ensure ≤155 characters
+  const shortDesc = product.short_description || product.description || `Beautiful ${fabricType.toLowerCase()} saree with elegant design`;
+  const baseDescription = `Shop ${product.name}, a beautiful ${fabricType.toLowerCase()} saree. ${shortDesc}. Free shipping, authentic quality.`;
+  
+  let metaDescription = baseDescription;
+  if (metaDescription.length > 155) {
+    // Truncate short description to fit
+    const maxDescLength = 155 - `Shop ${product.name}, a beautiful ${fabricType.toLowerCase()} saree. . Free shipping, authentic quality.`.length;
+    const truncatedDesc = shortDesc.substring(0, maxDescLength);
+    metaDescription = `Shop ${product.name}, a beautiful ${fabricType.toLowerCase()} saree. ${truncatedDesc}. Free shipping, authentic quality.`;
+  }
+
   return {
-    title: `${product.name} - Neera Sarees`,
-    description: product.short_description || product.description || `${product.name} handwoven saree`,
+    title: metaTitle,
+    description: metaDescription,
   };
 }

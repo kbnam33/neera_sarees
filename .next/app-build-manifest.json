@@ -62,19 +62,19 @@
       "static/chunks/main-app-40aa1aab54cdceef.js",
       "static/chunks/app/shipping-policy/page-56047636c308a885.js"
     ],
-    "/terms-and-conditions/page": [
-      "static/chunks/webpack-4777112f8195c6f9.js",
-      "static/chunks/fd9d1056-596a8d76c47695b1.js",
-      "static/chunks/117-e4a91202ee7aec4d.js",
-      "static/chunks/main-app-40aa1aab54cdceef.js",
-      "static/chunks/app/terms-and-conditions/page-354cd1d5c8f02732.js"
-    ],
     "/story/page": [
       "static/chunks/webpack-4777112f8195c6f9.js",
       "static/chunks/fd9d1056-596a8d76c47695b1.js",
       "static/chunks/117-e4a91202ee7aec4d.js",
       "static/chunks/main-app-40aa1aab54cdceef.js",
       "static/chunks/app/story/page-c4e72ce01cd9c735.js"
+    ],
+    "/terms-and-conditions/page": [
+      "static/chunks/webpack-4777112f8195c6f9.js",
+      "static/chunks/fd9d1056-596a8d76c47695b1.js",
+      "static/chunks/117-e4a91202ee7aec4d.js",
+      "static/chunks/main-app-40aa1aab54cdceef.js",
+      "static/chunks/app/terms-and-conditions/page-354cd1d5c8f02732.js"
     ],
     "/products/page": [
       "static/chunks/webpack-4777112f8195c6f9.js",

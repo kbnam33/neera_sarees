@@ -1,1 +1,1 @@
-Execute Phase 2 as in @generate.mdc
+Execute Phase 3 by following @generate.mdc

@@ -4,8 +4,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export const metadata = {
-  title: 'Neera Sarees - Handwoven Sarees',
-  description: 'Discover elegant handwoven sarees crafted with tradition and quality.',
+  title: 'Neera Sarees - Authentic Indian Silk & Designer Sarees Online',
+  description: 'Shop premium silk, cotton, and designer sarees. Authentic quality, 137+ styles, free shipping across India. Traditional elegance delivered.',
 };
 
 export default function RootLayout({ children }) {

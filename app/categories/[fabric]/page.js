@@ -80,7 +80,7 @@ export default async function CategoryPage({ params }) {
                     {mainImage.startsWith('http') ? (
                       <Image
                         src={mainImage}
-                        alt={product.name}
+                        alt={`${product.name} - ${product.fabric_type || 'Handloom'} Saree`}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -121,8 +121,19 @@ export async function generateMetadata({ params }) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
+  // Meta Title: "[Fabric Type] Sarees - Shop Authentic Collection | Neera Sarees"
+  // Ensure ≤60 characters
+  let metaTitle = `${fabricName} Sarees - Shop Authentic Collection | Neera Sarees`;
+  if (metaTitle.length > 60) {
+    metaTitle = `${fabricName} Sarees - Authentic | Neera Sarees`;
+  }
+
+  // Meta Description: "Explore our premium [fabric_type] sarees collection. [Brief category description]. Free shipping, quality guaranteed."
+  // Ensure ≤155 characters
+  const metaDescription = `Explore our premium ${fabricName.toLowerCase()} sarees collection. Handwoven with care and tradition. Free shipping, quality guaranteed. Shop now.`;
+
   return {
-    title: `${fabricName} Sarees - Neera Sarees`,
-    description: `Browse our exquisite collection of ${fabricName.toLowerCase()} sarees, handwoven with care and tradition.`,
+    title: metaTitle,
+    description: metaDescription.substring(0, 155),
   };
 }

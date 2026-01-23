@@ -79,7 +79,7 @@ export default async function Home() {
                       {mainImage.startsWith('http') && (
                         <Image
                           src={mainImage}
-                          alt={product.name}
+                          alt={`${product.name} - ${product.fabric_type || 'Handloom'} Saree`}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
