@@ -55,7 +55,7 @@ export default async function Home() {
               Featured Sarees
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredProducts.map((product) => {
+              {featuredProducts.map((product, index) => {
                 let images = [];
                 try {
                   images = typeof product.images === 'string' 
@@ -82,6 +82,8 @@ export default async function Home() {
                           alt={`${product.name} - ${product.fabric_type || 'Handloom'} Saree`}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          priority={index < 2}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         />
                       )}
                     </div>

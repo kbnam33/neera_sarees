@@ -1,0 +1,455 @@
+# Phase 3: Performance Optimization
+
+**Purpose:** Optimize website performance through code splitting, lazy loading, image optimization, and Core Web Vitals improvements to achieve fast load times and excellent user experience.
+
+**Target Outcome:** Next.js application optimized for performance with proper code splitting, lazy loaded components, optimized images, and Core Web Vitals scores in the "Good" range (LCP <2.5s, FID <100ms, CLS <0.1).
+
+***
+
+## Step 1: Performance Baseline Assessment
+
+**Objective:** Establish current performance metrics before optimization.
+
+**Actions:**
+
+1. Run Next.js production build and analyze bundle sizes:
+
+```bash
+npx next build
+```
+
+2. Review build output for:
+    - First Load JS size for each route
+    - Static page sizes
+    - Shared chunks and their sizes
+    - Any unusually large routes or components
+3. Document baseline metrics in PROGRESS.md:
+    - Homepage First Load JS
+    - Product page First Load JS
+    - Category page First Load JS
+    - Total build size
+    - Number of static vs dynamic pages
+4. Identify performance bottlenecks:
+    - Routes with >200 kB First Load JS
+    - Components that could be lazy loaded
+    - Images without optimization
+    - Large dependencies in bundle
+5. Create performance baseline section in PROGRESS.md with:
+    - Current metrics
+    - Identified bottlenecks
+    - Priority areas for optimization
+
+**Success Criteria:**
+
+- [ ] Build completes without errors
+- [ ] Baseline metrics documented in PROGRESS.md (all First Load JS sizes recorded)
+- [ ] At least 3 optimization areas identified and prioritized
+- [ ] Step 1 section exists in PROGRESS.md under Phase 3
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 2: Image Optimization Implementation
+
+**Objective:** Ensure all images are optimized using Next.js Image component with proper sizing and lazy loading.
+
+**Actions:**
+
+1. Audit all image usage across the application:
+
+```
+- Check if all `<img>` tags are replaced with Next.js `<Image>`
+```
+
+    - Verify `<Image>` components have proper `width` and `height` or `fill` prop
+    - Check for missing `sizes` attribute on responsive images
+2. Optimize product images:
+    - Verify `<Image>` component usage in product pages
+    - Add `priority` prop to above-the-fold main product image
+    - Ensure thumbnail images use lazy loading (default behavior)
+    - Add `sizes` prop for responsive images: `sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"`
+3. Optimize homepage featured product images:
+    - Add `priority={true}` to first 2-3 visible featured products
+    - Use lazy loading for below-the-fold products
+    - Add proper `sizes` attribute
+4. Optimize category page images:
+    - All product grid images should lazy load (default)
+    - Add `sizes` prop for grid layout
+5. Configure next.config.js for image optimization:
+
+```javascript
+images: {
+  formats: ['image/avif', 'image/webp'],
+  deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+  imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+}
+```
+
+6. Test image loading in development:
+    - Run `npm run dev`
+    - Verify images load properly
+    - Check browser Network tab for WebP/AVIF format
+    - Confirm no layout shift during image load
+
+**Success Criteria:**
+
+```
+- [ ] All `<img>` tags replaced with Next.js `<Image>` component (code review confirms no plain img tags)
+```
+
+- [ ] Above-the-fold images have `priority` prop (homepage hero, product main image)
+- [ ] `sizes` attribute added to all responsive images
+- [ ] next.config.js updated with image optimization config
+- [ ] Development test shows images loading in WebP/AVIF format (Network tab verification)
+- [ ] No layout shift observed during image loading
+- [ ] Step 2 completed and documented in PROGRESS.md
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 3: Component Code Splitting \& Lazy Loading
+
+**Objective:** Implement dynamic imports and lazy loading for non-critical components to reduce initial bundle size.
+
+**Actions:**
+
+1. Identify components for lazy loading:
+    - Modal dialogs
+    - Product image galleries/carousels
+    - Reviews sections (if present)
+    - Footer (below the fold)
+    - Any third-party components (chat widgets, analytics UI)
+2. Implement dynamic imports using `next/dynamic`:
+
+```javascript
+import dynamic from 'next/dynamic';
+
+const ComponentName = dynamic(() => import('./ComponentName'), {
+  loading: () => <p>Loading...</p>,
+  ssr: false // if component doesn't need SSR
+});
+```
+
+3. Apply lazy loading to identified components:
+    - Wrap non-critical components in `dynamic()`
+    - Add loading states for better UX
+    - Set `ssr: false` for client-only components
+4. Optimize third-party scripts:
+    - Use Next.js `<Script>` component with `strategy="lazyOnload"` for non-critical scripts
+    - Defer analytics scripts
+    - Load chat widgets after page interaction
+5. Test lazy loading in development:
+    - Run `npm run dev`
+    - Verify components load on demand
+    - Check loading states display correctly
+    - Ensure no errors in console during lazy load
+    - Confirm functionality works after lazy load
+    - Check Network tab to verify components load on interaction
+
+**Success Criteria:**
+
+- [ ] At least 2-3 non-critical components wrapped in `dynamic()` imports
+- [ ] Loading states implemented for all lazy components
+- [ ] Third-party scripts use `<Script>` component with appropriate strategy (if any exist)
+- [ ] Development testing shows components load on demand (Network tab confirms)
+- [ ] No console errors during lazy loading
+- [ ] Component functionality works correctly after lazy load
+- [ ] Step 3 completed and documented in PROGRESS.md with list of lazy-loaded components
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 4: Route-Based Code Splitting Optimization
+
+**Objective:** Ensure optimal code splitting at the route level and minimize shared chunks.
+
+**Actions:**
+
+1. Review Next.js automatic code splitting:
+    - Run `npx next build` and check build output
+    - Identify shared chunks and their sizes
+    - Look for opportunities to reduce shared bundle size
+2. Optimize component imports:
+    - Use named imports instead of default imports where beneficial
+    - Avoid importing entire libraries when only specific functions are needed
+    - Example: `import { useState } from 'react'` instead of `import React from 'react'`
+3. Split large page components if needed:
+    - If product page component >100KB, split into smaller components
+    - Extract reusable sections into separate files
+    - Use dynamic imports for page sections
+4. Optimize dependencies:
+    - Review package.json for large dependencies
+    - Consider lighter alternatives for heavy libraries if found
+    - Ensure tree-shaking friendly imports
+5. Verify route isolation:
+    - Check build output to ensure product page code doesn't load on homepage
+    - Ensure category-specific code only loads on category pages
+
+**Success Criteria:**
+
+- [ ] Build output reviewed and documented in PROGRESS.md
+- [ ] Shared chunks identified and sizes noted
+- [ ] Component imports optimized (named imports used where appropriate)
+- [ ] No single route bundle exceeds 250KB First Load JS
+- [ ] Route isolation verified (homepage doesn't load product page code)
+- [ ] Any large dependencies identified and optimization plan documented
+- [ ] Step 4 completed and documented in PROGRESS.md
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 5: Core Web Vitals Optimization
+
+**Objective:** Optimize for Core Web Vitals metrics - LCP, FID, and CLS.
+
+**Actions:**
+
+1. **Largest Contentful Paint (LCP) - Target: <2.5s**
+    - Identify LCP element on each page type (usually hero image or heading)
+    - Add `priority` prop to LCP images
+    - Ensure LCP images are not lazy loaded
+    - Preload critical fonts if used
+    - Optimize server response time for SSR pages
+2. **First Input Delay (FID) - Target: <100ms**
+    - Minimize JavaScript execution time
+    - Use `requestIdleCallback` for non-critical tasks if applicable
+    - Defer non-essential scripts
+    - Code split to reduce main thread blocking
+3. **Cumulative Layout Shift (CLS) - Target: <0.1**
+    - Add explicit `width` and `height` to all images (should be done in Step 2)
+    - Reserve space for ads or dynamic content if any
+    - Avoid inserting content above existing content
+    - Use `transform` animations instead of properties that trigger layout
+    - Set `min-height` on content containers that load dynamically
+4. Test in Chrome DevTools:
+    - Open Chrome DevTools > Lighthouse
+    - Run audit on homepage, product page, category page
+    - Record LCP, FID/INP, and CLS values
+    - Test on throttled connection (Fast 3G)
+5. Document measurements in PROGRESS.md:
+    - LCP times for homepage, product page, category page
+    - FID/INP values
+    - CLS scores
+    - Any issues found and solutions applied
+
+**Success Criteria:**
+
+- [ ] LCP elements identified on all page types
+- [ ] LCP images have `priority` prop and are not lazy loaded
+- [ ] All images have explicit dimensions (no layout shift)
+- [ ] CLS score <0.1 verified in Chrome DevTools on all page types
+- [ ] LCP <2.5s on homepage (or improvement documented with plan)
+- [ ] FID/INP <100ms verified through interaction testing
+- [ ] Core Web Vitals measurements documented in PROGRESS.md
+- [ ] Step 5 completed and documented in PROGRESS.md
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 6: Font Optimization
+
+**Objective:** Optimize web font loading to prevent layout shift and improve performance.
+
+**Actions:**
+
+1. Audit current font usage:
+    - Identify all fonts loaded (Google Fonts, custom fonts)
+    - Check current font loading implementation in layout.js or page files
+    - Review font loading strategy
+2. Implement Next.js font optimization:
+    - Use `next/font/google` for Google Fonts
+    - Add font configuration in layout.js
+    - Example:
+
+```javascript
+import { Inter } from 'next/font/google';
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
+```
+
+    - Apply font className to html or body element
+3. Apply font optimization:
+    - Ensure `font-display: swap` configured (via display option)
+    - Subset fonts to include only required characters (latin subset)
+    - Self-host fonts if using external font providers
+4. Remove unused font weights and styles:
+    - Only load required font weights (e.g., 400, 600, 700)
+    - Remove italic variants if not used
+    - Example: `const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });`
+5. Test font loading in development:
+    - Run `npm run dev`
+    - Verify no FOUT (Flash of Unstyled Text)
+    - Check no layout shift during font load
+    - Confirm fonts load quickly
+
+**Success Criteria:**
+
+- [ ] Fonts use Next.js `next/font` optimization (if Google Fonts or custom fonts used)
+- [ ] `font-display: swap` configured or equivalent
+- [ ] Only required font weights loaded (unnecessary weights removed)
+- [ ] Fonts subset to latin characters
+- [ ] No FOUT observed in development testing
+- [ ] No layout shift from font loading
+- [ ] Font optimization documented in PROGRESS.md
+- [ ] Step 6 completed and documented in PROGRESS.md
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 7: Performance Testing \& Validation
+
+**Objective:** Validate all performance optimizations and measure improvements.
+
+**Actions:**
+
+1. Run production build and compare with baseline:
+
+```bash
+npx next build
+```
+
+    - Compare new First Load JS sizes with Step 1 baseline
+    - Calculate reduction percentage
+    - Document improvements in PROGRESS.md
+2. Run Lighthouse performance audit:
+    - Test homepage, product page, category page
+    - Target scores: Performance >90, Accessibility >95, Best Practices >90, SEO >95
+    - Document all scores in PROGRESS.md
+3. Measure Core Web Vitals:
+    - LCP on all page types
+    - FID/INP during interactions
+    - CLS across all pages
+    - Compare with Step 5 measurements
+4. Test on throttled connection:
+    - Use Chrome DevTools Fast 3G throttling
+    - Verify acceptable load times
+    - Test on mobile viewport
+5. Create before/after comparison table in PROGRESS.md:
+    - Homepage First Load JS: Before → After
+    - Product page First Load JS: Before → After
+    - Category page First Load JS: Before → After
+    - Lighthouse Performance scores: Before → After
+    - Core Web Vitals: Before → After
+
+**Success Criteria:**
+
+- [ ] Production build completes without errors
+- [ ] First Load JS reduced from baseline on all routes (or documented if not reduced)
+- [ ] Homepage First Load JS <150KB (or documented reason if higher)
+- [ ] Lighthouse Performance score >85 on all tested pages (or improvement documented)
+- [ ] Core Web Vitals in acceptable range or improvement documented
+- [ ] Before/after comparison table created in PROGRESS.md
+- [ ] All test results documented in PROGRESS.md
+- [ ] Step 7 completed and documented in PROGRESS.md
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 8: Final Documentation \& Build Verification
+
+**Objective:** Complete Phase 3 documentation and verify production-ready status.
+
+**Actions:**
+
+1. Complete PROGRESS.md Phase 3 entry with:
+    - All 8 steps documented
+    - Start and end timestamps
+    - Total duration
+    - Complete before/after metrics
+    - List of all optimizations applied
+    - Lighthouse scores
+    - Core Web Vitals results
+2. Final production build verification:
+
+```bash
+npx next build
+```
+
+    - Verify no errors or warnings
+    - Confirm bundle sizes are optimized
+    - Check for any performance regressions
+3. Create optimization summary in PROGRESS.md:
+    - List all images optimized
+    - Components lazy loaded (with names)
+    - Fonts optimized
+    - Code splitting improvements
+    - Performance gains achieved (percentage improvements)
+4. Update next-step.md:
+    - Change content to: "Execute Phase 4 by following @generate.mdc"
+5. Commit all changes:
+    - Commit message: "Phase 3: Performance Optimization Complete"
+    - Ensure all modified files committed
+
+**Success Criteria:**
+
+- [ ] PROGRESS.md has complete Phase 3 section with all 8 steps documented
+- [ ] Timestamps and duration recorded in PROGRESS.md
+- [ ] Before/after metrics comparison table complete
+- [ ] All optimization techniques listed in summary
+- [ ] Production build completes successfully with no errors
+- [ ] next-step.md updated to Phase 4
+- [ ] All changes committed to git
+- [ ] Step 8 completed and documented in PROGRESS.md
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Phase 3 Self-Check
+
+Review all 8 steps and verify success criteria:
+
+**Step Completion Status:**
+- [ ] Step 1: Performance Baseline Assessment - All success criteria met
+- [ ] Step 2: Image Optimization Implementation - All success criteria met
+- [ ] Step 3: Component Code Splitting \& Lazy Loading - All success criteria met
+- [ ] Step 4: Route-Based Code Splitting Optimization - All success criteria met
+- [ ] Step 5: Core Web Vitals Optimization - All success criteria met
+- [ ] Step 6: Font Optimization - All success criteria met
+- [ ] Step 7: Performance Testing \& Validation - All success criteria met
+- [ ] Step 8: Final Documentation \& Build Verification - All success criteria met
+
+**Overall Phase 3 Assessment:**
+
+- [ ] All 8 steps completed with success criteria met
+- [ ] Production build successful with no errors
+- [ ] Performance improvements quantified and documented
+- [ ] PROGRESS.md Phase 3 entry complete with all metrics
+- [ ] next-step.md updated to Phase 4
+
+***
+
+## Self-Check Decision Criteria
+
+**Count completed step checkboxes (out of 8):**
+
+- **If 8/8 steps complete (100%):**
+    - **Decision:** ✅ **PASS** - Phase 3 COMPLETED
+    - Mark Phase 3 Status as ✅ COMPLETED in PROGRESS.md
+    - Document: "Phase 3 implementation complete, all performance optimizations applied successfully"
+- **If 6-7 steps complete (75-87%):**
+    - **Decision:** ⚠️ **PARTIAL** - Phase 3 PARTIALLY COMPLETED
+    - Mark Phase 3 Status as ⚠️ PARTIAL COMPLETE in PROGRESS.md
+    - Document incomplete steps and reasons
+    - Assess if blockers exist or can proceed with limitations
+    - If non-blocking issues only, proceed to Phase 4 with documented notes
+- **If <6 steps complete (<75%):**
+    - **Decision:** ❌ **FAILED** - Phase 3 FAILED
+    - Mark Phase 3 Status as ❌ FAILED in PROGRESS.md
+    - Document all failures and errors encountered
+    - Do NOT update next-step.md (keep as Phase 3 for retry)
+    - Do NOT proceed to Phase 4
+
+
+
+**Phase 3 Complete.**
+
+**Follow `### Step 2: External Verification (Ralph Loop)` as mentioned in `#Steps To Execute` in `generate.mdc`**
+
+**End of Phase-3.mdc**

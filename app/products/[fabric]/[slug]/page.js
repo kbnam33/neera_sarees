@@ -113,6 +113,7 @@ export default async function ProductPage({ params }) {
                 fill
                 className="object-cover"
                 priority
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -133,7 +134,13 @@ export default async function ProductPage({ params }) {
                 return (
                   <div key={idx} className="aspect-square relative bg-gray-100 rounded overflow-hidden">
                     {img.startsWith('http') && (
-                      <Image src={img} alt={altText} fill className="object-cover" />
+                      <Image 
+                        src={img} 
+                        alt={altText} 
+                        fill 
+                        className="object-cover"
+                        sizes="(max-width: 768px) 25vw, 12vw"
+                      />
                     )}
                   </div>
                 );

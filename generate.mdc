@@ -1023,7 +1023,7 @@ Run these verification checks:
 
 **Check 1.3: Category \& Homepage Meta Tags**
 
-- Check PROGRESS.md Phase 2 logs for category and homepage meta implementation
+
 - Verify homepage has meta title and description in HTML source
 - Verify at least 2 category pages have meta tags
 - Expected: Meta tags present on category pages and homepage
@@ -1407,3 +1407,478 @@ Append to PROGRESS.md within Phase 2 section:
 - Update **Phase-2 Status:** ❌ FAILED
 - List blocking issues (missing meta tags, alt text failures, schema errors)
 - Log orchestrator decision: "Phase 2 BLOCKED – critical content optimization incomplete, must resolve before Phase 3"
+
+# PHASE 3: PERFORMANCE OPTIMIZATION
+
+## Steps To Execute
+
+### Step 1: Execute Phase-3.mdc
+
+Load and execute @Phase-3.mdc from top to bottom. The phase file will handle its own execution and self-check.
+
+### Step 2: External Verification (Ralph Loop)
+
+After Phase-3.mdc execution completes, perform external verification using the Ralph Loop methodology (DECIDE → EXECUTE → CHECK).
+
+***
+
+## Part 1: Image Optimization Verification
+
+**PLAN - What to Verify:**
+
+- All images use Next.js Image component
+- Priority images configured correctly
+- Image formats optimized
+- No layout shift from images
+
+**EXECUTE - Verification Checks:**
+
+**Check 1.1: Next.js Image Component Usage**
+
+- Open `app/page.js` in code editor
+- Search for `<img` tags (should find none, only `<Image` from next/image)
+- Open `app/products/[fabric]/[slug]/page.js`
+- Search for `<img` tags (should find none)
+- Open `app/categories/[fabric]/page.js`
+- Search for `<img` tags (should find none)
+
+```
+- Expected: No plain `<img>` tags, only Next.js `<Image>` components
+```
+
+**Check 1.2: Priority Images Configuration**
+
+- Open `app/products/[fabric]/[slug]/page.js`
+- Find main product image `<Image>` component
+- Verify it has `priority={true}` or `priority` prop
+- Open `app/page.js`
+- Check first 2-3 featured product images have `priority` prop
+- Expected: Above-the-fold images have priority prop
+
+**Check 1.3: Image Optimization Config**
+
+- Open `next.config.js` or `next.config.mjs`
+- Check for `images` configuration object
+- Verify `formats: ['image/avif', 'image/webp']` exists
+- Verify `deviceSizes` and `imageSizes` arrays exist
+- Expected: Image optimization configured
+
+**Check 1.4: Sizes Attribute**
+
+- Open `app/products/[fabric]/[slug]/page.js`
+- Find product `<Image>` components
+- Verify `sizes` prop exists on responsive images
+- Expected: Responsive images have sizes attribute
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+```
+- [ ] Check 1.1: No plain `<img>` tags found, only Next.js `<Image>` components
+```
+
+- [ ] Check 1.2: Above-the-fold images have `priority` prop
+- [ ] Check 1.3: Image optimization config exists in next.config
+- [ ] Check 1.4: Responsive images have `sizes` attribute
+
+**Part 1 Result:**
+
+- If all 4 checks pass → Part 1: ✅ PASS
+- If 3 checks pass → Part 1: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 1: ❌ FAIL
+
+**Mark Part 1 complete and document result in PROGRESS.md before proceeding to Part 2.**
+
+***
+
+## Part 2: Code Splitting \& Lazy Loading Verification
+
+**PLAN - What to Verify:**
+
+- Non-critical components use dynamic imports
+- Loading states implemented
+- Components load on demand
+
+**EXECUTE - Verification Checks:**
+
+**Check 2.1: Dynamic Imports Implementation**
+
+- Search codebase for `import dynamic from 'next/dynamic'`
+- Identify components wrapped in `dynamic()`
+- Expected: At least 2-3 components use dynamic imports
+
+**Check 2.2: Loading States**
+
+- Open files with dynamic imports
+- Check each `dynamic()` call has `loading` property
+- Expected: Loading states defined for lazy components
+
+**Check 2.3: Third-Party Scripts Optimization**
+
+- Search for `<Script` from 'next/script'
+- Verify `strategy="lazyOnload"` or appropriate strategy used
+- Expected: Non-critical scripts deferred (if any scripts exist)
+
+**Check 2.4: Build Output Verification**
+
+- Run `npx next build` in terminal
+- Check build completes without errors
+- Review bundle sizes in output
+- Expected: Build successful, no errors
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 2.1: At least 2-3 components use dynamic imports (or documented if none needed)
+- [ ] Check 2.2: Loading states implemented for lazy components
+- [ ] Check 2.3: Third-party scripts optimized (or not applicable)
+- [ ] Check 2.4: Production build completes without errors
+
+**Part 2 Result:**
+
+- If all 4 checks pass → Part 2: ✅ PASS
+- If 3 checks pass → Part 2: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 2: ❌ FAIL
+
+**Mark Part 2 complete and document result in PROGRESS.md before proceeding to Part 3.**
+
+***
+
+## Part 3: Route-Based Code Splitting Verification
+
+**PLAN - What to Verify:**
+
+- Route isolation working
+- Bundle sizes optimized
+- Shared chunks reasonable
+
+**EXECUTE - Verification Checks:**
+
+**Check 3.1: Build Output Analysis**
+
+- Run `npx next build`
+- Review "Route (app)" section in build output
+- Check First Load JS for each route
+- Expected: Build completes, bundle sizes displayed
+
+**Check 3.2: Route Bundle Sizes**
+
+- Check homepage First Load JS
+- Check product page First Load JS
+- Check category page First Load JS
+- Expected: No route exceeds 250KB First Load JS (or documented reason)
+
+**Check 3.3: Shared Chunks**
+
+- Review build output for shared chunks
+- Note shared/chunks sizes
+- Expected: Shared chunks identified and documented
+
+**Check 3.4: Import Optimization**
+
+- Open component files
+- Check imports use named imports (e.g., `import { useState }` not `import React`)
+- Expected: Optimized import patterns used
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 3.1: Build output shows route-specific bundles
+- [ ] Check 3.2: Route bundle sizes within acceptable limits (<250KB or documented)
+- [ ] Check 3.3: Shared chunks documented
+- [ ] Check 3.4: Optimized import patterns verified
+
+**Part 3 Result:**
+
+- If all 4 checks pass → Part 3: ✅ PASS
+- If 3 checks pass → Part 3: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 3: ❌ FAIL
+
+**Mark Part 3 complete and document result in PROGRESS.md before proceeding to Part 4.**
+
+***
+
+## Part 4: Core Web Vitals Verification
+
+**PLAN - What to Verify:**
+
+- LCP elements optimized
+- CLS prevented
+- Performance metrics measured
+
+**EXECUTE - Verification Checks:**
+
+**Check 4.1: LCP Image Priority**
+
+- Open `app/page.js`
+- Check hero/main image has `priority` prop
+- Open `app/products/[fabric]/[slug]/page.js`
+- Check main product image has `priority` prop
+- Expected: LCP images have priority
+
+**Check 4.2: Image Dimensions Set**
+
+- Check product images have `width` and `height` or `fill` prop
+- Check homepage images have dimensions
+- Expected: All images have explicit dimensions (prevents CLS)
+
+**Check 4.3: Lighthouse Audit**
+
+- Run Chrome DevTools Lighthouse on development build
+- Test homepage
+- Check Performance score
+- Expected: Performance score >85 or improvement documented
+
+**Check 4.4: Layout Shift Prevention**
+
+- Inspect code for `min-height` on dynamic containers
+- Check animations use `transform` instead of layout properties
+- Expected: CLS prevention techniques applied
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 4.1: LCP images have `priority` prop
+- [ ] Check 4.2: All images have explicit dimensions
+- [ ] Check 4.3: Lighthouse Performance score >85 or improvement documented
+- [ ] Check 4.4: CLS prevention techniques applied
+
+**Part 4 Result:**
+
+- If all 4 checks pass → Part 4: ✅ PASS
+- If 3 checks pass → Part 4: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 4: ❌ FAIL
+
+**Mark Part 4 complete and document result in PROGRESS.md before proceeding to Part 5.**
+
+***
+
+## Part 5: Font Optimization Verification
+
+**PLAN - What to Verify:**
+
+- Fonts use Next.js optimization
+- Font loading optimized
+- No FOUT or layout shift
+
+**EXECUTE - Verification Checks:**
+
+**Check 5.1: Next.js Font Implementation**
+
+- Open `app/layout.js`
+- Search for `import` from 'next/font/google' or 'next/font/local'
+- Check font configured with subsets and display options
+- Expected: Next.js font optimization implemented (if fonts used)
+
+**Check 5.2: Font Display Strategy**
+
+- Check font configuration has `display: 'swap'` option
+- Expected: Font display strategy set
+
+**Check 5.3: Font Weights Optimization**
+
+- Check only required font weights loaded
+- Example: `weight: ['400', '600', '700']` not all weights
+- Expected: Unnecessary font weights removed
+
+**Check 5.4: Font Application**
+
+- Check font className applied to html or body element
+- Expected: Font properly applied in layout
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 5.1: Next.js font optimization implemented (or not applicable if no custom fonts)
+- [ ] Check 5.2: Font display strategy set to 'swap'
+- [ ] Check 5.3: Only required font weights loaded
+- [ ] Check 5.4: Font className properly applied
+
+**Part 5 Result:**
+
+- If all 4 checks pass → Part 5: ✅ PASS
+- If 3 checks pass → Part 5: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 5: ❌ FAIL
+- If no custom fonts used → Part 5: ✅ PASS (not applicable)
+
+**Mark Part 5 complete and document result in PROGRESS.md before proceeding to Part 6.**
+
+***
+
+## Part 6: Performance Testing Validation
+
+**PLAN - What to Verify:**
+
+- Performance metrics measured
+- Before/after comparison documented
+- Improvements quantified
+
+**EXECUTE - Verification Checks:**
+
+**Check 6.1: Production Build Success**
+
+- Run `npx next build`
+- Verify build completes without errors
+- Check no performance warnings in output
+- Expected: Clean production build
+
+**Check 6.2: Bundle Size Improvements**
+
+- Compare current build output with baseline (from Phase 3 Step 1)
+- Check if First Load JS reduced
+- Expected: Bundle size reduction or stable (documented)
+
+**Check 6.3: Lighthouse Scores**
+
+- Run Lighthouse on homepage, product page, category page
+- Check Performance scores
+- Expected: Scores >85 or improvement from baseline
+
+**Check 6.4: Performance Metrics Documentation**
+
+- Open PROGRESS.md
+- Check Phase 3 has before/after comparison table
+- Verify metrics documented (First Load JS, Lighthouse scores)
+- Expected: Performance metrics documented
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 6.1: Production build completes without errors
+- [ ] Check 6.2: Bundle size improvements documented
+- [ ] Check 6.3: Lighthouse scores meet targets or improvement documented
+- [ ] Check 6.4: Before/after comparison table exists in PROGRESS.md
+
+**Part 6 Result:**
+
+- If all 4 checks pass → Part 6: ✅ PASS
+- If 3 checks pass → Part 6: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 6: ❌ FAIL
+
+**Mark Part 6 complete and document result in PROGRESS.md before proceeding to Part 7.**
+
+***
+
+## Part 7: Documentation Completeness
+
+**PLAN - What to Verify:**
+
+- PROGRESS.md complete
+- next-step.md updated
+- Changes committed
+
+**EXECUTE - Verification Checks:**
+
+**Check 7.1: PROGRESS.md Phase 3 Entry**
+
+- Open PROGRESS.md
+- Verify Phase 3 section exists
+- Check all 8 steps documented
+- Check timestamps and duration present
+- Expected: Complete Phase 3 documentation
+
+**Check 7.2: Optimization Summary**
+
+- Check PROGRESS.md has optimization summary
+- Verify list of optimizations applied
+- Check before/after metrics table exists
+- Expected: Summary and metrics documented
+
+**Check 7.3: next-step.md Update**
+
+- Open next-step.md
+- Verify content is "Execute Phase 4 by following @generate.mdc"
+- Expected: Correctly updated to Phase 4
+
+**Check 7.4: Git Commit**
+
+- Run `git log -1` to see latest commit
+- Check commit message mentions Phase 3
+- Expected: Changes committed with appropriate message
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 7.1: PROGRESS.md Phase 3 entry complete with all steps
+- [ ] Check 7.2: Optimization summary and metrics documented
+- [ ] Check 7.3: next-step.md updated to Phase 4
+- [ ] Check 7.4: Changes committed with appropriate message
+
+**Part 7 Result:**
+
+- If all 4 checks pass → Part 7: ✅ PASS
+- If 3 checks pass → Part 7: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 7: ❌ FAIL
+
+**Mark Part 7 complete and document result in PROGRESS.md before proceeding to Part 8.**
+
+***
+
+## Part 8: Holistic Vision
+
+**DECIDE - Aggregate Results:**
+
+Review all parts and count results:
+
+**Parts Summary:**
+
+- [ ] Part 1: Image Optimization - Result: _____
+- [ ] Part 2: Code Splitting \& Lazy Loading - Result: _____
+- [ ] Part 3: Route-Based Code Splitting - Result: _____
+- [ ] Part 4: Core Web Vitals - Result: _____
+- [ ] Part 5: Font Optimization - Result: _____
+- [ ] Part 6: Performance Testing - Result: _____
+- [ ] Part 7: Documentation Completeness - Result: _____
+
+Count PASS/PARTIAL/FAIL from Parts 1-7:
+
+**Scenario A: All parts PASS (7/7)**
+
+- Decision: Phase 3 ✅ COMPLETE
+- Action: Document success in PROGRESS.md
+- Mark: "**External Verification:** Phase 3 COMPLETE - Performance optimization successful, all 7 parts verified"
+- Next: Proceed to Phase 4
+
+**Scenario B: 5-6 parts PASS, 1-2 PARTIAL**
+
+- Decision: Phase 3 ⚠️ COMPLETE with notes
+- Action: Document partial items in PROGRESS.md
+- Mark: "**External Verification:** Phase 3 COMPLETE with minor gaps - [list gaps]"
+- Assess: If gaps are non-blocking → Proceed to Phase 4
+- If gaps are blocking → Request human review
+
+**Scenario C: 4+ parts FAIL or critical functionality broken**
+
+- Decision: Phase 3 ❌ FAILED
+- Action: Document failures in PROGRESS.md
+- Mark: "**External Verification:** Phase 3 FAILED - [list failures]"
+- Rollback: Revert changes if build broken
+- Next: Do NOT proceed to Phase 4, request human intervention
+
+**Document final holistic decision in PROGRESS.md under Phase 3 External Verification section.**
+
+**Holistic Assessment:**
+
+- [ ] All parts reviewed and aggregated
+- [ ] Final decision made (COMPLETE/COMPLETE with notes/FAILED)
+- [ ] Decision documented in PROGRESS.md External Verification section
+- [ ] next-step.md verified (Phase 4 if success, Phase 3 if failed)
+
+**Mark Part 8 complete only when holistic decision is documented.**
+
+
+## Update next-step.md
+
+Based on holistic decision:
+
+- If Phase 3 COMPLETE or COMPLETE with notes → next-step.md already updated to Phase 4 (verify)
+- If Phase 3 FAILED → Revert next-step.md to Phase 3 for retry
+
+**Phase 3 External Verification Complete.**

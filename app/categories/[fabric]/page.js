@@ -83,6 +83,7 @@ export default async function CategoryPage({ params }) {
                         alt={`${product.name} - ${product.fabric_type || 'Handloom'} Saree`}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
