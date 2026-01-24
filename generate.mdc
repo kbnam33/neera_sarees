@@ -1882,3 +1882,431 @@ Based on holistic decision:
 - If Phase 3 FAILED → Revert next-step.md to Phase 3 for retry
 
 **Phase 3 External Verification Complete.**
+
+# PHASE 4: MAKING "SEARCH BY PRINT" FUNCTIONAL
+
+## Steps To Execute
+
+### Step 1: Execute Phase-4.mdc
+
+Load and execute @Phase-4.mdc from top to bottom. The phase file will handle its own execution and self-check.
+
+### Step 2: External Verification (Ralph Loop)
+
+After Phase-4.mdc execution completes, perform external verification using the Ralph Loop methodology (DECIDE → EXECUTE → CHECK).
+
+***
+
+## Part 1: Database Infrastructure Verification
+
+**PLAN - What to Verify:**
+
+- Print column exists in products table
+- Print data populated
+- Database scripts created and executed
+- Infrastructure ready for print categories
+
+**EXECUTE - Verification Checks:**
+
+**Check 1.1: Print Column Existence**
+
+- Connect to Supabase database or use inspection script
+- Query products table structure
+- Check for `print_type` or `print` column
+- Expected: Column exists with TEXT or VARCHAR type
+
+**Check 1.2: Print Data Population**
+
+- Query: `SELECT print_type, COUNT(*) FROM products GROUP BY print_type`
+- Check distribution of print types
+- Count products with non-null print_type
+- Expected: At least 80% of products have print_type populated
+
+**Check 1.3: Database Scripts Created**
+
+- Check `scripts/check-print-column.js` exists
+- Check `scripts/add-print-column.js` exists (if column was added)
+- Check `scripts/populate-print-data.js` exists
+- Expected: Required scripts present in repository
+
+**Check 1.4: Print Categories Available**
+
+- Query unique print types: `SELECT DISTINCT print_type FROM products WHERE print_type IS NOT NULL`
+- Verify at least 3-5 print categories exist
+- Check print type naming is consistent (no typos, proper formatting)
+- Expected: Multiple print categories available with clean data
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 1.1: `print_type` column exists in products table
+- [ ] Check 1.2: At least 80% of products have print_type data populated
+- [ ] Check 1.3: Database scripts exist in `scripts/` directory
+- [ ] Check 1.4: At least 3 unique print categories available
+
+**Part 1 Result:**
+
+- If all 4 checks pass → Part 1: ✅ PASS
+- If 3 checks pass → Part 1: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 1: ❌ FAIL
+
+**Mark Part 1 complete and document result in PROGRESS.md before proceeding to Part 2.**
+
+***
+
+## Part 2: Print Category Routes Verification
+
+**PLAN - What to Verify:**
+
+- Print category routes created
+- Dynamic routing works
+- Products filtered correctly by print type
+- Pages render without errors
+
+**EXECUTE - Verification Checks:**
+
+**Check 2.1: Route Structure Created**
+
+- Navigate to `app/prints/[print-type]/` directory
+- Verify `page.js` exists
+- Check file structure matches fabric category pattern
+- Expected: Directory and page.js exist
+
+**Check 2.2: Dynamic Route Implementation**
+
+- Open `app/prints/[print-type]/page.js`
+- Check dynamic parameter handling: `params.printType` or `params['print-type']`
+- Verify Supabase query filters by print_type
+- Expected: Proper dynamic routing and filtering logic
+
+**Check 2.3: Metadata Generation**
+
+- Check `generateMetadata()` function exists
+- Verify meta title format includes print type
+- Check character limits enforced (≤60 title, ≤155 description)
+- Expected: SEO-optimized metadata implemented
+
+**Check 2.4: Static Params Generation (if SSG)**
+
+- Check `generateStaticParams()` function exists
+- Verify it queries unique print types from database
+- Expected: Static generation configured (or SSR documented)
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 2.1: `app/prints/[print-type]/page.js` exists
+- [ ] Check 2.2: Dynamic routing and print filtering implemented correctly
+- [ ] Check 2.3: `generateMetadata()` with SEO optimization implemented
+- [ ] Check 2.4: `generateStaticParams()` implemented (or SSR confirmed)
+
+**Part 2 Result:**
+
+- If all 4 checks pass → Part 2: ✅ PASS
+- If 3 checks pass → Part 2: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 2: ❌ FAIL
+
+**Mark Part 2 complete and document result in PROGRESS.md before proceeding to Part 3.**
+
+***
+
+## Part 3: Navbar Functionality Verification
+
+**PLAN - What to Verify:**
+
+- Navbar "Search by print" is functional
+- Dropdown populates with print categories
+- Navigation works correctly
+- UI matches existing patterns
+
+**EXECUTE - Verification Checks:**
+
+**Check 3.1: Navbar Component Updated**
+
+- Open navbar component file (e.g., `components/Header.js`)
+- Search for "Search by print" implementation
+- Verify dropdown/menu code exists and is not commented out
+- Expected: Navbar component has print search functionality
+
+**Check 3.2: Print Categories Populated**
+
+- Check data fetching logic for print categories
+- Verify query fetches distinct print types from database
+- Check dropdown renders all available print types
+- Expected: Dropdown dynamically populated with print categories
+
+**Check 3.3: Navigation Logic**
+
+- Check click handlers on print options
+- Verify navigation routes to `/prints/[selected-print]`
+- Test URL formatting (lowercase, hyphenated, etc.)
+- Expected: Correct navigation to print category pages
+
+**Check 3.4: UI/UX Consistency**
+
+- Compare "Search by print" dropdown styling with "Search by fabric"
+- Check hover states, active states
+- Verify mobile responsiveness
+- Expected: Consistent styling and responsive design
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 3.1: Navbar component updated with print search functionality
+- [ ] Check 3.2: Print categories dynamically fetched and displayed in dropdown
+- [ ] Check 3.3: Navigation routes correctly to `/prints/[print-type]`
+- [ ] Check 3.4: UI styling consistent with fabric search, mobile responsive
+
+**Part 3 Result:**
+
+- If all 4 checks pass → Part 3: ✅ PASS
+- If 3 checks pass → Part 3: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 3: ❌ FAIL
+
+**Mark Part 3 complete and document result in PROGRESS.md before proceeding to Part 4.**
+
+***
+
+## Part 4: SEO Optimization Verification
+
+**PLAN - What to Verify:**
+
+- Meta tags optimized for print pages
+- Image alt text includes print information
+- Heading structure proper
+- Internal linking implemented
+
+**EXECUTE - Verification Checks:**
+
+**Check 4.1: Meta Tags Optimization**
+
+- Open `app/prints/[print-type]/page.js`
+- Verify `generateMetadata()` returns unique titles per print type
+- Check character limits enforced
+- Test with sample print type (e.g., floral)
+- Expected: Unique, optimized meta tags for each print category
+
+**Check 4.2: Image Alt Text**
+
+- Check product image components on print pages
+- Verify alt text format includes print type
+- Example: `${product.name} - ${print_type} Print - ${fabric_type} Saree`
+- Expected: Descriptive alt text with print information
+
+**Check 4.3: Heading Structure**
+
+- Check H1 on print category pages
+- Verify H1 contains print type (e.g., "Floral Print Sarees")
+- Ensure proper hierarchy (H1 → H2, no skipped levels)
+- Expected: Proper heading structure with print category in H1
+
+**Check 4.4: Breadcrumbs/Internal Links**
+
+- Check for breadcrumb navigation
+- Verify links between related print categories
+- Check links back to main navigation
+- Expected: Internal linking structure implemented
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 4.1: Meta tags unique and optimized for each print category
+- [ ] Check 4.2: Image alt text includes print type information
+- [ ] Check 4.3: Heading structure proper with H1 containing print category
+- [ ] Check 4.4: Breadcrumbs or internal linking implemented
+
+**Part 4 Result:**
+
+- If all 4 checks pass → Part 4: ✅ PASS
+- If 3 checks pass → Part 4: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 4: ❌ FAIL
+
+**Mark Part 4 complete and document result in PROGRESS.md before proceeding to Part 5.**
+
+***
+
+## Part 5: Functionality Testing Verification
+
+**PLAN - What to Verify:**
+
+- Print filtering works correctly
+- Products display in correct categories
+- Cross-feature compatibility (fabric + print)
+- Production build succeeds
+
+**EXECUTE - Verification Checks:**
+
+**Check 5.1: Print Filtering Accuracy**
+
+- Navigate to a print category page (e.g., `/prints/floral`)
+- Verify only products with that print_type display
+- Check at least 2-3 different print categories
+- Expected: Accurate product filtering by print type
+
+**Check 5.2: Product Display Quality**
+
+- Check product grid displays correctly
+- Verify images, names, prices show properly
+- Test pagination if implemented
+- Expected: Clean product display on print pages
+
+**Check 5.3: Cross-Feature Compatibility**
+
+- Verify products appear in both fabric AND print categories
+- Example: A "Kota Floral Saree" should appear in both `/categories/kota` and `/prints/floral`
+- Test edge cases (products without print type)
+- Expected: Products correctly categorized in both dimensions
+
+**Check 5.4: Production Build**
+
+- Run `npx next build`
+- Check build completes without errors
+- Verify print pages generated (if SSG)
+- Check no warnings related to print functionality
+- Expected: Successful production build
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 5.1: Print filtering works correctly (tested on 2-3 categories)
+- [ ] Check 5.2: Product grid displays properly on print pages
+- [ ] Check 5.3: Products appear in both fabric and print categories correctly
+- [ ] Check 5.4: Production build completes successfully
+
+**Part 5 Result:**
+
+- If all 4 checks pass → Part 5: ✅ PASS
+- If 3 checks pass → Part 5: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 5: ❌ FAIL
+
+**Mark Part 5 complete and document result in PROGRESS.md before proceeding to Part 6.**
+
+***
+
+## Part 6: Documentation Completeness
+
+**PLAN - What to Verify:**
+
+- PROGRESS.md complete for Phase 4
+- All steps documented
+- next-step.md updated
+- Changes committed
+
+**EXECUTE - Verification Checks:**
+
+**Check 6.1: PROGRESS.md Phase 4 Entry**
+
+- Open PROGRESS.md
+- Verify Phase 4 section exists
+- Check all 8 steps documented
+- Verify timestamps and duration recorded
+- Expected: Complete Phase 4 documentation
+
+**Check 6.2: Database Changes Documented**
+
+- Check PROGRESS.md documents:
+    - Print column addition (or existing status)
+    - Data population results
+    - Number of print categories created
+    - Distribution of products across print types
+- Expected: Database changes thoroughly documented
+
+**Check 6.3: Implementation Summary**
+
+- Verify PROGRESS.md has implementation summary:
+    - Routes created
+    - Navbar updates
+    - SEO optimizations applied
+    - Scripts created
+- Expected: Complete implementation summary
+
+**Check 6.4: next-step.md and Git Commit**
+
+- Check next-step.md content is "Execute Phase 5 by following @generate.mdc"
+- Run `git log -1` to verify latest commit
+- Check commit message mentions Phase 4
+- Expected: next-step.md updated, changes committed
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 6.1: PROGRESS.md Phase 4 entry complete with all 8 steps
+- [ ] Check 6.2: Database changes and data population documented
+- [ ] Check 6.3: Implementation summary with all components listed
+- [ ] Check 6.4: next-step.md updated to Phase 5, changes committed
+
+**Part 6 Result:**
+
+- If all 4 checks pass → Part 6: ✅ PASS
+- If 3 checks pass → Part 6: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 6: ❌ FAIL
+
+**Mark Part 6 complete and document result in PROGRESS.md before proceeding to Part 7.**
+
+***
+
+## Part 7: Holistic Vision
+
+**DECIDE - Aggregate Results:**
+
+Review all parts and count results:
+
+**Parts Summary:**
+
+- [ ] Part 1: Database Infrastructure - Result: _____
+- [ ] Part 2: Print Category Routes - Result: _____
+- [ ] Part 3: Navbar Functionality - Result: _____
+- [ ] Part 4: SEO Optimization - Result: _____
+- [ ] Part 5: Functionality Testing - Result: _____
+- [ ] Part 6: Documentation Completeness - Result: _____
+
+Count PASS/PARTIAL/FAIL from Parts 1-6:
+
+**Scenario A: All parts PASS (6/6)**
+
+- Decision: Phase 4 ✅ COMPLETE
+- Action: Document success in PROGRESS.md
+- Mark: "**External Verification:** Phase 4 COMPLETE - Search by Print functionality fully operational, all 6 parts verified"
+- Next: Proceed to Phase 5
+
+**Scenario B: 4-5 parts PASS, 1-2 PARTIAL**
+
+- Decision: Phase 4 ⚠️ COMPLETE with notes
+- Action: Document partial items in PROGRESS.md
+- Mark: "**External Verification:** Phase 4 COMPLETE with minor gaps - [list gaps]"
+- Assess: If gaps are non-blocking → Proceed to Phase 5
+- If gaps are blocking (e.g., print filtering broken) → Request human review
+
+**Scenario C: 3+ parts FAIL or critical functionality broken**
+
+- Decision: Phase 4 ❌ FAILED
+- Action: Document failures in PROGRESS.md
+- Mark: "**External Verification:** Phase 4 FAILED - [list failures]"
+- Rollback: Consider reverting database changes if corrupted
+- Next: Do NOT proceed to Phase 5, request human intervention
+
+**Document final holistic decision in PROGRESS.md under Phase 4 External Verification section.**
+
+**Holistic Assessment:**
+
+- [ ] All parts reviewed and aggregated
+- [ ] Final decision made (COMPLETE/COMPLETE with notes/FAILED)
+- [ ] Decision documented in PROGRESS.md External Verification section
+- [ ] next-step.md verified (Phase 5 if success, Phase 4 if failed)
+
+**Mark Part 7 complete only when holistic decision is documented.
+
+## Update next-step.md
+
+Based on holistic decision:
+
+- If Phase 4 COMPLETE or COMPLETE with notes → next-step.md already updated to Phase 5 (verify)
+- If Phase 4 FAILED → Revert next-step.md to Phase 3 for retry
+
+**Phase 4 External Verification Complete.**

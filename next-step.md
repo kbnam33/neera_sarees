@@ -1,1 +1,1 @@
-Execute Phase 4 by following @generate.mdc
+Complete Phase 4 database setup: Execute SQL in Supabase Dashboard to add print_type column, then run populate script (node scripts/populate-print-data.js). After that, execute Phase 5 by following @generate.mdc

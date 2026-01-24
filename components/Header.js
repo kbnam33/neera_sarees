@@ -1,10 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isPrintDropdownOpen, setIsPrintDropdownOpen] = useState(false);
+  const [printTypes, setPrintTypes] = useState([]);
+
+  // Fetch print types on component mount
+  useEffect(() => {
+    async function fetchPrintTypes() {
+      try {
+        const { data: products, error } = await supabase
+          .from('products')
+          .select('print_type');
+
+        if (!error && products) {
+          // Get unique print types
+          const uniquePrints = [...new Set(
+            products
+              .map(p => p.print_type)
+              .filter(pt => pt && pt !== '')
+          )].sort();
+          
+          setPrintTypes(uniquePrints);
+        }
+      } catch (err) {
+        console.error('Error fetching print types:', err);
+      }
+    }
+
+    fetchPrintTypes();
+  }, []);
 
   return (
     <header className="bg-soft-beige border-b border-gray-200">
@@ -36,6 +65,39 @@ export default function Header() {
             >
               Mangalgiri
             </Link>
+            
+            {/* Search by Print Dropdown */}
+            <div className="relative">
+              <button
+                className="text-sm uppercase tracking-widest text-charcoal-gray hover:text-deep-maroon transition-colors flex items-center gap-1"
+                onClick={() => setIsPrintDropdownOpen(!isPrintDropdownOpen)}
+                onBlur={() => setTimeout(() => setIsPrintDropdownOpen(false), 200)}
+              >
+                By Print
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isPrintDropdownOpen && printTypes.length > 0 && (
+                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
+                  {printTypes.map((printType) => {
+                    const slug = printType.toLowerCase().replace(/\s+/g, '-');
+                    return (
+                      <Link
+                        key={printType}
+                        href={`/prints/${slug}`}
+                        className="block px-4 py-2 text-sm text-charcoal-gray hover:bg-soft-beige hover:text-deep-maroon transition-colors"
+                        onClick={() => setIsPrintDropdownOpen(false)}
+                      >
+                        {printType}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            
             <Link 
               href="/story" 
               className="text-sm uppercase tracking-widest text-charcoal-gray hover:text-deep-maroon transition-colors"
@@ -90,6 +152,27 @@ export default function Header() {
             >
               Mangalgiri
             </Link>
+            
+            {/* Mobile Print Types */}
+            {printTypes.length > 0 && (
+              <div className="pl-4 space-y-2">
+                <p className="text-sm text-gray-500 uppercase tracking-wider">By Print:</p>
+                {printTypes.map((printType) => {
+                  const slug = printType.toLowerCase().replace(/\s+/g, '-');
+                  return (
+                    <Link
+                      key={printType}
+                      href={`/prints/${slug}`}
+                      className="block text-base font-serif text-deep-maroon"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {printType}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+            
             <Link 
               href="/story" 
               className="text-lg font-serif text-deep-maroon"
