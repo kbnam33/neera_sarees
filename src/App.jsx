@@ -21,6 +21,8 @@ import ShippingPolicy from './ShippingPolicy.jsx';
 import ContactUs from './ContactUs.jsx';
 import ProductImage from './components/ProductImage.jsx';
 import { ASSETS } from './assets.js';
+import { getHomeMetaTags, getAllSareesMetaTags } from './utils/metaTags.js';
+import { getOrganizationSchema, getWebSiteSchema, getCollectionSchema, getItemListSchema } from './utils/schemaMarkup.js';
 
 // Premium hero/header background (subtle terracotta)
 const HERO_BG = '#E9D9CA';
@@ -567,7 +569,7 @@ const HomeProductSection = ({ title, products }) => {
                         <div key={product.id}>
                             <ProductImage 
                                 images={product.images}
-                                altText={product.name}
+                                altText={`${product.name} - ${product.fabric_type} ${product.print_type || ''} Saree`}
                                 productUrl={`/products/${product.fabric_type}/${product.slug}`}
                             />
                             <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
@@ -682,7 +684,7 @@ const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
                         <div key={product.id}>
                             <ProductImage 
                                 images={product.images}
-                                altText={product.name}
+                                altText={`${product.name} - ${product.fabric_type} ${product.print_type || ''} Saree`}
                                 productUrl={`/products/${product.fabric_type}/${product.slug}`}
                             />
                             <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
@@ -766,15 +768,24 @@ function AppContent() {
             const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
 
-            // Fetch prints - assumes you have a 'prints' table
-            const { data: printsData, error: printsError } = await supabase.from('prints').select('*');
-            if (printsError) { console.warn("Could not fetch prints. Create a 'prints' table in Supabase."); }
-
             const productsWithSlugs = (productsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
+            
+            // Extract unique print types from products table (replaces separate prints table)
+            // Ensures print categories auto-update when new print types are added to products
+            const uniquePrintTypes = [...new Set(
+                productsWithSlugs
+                    .map(p => p.print_type)
+                    .filter(type => type != null && type.trim() !== '')
+            )].sort();
+            
+            const printsFromProducts = uniquePrintTypes.map((name, index) => ({
+                id: index + 1,
+                name: name
+            }));
             
             setProducts(productsWithSlugs);
             setFabrics(fabricsData || []);
-            setPrints(printsData || []); // Set prints state
+            setPrints(printsFromProducts);
             setLoading(false);
         };
         fetchData();
@@ -814,11 +825,64 @@ function AppContent() {
     if (loading) return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Neera...</p></div>;
     if (error && !products.length) return <div className="h-screen flex justify-center items-center bg-soft-beige text-center p-8"><p className="text-red-600 font-semibold">{error}</p></div>
 
+    // Generate meta tags and schema based on current route
+    const homeMeta = getHomeMetaTags();
+    const allSareesMeta = getAllSareesMetaTags(products.length);
+
+    // Determine meta tags and schema based on route
+    const currentMeta = location.pathname === '/products' ? allSareesMeta : 
+                       location.pathname === '/' ? homeMeta : homeMeta;
+    
+    // Get schema markup
+    const orgSchema = getOrganizationSchema();
+    const isHomepage = location.pathname === '/';
+    const isAllSarees = location.pathname === '/products';
+
     return (
         <div className="font-sans bg-soft-beige text-charcoal-gray">
              <Helmet>
-                <title>Neera - Handwoven Sarees of Timeless Elegance</title>
-                <meta name="description" content="Discover Neera, a world of pure, handwoven sarees that blend traditional craftsmanship with modern style. Shop our exclusive collection of silk, cotton, and mangalagiri sarees." />
+                <title>{currentMeta.title}</title>
+                <meta name="description" content={currentMeta.description} />
+                <link rel="canonical" href={currentMeta.canonical} />
+                <meta property="og:title" content={currentMeta.openGraph.title} />
+                <meta property="og:description" content={currentMeta.openGraph.description} />
+                <meta property="og:url" content={currentMeta.openGraph.url} />
+                <meta property="og:type" content={currentMeta.openGraph.type} />
+                <meta property="og:image" content={currentMeta.openGraph.image} />
+                <meta property="og:site_name" content={currentMeta.openGraph.siteName} />
+                <meta name="twitter:card" content={currentMeta.twitter.card} />
+                <meta name="twitter:title" content={currentMeta.twitter.title} />
+                <meta name="twitter:description" content={currentMeta.twitter.description} />
+                <meta name="twitter:image" content={currentMeta.twitter.image} />
+                
+                {/* Organization Schema (site-wide) */}
+                <script type="application/ld+json">
+                    {JSON.stringify(orgSchema)}
+                </script>
+                
+                {/* Homepage: WebSite schema */}
+                {isHomepage && (
+                    <script type="application/ld+json">
+                        {JSON.stringify(getWebSiteSchema())}
+                    </script>
+                )}
+                
+                {/* All Sarees page: CollectionPage and ItemList schema */}
+                {isAllSarees && products.length > 0 && (
+                    <>
+                        <script type="application/ld+json">
+                            {JSON.stringify(getCollectionSchema(
+                                "Premium Handwoven Sarees Collection",
+                                `Discover ${products.length}+ authentic handwoven sarees in Chanderi, Mul Mul, Maheshwari & more.`,
+                                "/products",
+                                products.length
+                            ))}
+                        </script>
+                        <script type="application/ld+json">
+                            {JSON.stringify(getItemListSchema(products, "All Sarees Collection"))}
+                        </script>
+                    </>
+                )}
             </Helmet>
             <Header session={session} fabrics={fabrics} prints={prints} products={products} />
             {/* Header is not fixed; no top padding required */}

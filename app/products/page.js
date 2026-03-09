@@ -7,6 +7,7 @@ async function getAllProducts() {
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
+      .eq('is_public', true)
       .order('sort_order', { ascending: true });
 
     if (error) {

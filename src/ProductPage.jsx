@@ -3,6 +3,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from './CartContext';
 import ProductImage from './components/ProductImage.jsx';
+import Breadcrumb from './components/Breadcrumb.jsx';
+import { getProductMetaTags } from './utils/metaTags.js';
+import { getProductSchema, getOrganizationSchema, getBreadcrumbSchema } from './utils/schemaMarkup.js';
 
 // --- ICONS ---
 const ChevronRightIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg> );
@@ -235,24 +238,57 @@ const ProductPage = ({ allProducts, session }) => {
         .filter(p => p.id !== product.id && p.fabric_type === product.fabric_type)
         .slice(0, 4);
 
-    // Truncate description for meta tag
-    const metaDescription = product.description 
-        ? (product.description.length > 160 ? product.description.substring(0, 157) + '...' : product.description)
-        : 'Discover beautiful, handwoven sarees from Neera.';
+    // Generate comprehensive meta tags for product
+    const productMeta = getProductMetaTags(product);
+    const productSchema = getProductSchema(product);
+    const orgSchema = getOrganizationSchema();
+    
+    // Breadcrumb data
+    const breadcrumbs = [
+        { name: 'Home', path: '/' },
+        { name: 'All Sarees', path: '/products' },
+        { name: product.fabric_type, path: `/fabric/${product.fabric_type}` },
+        { name: product.name, path: `/products/${product.fabric_type}/${product.slug}` }
+    ];
+    const breadcrumbSchema = getBreadcrumbSchema(breadcrumbs);
 
     return (
         // FIX: Removed pt-16, added pt-8 for breadcrumb spacing
         <div className="bg-soft-beige pt-8">
             <Helmet>
-                <title>{`${product.name} - Neera`}</title>
-                <meta name="description" content={metaDescription} />
+                <title>{productMeta.title}</title>
+                <meta name="description" content={productMeta.description} />
+                <link rel="canonical" href={productMeta.canonical} />
+                <meta property="og:title" content={productMeta.openGraph.title} />
+                <meta property="og:description" content={productMeta.openGraph.description} />
+                <meta property="og:url" content={productMeta.openGraph.url} />
+                <meta property="og:type" content={productMeta.openGraph.type} />
+                <meta property="og:image" content={productMeta.openGraph.image} />
+                <meta property="og:site_name" content={productMeta.openGraph.siteName} />
+                <meta property="product:price:amount" content={product.selling_price || product.mrp} />
+                <meta property="product:price:currency" content="INR" />
+                <meta name="twitter:card" content={productMeta.twitter.card} />
+                <meta name="twitter:title" content={productMeta.twitter.title} />
+                <meta name="twitter:description" content={productMeta.twitter.description} />
+                <meta name="twitter:image" content={productMeta.twitter.image} />
+                
+                {/* Product Schema */}
+                <script type="application/ld+json">
+                    {JSON.stringify(productSchema)}
+                </script>
+                
+                {/* BreadcrumbList Schema */}
+                <script type="application/ld+json">
+                    {JSON.stringify(breadcrumbSchema)}
+                </script>
+                
+                {/* Organization Schema */}
+                <script type="application/ld+json">
+                    {JSON.stringify(orgSchema)}
+                </script>
             </Helmet>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pb-16">
-                 <div className="mb-8 font-sans text-xs tracking-widest text-gray-500">
-                    <Link to="/products" className="hover:text-black">All Sarees</Link>
-                    <span> / </span>
-                    <Link to={`/fabric/${product.fabric_type}`} className="hover:text-black capitalize">{product.fabric_type}</Link>
-                 </div>
+                 <Breadcrumb items={breadcrumbs} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-8 lg:gap-y-0">
                     {/* --- Image Section --- */}
                     <div className="w-full">

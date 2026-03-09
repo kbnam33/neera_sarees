@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { getContactMetaTags } from './utils/metaTags.js';
 
 const ContactUs = () => {
     const [submitted, setSubmitted] = useState(false);
+    const contactMeta = getContactMetaTags();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -14,6 +17,30 @@ const ContactUs = () => {
     return (
         // FIX: Changed pt-16 to pt-12 for consistent spacing
         <div className="bg-soft-beige min-h-screen pt-12 pb-24 font-sans">
+            <Helmet>
+                <title>{contactMeta.title}</title>
+                <meta name="description" content={contactMeta.description} />
+                <link rel="canonical" href={contactMeta.canonical} />
+                <meta property="og:title" content={contactMeta.openGraph.title} />
+                <meta property="og:description" content={contactMeta.openGraph.description} />
+                <meta property="og:url" content={contactMeta.openGraph.url} />
+                <meta property="og:type" content={contactMeta.openGraph.type} />
+                <meta property="og:image" content={contactMeta.openGraph.image} />
+                <meta property="og:site_name" content={contactMeta.openGraph.siteName} />
+                <meta name="twitter:card" content={contactMeta.twitter.card} />
+                <meta name="twitter:title" content={contactMeta.twitter.title} />
+                <meta name="twitter:description" content={contactMeta.twitter.description} />
+                <meta name="twitter:image" content={contactMeta.twitter.image} />
+                <script type="application/ld+json">{JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "OnlineStore",
+                  "name": "Neera Sarees",
+                  "url": "https://neera.store",
+                  "description": "Neera Sarees – Mulmul cotton, linen, and Chettinad sarees for working women. Office-ready, breathable, free shipping across India.",
+                  "address": { "@type": "PostalAddress", "addressLocality": "Chennai", "addressRegion": "Tamil Nadu", "addressCountry": "IN" },
+                  "sameAs": ["https://www.instagram.com/neeradrapes/"]
+                })}</script>
+            </Helmet>
             <div className="max-w-5xl mx-auto px-4 sm:px-8">
                 {/* --- Header Section --- */}
                 <div className="text-center mb-16 md:mb-20">

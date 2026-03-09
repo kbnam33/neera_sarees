@@ -10,6 +10,7 @@ async function getProductsByFabric(fabric) {
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
+      .eq('is_public', true)
       .ilike('fabric_type', `%${fabricQuery}%`)
       .order('sort_order', { ascending: true });
 
@@ -25,6 +26,12 @@ async function getProductsByFabric(fabric) {
   }
 }
 
+const fabricDescriptions = {
+  mulmul: 'Feather-light Mulmul cotton sarees built for long office days. Breathable, soft, and non-clingy even in Chennai heat.',
+  linen: 'Crisp pure linen sarees that look structured from the first meeting to the last. Perfect office wear for working women.',
+  chettinad: 'Bold Chettinad cotton sarees with neat pleats and striking borders. Heritage weave that works beautifully in offices, schools, and corporate spaces.',
+};
+
 export default async function CategoryPage({ params }) {
   const { fabric } = params;
   const products = await getProductsByFabric(fabric);
@@ -34,15 +41,47 @@ export default async function CategoryPage({ params }) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
+  const fabricDesc = fabricDescriptions[fabric.toLowerCase()] ||
+    `Explore Neera's ${fabricName.toLowerCase()} sarees – handpicked for working women who want comfort, elegance, and everyday wearability.`;
+
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${fabricName} Sarees for Working Women – Neera Sarees`,
+    description: fabricDesc,
+    url: `https://neera.store/categories/${fabric.toLowerCase()}`,
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://neera.store' },
+        { '@type': 'ListItem', position: 2, name: `${fabricName} Sarees`, item: `https://neera.store/categories/${fabric.toLowerCase()}` },
+      ],
+    },
+  };
+
   return (
     <div className="container mx-auto px-4 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+      />
+
+      {/* Breadcrumb */}
+      <nav aria-label="breadcrumb" className="mb-8 text-sm text-gray-500">
+        <ol className="flex items-center gap-2">
+          <li><a href="/" className="hover:text-deep-maroon transition-colors">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li className="text-charcoal-gray font-medium">{fabricName} Sarees</li>
+        </ol>
+      </nav>
+
       {/* Category Header */}
       <div className="mb-12">
         <h1 className="text-4xl md:text-5xl font-serif text-deep-maroon mb-4">
-          {fabricName} Sarees
+          {fabricName} Sarees for Working Women – Neera
         </h1>
         <p className="text-gray-600 text-lg">
-          Explore our collection of {fabricName.toLowerCase()} sarees
+          {fabricDesc}
         </p>
       </div>
 
@@ -122,19 +161,16 @@ export async function generateMetadata({ params }) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-  // Meta Title: "[Fabric Type] Sarees - Shop Authentic Collection | Neera Sarees"
-  // Ensure ≤60 characters
-  let metaTitle = `${fabricName} Sarees - Shop Authentic Collection | Neera Sarees`;
-  if (metaTitle.length > 60) {
-    metaTitle = `${fabricName} Sarees - Authentic | Neera Sarees`;
-  }
-
-  // Meta Description: "Explore our premium [fabric_type] sarees collection. [Brief category description]. Free shipping, quality guaranteed."
-  // Ensure ≤155 characters
-  const metaDescription = `Explore our premium ${fabricName.toLowerCase()} sarees collection. Handwoven with care and tradition. Free shipping, quality guaranteed. Shop now.`;
+  const fabricDesc = fabricDescriptions[fabric.toLowerCase()] ||
+    `Explore Neera's ${fabricName.toLowerCase()} sarees – handpicked for working women who want comfort, elegance, and everyday wearability.`;
 
   return {
-    title: metaTitle,
-    description: metaDescription.substring(0, 155),
+    title: `${fabricName} Sarees for Working Women | Neera Sarees`,
+    description: `${fabricDesc} Shop online at neera.store. Free shipping across India.`.substring(0, 155),
+    alternates: { canonical: `https://neera.store/categories/${fabric.toLowerCase()}` },
+    openGraph: {
+      title: `${fabricName} Sarees for Working Women – Neera`,
+      url: `https://neera.store/categories/${fabric.toLowerCase()}`,
+    },
   };
 }

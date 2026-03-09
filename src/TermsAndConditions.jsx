@@ -1,9 +1,27 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { getTermsMetaTags } from './utils/metaTags.js';
 
 const TermsAndConditions = () => {
+    const termsMeta = getTermsMetaTags();
     return (
         // FIX: Changed pt-16 to pt-12 for consistent spacing
         <div className="bg-soft-beige min-h-screen pt-12 pb-16 font-sans">
+            <Helmet>
+                <title>{termsMeta.title}</title>
+                <meta name="description" content={termsMeta.description} />
+                <link rel="canonical" href={termsMeta.canonical} />
+                <meta property="og:title" content={termsMeta.openGraph.title} />
+                <meta property="og:description" content={termsMeta.openGraph.description} />
+                <meta property="og:url" content={termsMeta.openGraph.url} />
+                <meta property="og:type" content={termsMeta.openGraph.type} />
+                <meta property="og:image" content={termsMeta.openGraph.image} />
+                <meta property="og:site_name" content={termsMeta.openGraph.siteName} />
+                <meta name="twitter:card" content={termsMeta.twitter.card} />
+                <meta name="twitter:title" content={termsMeta.twitter.title} />
+                <meta name="twitter:description" content={termsMeta.twitter.description} />
+                <meta name="twitter:image" content={termsMeta.twitter.image} />
+            </Helmet>
             <div className="max-w-4xl mx-auto px-4 sm:px-8">
                 <h1 className="text-3xl font-serif text-center text-deep-maroon mb-12">Terms and Conditions</h1>
                 <div className="space-y-8 text-charcoal-gray">

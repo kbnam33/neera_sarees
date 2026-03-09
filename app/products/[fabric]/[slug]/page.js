@@ -7,7 +7,8 @@ export async function generateStaticParams() {
   try {
     const { data: products, error } = await supabase
       .from('products')
-      .select('fabric_type, name');
+      .select('fabric_type, name')
+      .eq('is_public', true);
 
     if (error || !products) {
       console.error('Error fetching products for static generation:', error);
@@ -30,6 +31,7 @@ async function getProduct(fabric, slug) {
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
+      .eq('is_public', true)
       .ilike('name', `%${slug.replace(/-/g, ' ')}%`)
       .limit(1);
 
@@ -64,44 +66,60 @@ export default async function ProductPage({ params }) {
 
   const mainImage = images[0] || '/placeholder-saree.jpg';
 
-  // Generate Product Schema (JSON-LD) for SEO
   const productSchema = {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": product.name,
-    "image": mainImage.startsWith('http') ? mainImage : undefined,
-    "description": product.short_description || product.description || `${product.name} - Beautiful ${product.fabric_type || 'handloom'} saree`,
-    "brand": {
-      "@type": "Brand",
-      "name": "Neera Sarees"
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.name,
+    ...(mainImage.startsWith('http') && { image: mainImage }),
+    description: product.short_description || product.description || `${product.name} – ${product.fabric_type || 'handloom'} saree for working women`,
+    brand: { '@type': 'Brand', name: 'Neera Sarees' },
+    offers: {
+      '@type': 'Offer',
+      url: `https://neera.store/products/${fabric}/${slug}`,
+      priceCurrency: 'INR',
+      price: product.price || 0,
+      availability: 'https://schema.org/InStock',
+      seller: { '@type': 'Organization', name: 'Neera Sarees' },
     },
-    "offers": {
-      "@type": "Offer",
-      "url": `https://www.neerasarees.com/products/${fabric}/${slug}`,
-      "priceCurrency": "INR",
-      "price": product.price || 0,
-      "availability": "https://schema.org/InStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "Neera Sarees"
-      }
-    }
   };
 
-  // Remove undefined fields
-  if (!productSchema.image) {
-    delete productSchema.image;
-  }
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://neera.store' },
+      { '@type': 'ListItem', position: 2, name: `${product.fabric_type || 'Handloom'} Sarees`, item: `https://neera.store/categories/${(product.fabric_type || 'handloom').toLowerCase().replace(/\s+/g, '-')}` },
+      { '@type': 'ListItem', position: 3, name: product.name, item: `https://neera.store/products/${fabric}/${slug}` },
+    ],
+  };
 
   return (
     <>
-      {/* JSON-LD Schema Markup */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       
       <div className="container mx-auto px-4 py-12">
+      {/* Breadcrumb */}
+      <nav aria-label="breadcrumb" className="mb-8 text-sm text-gray-500">
+        <ol className="flex items-center gap-2">
+          <li><a href="/" className="hover:text-deep-maroon transition-colors">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <a href={`/categories/${(product.fabric_type || 'handloom').toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-deep-maroon transition-colors">
+              {product.fabric_type || 'Handloom'} Sarees
+            </a>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li className="text-charcoal-gray font-medium">{product.name}</li>
+        </ol>
+      </nav>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Image Section */}
         <div className="space-y-4">
@@ -157,6 +175,7 @@ export default async function ProductPage({ params }) {
             </p>
             <h1 className="text-4xl font-serif text-deep-maroon mb-4">
               {product.name}
+              <span className="sr-only"> – {product.fabric_type || 'Handloom'} Saree for Working Women</span>
             </h1>
             <p className="text-3xl text-charcoal-gray font-semibold">
               ₹{product.price?.toLocaleString('en-IN') || 'N/A'}
@@ -204,32 +223,19 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  // Format meta title: "[Product Name] - [Fabric Type] Saree | Neera Sarees"
-  // Ensure ≤60 characters
   const fabricType = product.fabric_type || 'Handloom';
-  let metaTitle = `${product.name} - ${fabricType} Saree | Neera Sarees`;
-  if (metaTitle.length > 60) {
-    // Truncate product name if needed
-    const maxNameLength = 60 - ` - ${fabricType} Saree | Neera`.length;
-    const truncatedName = product.name.substring(0, maxNameLength);
-    metaTitle = `${truncatedName} - ${fabricType} Saree | Neera`;
-  }
-
-  // Format meta description: "Shop [Product Name], a beautiful [fabric_type] saree. [Short description]. Free shipping, authentic quality. View details and buy online."
-  // Ensure ≤155 characters
-  const shortDesc = product.short_description || product.description || `Beautiful ${fabricType.toLowerCase()} saree with elegant design`;
-  const baseDescription = `Shop ${product.name}, a beautiful ${fabricType.toLowerCase()} saree. ${shortDesc}. Free shipping, authentic quality.`;
-  
-  let metaDescription = baseDescription;
-  if (metaDescription.length > 155) {
-    // Truncate short description to fit
-    const maxDescLength = 155 - `Shop ${product.name}, a beautiful ${fabricType.toLowerCase()} saree. . Free shipping, authentic quality.`.length;
-    const truncatedDesc = shortDesc.substring(0, maxDescLength);
-    metaDescription = `Shop ${product.name}, a beautiful ${fabricType.toLowerCase()} saree. ${truncatedDesc}. Free shipping, authentic quality.`;
-  }
+  const metaTitle = `${product.name} – ${fabricType} Saree for Working Women | Neera Sarees`.substring(0, 60);
+  const metaDescription = `Shop ${product.name}, a ${fabricType.toLowerCase()} saree for working women by Neera. Breathable, office-ready, and elegantly crafted. Free shipping across India.`.substring(0, 155);
 
   return {
     title: metaTitle,
     description: metaDescription,
+    alternates: { canonical: `https://neera.store/products/${fabric}/${slug}` },
+    openGraph: {
+      title: `${product.name} – ${fabricType} Saree | Neera Sarees`,
+      description: metaDescription,
+      url: `https://neera.store/products/${fabric}/${slug}`,
+      images: [{ url: product.images?.[0] || 'https://neera.store/og-image.jpg' }],
+    },
   };
 }

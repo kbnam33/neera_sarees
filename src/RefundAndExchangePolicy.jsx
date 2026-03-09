@@ -1,9 +1,27 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { getRefundPolicyMetaTags } from './utils/metaTags.js';
 
 const RefundAndExchangePolicy = () => {
+    const refundMeta = getRefundPolicyMetaTags();
     return (
         // FIX: Changed pt-16 to pt-12 for consistent spacing
         <div className="bg-soft-beige min-h-screen pt-12 pb-16 font-sans">
+            <Helmet>
+                <title>{refundMeta.title}</title>
+                <meta name="description" content={refundMeta.description} />
+                <link rel="canonical" href={refundMeta.canonical} />
+                <meta property="og:title" content={refundMeta.openGraph.title} />
+                <meta property="og:description" content={refundMeta.openGraph.description} />
+                <meta property="og:url" content={refundMeta.openGraph.url} />
+                <meta property="og:type" content={refundMeta.openGraph.type} />
+                <meta property="og:image" content={refundMeta.openGraph.image} />
+                <meta property="og:site_name" content={refundMeta.openGraph.siteName} />
+                <meta name="twitter:card" content={refundMeta.twitter.card} />
+                <meta name="twitter:title" content={refundMeta.twitter.title} />
+                <meta name="twitter:description" content={refundMeta.twitter.description} />
+                <meta name="twitter:image" content={refundMeta.twitter.image} />
+            </Helmet>
             <div className="max-w-4xl mx-auto px-4 sm:px-8">
                 <h1 className="text-3xl font-serif text-center text-deep-maroon mb-12">Refund and Exchange Policy</h1>
                 <div className="space-y-8 text-charcoal-gray">

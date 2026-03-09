@@ -10,6 +10,7 @@ async function getProductsByPrint(printType) {
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
+      .eq('is_public', true)
       .ilike('print_type', `%${printQuery}%`)
       .order('sort_order', { ascending: true });
 
@@ -148,7 +149,8 @@ export async function generateStaticParams() {
     // Query unique print types from database
     const { data: products, error } = await supabase
       .from('products')
-      .select('print_type');
+      .select('print_type')
+      .eq('is_public', true);
 
     if (error || !products) {
       console.error('Error fetching print types for static generation:', error);

@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ASSETS } from './assets.js'; // Import the new assets file
+import { getStoryMetaTags } from './utils/metaTags.js';
 
 const ArrowRightIcon = ({ className = "w-5 h-5" }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>);
 
@@ -48,14 +50,30 @@ const AnimatedSection = ({ children, className }) => {
 };
 
 const StoryPage = () => {
+    const storyMeta = getStoryMetaTags();
     return (
         <div className="bg-soft-beige text-charcoal-gray font-sans overflow-x-hidden">
+            <Helmet>
+                <title>{storyMeta.title}</title>
+                <meta name="description" content={storyMeta.description} />
+                <link rel="canonical" href={storyMeta.canonical} />
+                <meta property="og:title" content={storyMeta.openGraph.title} />
+                <meta property="og:description" content={storyMeta.openGraph.description} />
+                <meta property="og:url" content={storyMeta.openGraph.url} />
+                <meta property="og:type" content={storyMeta.openGraph.type} />
+                <meta property="og:image" content={storyMeta.openGraph.image} />
+                <meta property="og:site_name" content={storyMeta.openGraph.siteName} />
+                <meta name="twitter:card" content={storyMeta.twitter.card} />
+                <meta name="twitter:title" content={storyMeta.twitter.title} />
+                <meta name="twitter:description" content={storyMeta.twitter.description} />
+                <meta name="twitter:image" content={storyMeta.twitter.image} />
+            </Helmet>
             <AnimatedSection>
                 {/* Fill viewport below the currently visible header height */}
                 <section className="flex items-center justify-center" style={{ height: 'calc(100vh - var(--header-visible-height, 192px))' }}>
                     <div className="text-center p-4">
                         <h1 className="text-6xl md:text-8xl font-serif text-deep-maroon leading-none">
-                            Purity in Every Thread.
+                            The Story Behind Neera – Sarees for Working Women
                         </h1>
                     </div>
                 </section>
@@ -74,7 +92,7 @@ const StoryPage = () => {
                                 The Meaning of Neera
                             </h2>
                             <p className="text-charcoal-gray/90 leading-relaxed max-w-md">
-                                At Neera, we believe every saree carries the grace of tradition and the freshness of modern style. Inspired by the Sanskrit meaning of Neera—pure water—our brand symbolizes purity, elegance, and timeless beauty.
+                                At Neera, we believe every saree carries the grace of tradition and the freshness of modern style. Inspired by the Sanskrit meaning of Neera—pure water—our brand symbolizes purity, elegance, and timeless beauty. Neera Sarees specialises in cotton sarees for working women: Mulmul cotton sarees, linen sarees for office wear, and Chettinad cotton sarees crafted to move with you through the demands of professional life.
                             </p>
                         </div>
                     </div>
@@ -89,7 +107,7 @@ const StoryPage = () => {
                                Fluidity and Grace
                            </h2>
                            <p className="text-charcoal-gray/90 leading-relaxed">
-                               Just as water flows effortlessly, our sarees are designed to bring fluidity, comfort, and charm to every occasion.
+                               Just as water flows effortlessly, our office-ready sarees are designed to bring fluidity, comfort, and charm to every occasion – from boardrooms to classrooms. Each piece in our collection is handpicked to be breathable, elegant, and truly wearable all day.
                            </p>
                         </div>
                    </div>

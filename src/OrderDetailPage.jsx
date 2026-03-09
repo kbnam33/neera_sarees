@@ -62,7 +62,7 @@ const OrderDetailPage = ({ session }) => {
         );
     }
 
-    const { shipping_address: address, products, total_price, created_at } = order;
+    const { shipping_address: address, products, total_price, original_price, discount_code, discount_amount, created_at } = order;
     
     return (
         // FIX: Changed py-24 to pt-12 pb-24 for consistent spacing
@@ -130,8 +130,20 @@ const OrderDetailPage = ({ session }) => {
                         <div className="md:col-span-1">
                             <h3 className="text-xl font-serif text-deep-maroon mb-4">Payment Summary</h3>
                             <div className="text-sm text-gray-700 space-y-2">
-                                <div className="flex justify-between"><span>Subtotal:</span> <span>₹{total_price.toFixed(2)}</span></div>
-                                <div className="flex justify-between"><span>Shipping:</span> <span>FREE</span></div>
+                                {original_price && original_price !== total_price ? (
+                                    <>
+                                        <div className="flex justify-between"><span>Subtotal:</span> <span>₹{original_price.toFixed(2)}</span></div>
+                                        {discount_code && discount_amount > 0 && (
+                                            <div className="flex justify-between text-green-600 font-medium">
+                                                <span>Discount ({discount_code}):</span> 
+                                                <span>- ₹{discount_amount.toFixed(2)}</span>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="flex justify-between"><span>Subtotal:</span> <span>₹{total_price.toFixed(2)}</span></div>
+                                )}
+                                <div className="flex justify-between"><span>Shipping:</span> <span>Based on location</span></div>
                                 <div className="flex justify-between font-bold text-base text-deep-maroon pt-2 border-t border-gray-300 mt-2"><span>Total Paid:</span> <span>₹{total_price.toFixed(2)}</span></div>
                             </div>
                         </div>
@@ -144,12 +156,12 @@ const OrderDetailPage = ({ session }) => {
                             <p className="text-sm text-charcoal-gray/90 mt-4 mb-5">
                                 For returns, exchanges, or any questions about your order, our team is here to help.
                             </p>
-                            <a 
-                                href="mailto:support@neera.store" 
+                            <Link 
+                                to="/contact-us" 
                                 className="inline-block w-full text-center border border-deep-maroon text-deep-maroon py-3 px-6 text-sm tracking-wider font-semibold hover:bg-deep-maroon hover:text-white transition-colors duration-300"
                             >
                                 Contact Support
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

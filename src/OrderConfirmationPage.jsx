@@ -68,7 +68,7 @@ const OrderConfirmationPage = ({ order }) => {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600">Shipping</span>
-                                <span>FREE</span>
+                                <span>Based on location</span>
                             </div>
                             <div className="flex justify-between font-bold mt-2 text-base text-deep-maroon">
                                 <span>Total</span>

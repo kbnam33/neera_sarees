@@ -1,0 +1,981 @@
+# Phase React-2: SEO Optimization for React Version
+
+**Purpose:** Implement comprehensive SEO optimizations for the React SPA version of Neera Sarees, focusing on meta tags, structured data, content structure, and discoverability. The primary goal is to optimize the "All Sarees" page (`/products`) as the main product landing page while ensuring all page types have proper SEO foundations.
+
+**Target Outcome:** Significantly improved search engine visibility and rankings through proper meta tags, structured data (schema markup), semantic HTML, breadcrumbs, sitemap, and optimized content structure—all without any visual design changes.
+
+**Critical Constraints:**
+- ⚠️ **ZERO VISUAL/DESIGN CHANGES** - All optimizations must be invisible to users. No layout modifications, styling changes, or new visual elements.
+- ⚠️ **NO IMAGE FORMAT CHANGES** - Do not convert images to webp, avif, or any other format. Keep all image formats as-is (.jpg, .jpeg, .png).
+- ⚠️ **NO LAZY LOADING CHANGES** - Do not modify existing image lazy loading behavior.
+- ⚠️ **PRIMARY TARGET** - The "All Sarees" page (`/products`) is the highest priority for optimization (sitemap priority 1.0).
+
+---
+
+## Step 1: Baseline SEO Audit & Lighthouse Scores
+
+**Objective:** Document current SEO state before optimizations to measure improvement after implementation.
+
+**Actions:**
+
+1. Run Lighthouse audits on 3 key page types:
+   - All Sarees page: `http://localhost:5173/products`
+   - Sample product page: Pick one product (e.g., first Chanderi saree)
+   - Sample category page: Pick one fabric category (e.g., `/fabric/Chanderi`)
+2. For each page, document in PROGRESS.md:
+   - SEO Score (out of 100)
+   - Performance Score
+   - Accessibility Score
+   - Best Practices Score
+   - Key SEO issues identified by Lighthouse
+3. Take screenshots or save audit reports for before/after comparison.
+4. Document current meta tag status:
+   - View page source of each page type
+   - Check if `<title>` tags exist and are unique
+   - Check if meta descriptions exist
+   - Document: "Current state: [description]"
+5. Document current structured data status:
+   - Search page source for `<script type="application/ld+json"`
+   - Document: "Structured data present: Yes/No"
+6. Document current heading hierarchy:
+   - Check if pages have proper H1 tags
+   - Note any heading hierarchy issues
+7. Create baseline table in PROGRESS.md under Phase React-2 Step 1:
+
+```
+### Baseline SEO Audit (Before Optimization)
+
+| Page Type | SEO Score | Performance | Accessibility | Issues |
+|-----------|-----------|-------------|---------------|--------|
+| All Sarees | X/100 | Y/100 | Z/100 | [list] |
+| Product | X/100 | Y/100 | Z/100 | [list] |
+| Category | X/100 | Y/100 | Z/100 | [list] |
+
+**Current State:**
+- Meta tags: [description]
+- Structured data: [description]
+- Heading hierarchy: [description]
+- Breadcrumbs: [description]
+- Sitemap: [description]
+```
+
+**Success Criteria:**
+
+- [ ] Lighthouse audits completed for 3 page types (All Sarees, Product, Category)
+- [ ] Baseline SEO scores documented in PROGRESS.md
+- [ ] Current meta tag status documented
+- [ ] Current structured data status documented
+- [ ] Screenshots or reports saved for comparison
+- [ ] Baseline table created in PROGRESS.md Phase React-2 Step 1
+
+**Mark this step complete only when all baseline data is documented.**
+
+***
+
+## Step 2: Implement Meta Tags with React Helmet
+
+**Objective:** Add unique, optimized meta tags to all page types using `react-helmet-async` for dynamic meta tag management.
+
+**Actions:**
+
+1. Verify `react-helmet-async` is installed:
+   - Check `package.json` for `react-helmet-async` dependency (should be v2.0.5)
+   - If missing, run: `npm install react-helmet-async`
+2. Configure HelmetProvider in `src/main.jsx`:
+   - Import: `import { HelmetProvider } from 'react-helmet-async';`
+   - Wrap the app with `<HelmetProvider>`:
+   ```jsx
+   <HelmetProvider>
+     <CartProvider>
+       <RouterProvider router={router} />
+     </CartProvider>
+   </HelmetProvider>
+   ```
+3. Create meta tag utility function `src/utils/metaTags.js`:
+   - Function to generate page-specific meta tags
+   - Enforce character limits: Title ≤60 characters, Description ≤155 characters
+   - Include Open Graph tags for social sharing
+   - Include Twitter Card tags
+   - Base URL: `https://neera.store`
+   - Example structure:
+   ```js
+   export function generateMetaTags({ 
+     title, 
+     description, 
+     canonical, 
+     image = 'https://neera.store/theme-image.png',
+     type = 'website' 
+   }) {
+     return {
+       title: title.substring(0, 60),
+       description: description.substring(0, 155),
+       canonical,
+       og: {
+         title: title.substring(0, 60),
+         description: description.substring(0, 155),
+         url: canonical,
+         image,
+         type
+       },
+       twitter: {
+         card: 'summary_large_image',
+         title: title.substring(0, 60),
+         description: description.substring(0, 155),
+         image
+       }
+     };
+   }
+   ```
+4. Implement Helmet in All Sarees page (highest priority):
+   - Open `src/App.jsx` (if All Sarees is here) or dedicated component
+   - Import Helmet: `import { Helmet } from 'react-helmet-async';`
+   - Add meta tags optimized for "All Sarees" as primary product landing page:
+   ```jsx
+   <Helmet>
+     <title>Premium Handwoven Sarees | Neera Sarees Collection</title>
+     <meta name="description" content="Discover 137+ authentic handwoven sarees in Chanderi, Mul Mul, Maheshwari & more. Traditional craftsmanship, modern elegance." />
+     <link rel="canonical" href="https://neera.store/products" />
+     <meta property="og:title" content="Premium Handwoven Sarees | Neera Sarees" />
+     <meta property="og:description" content="Discover 137+ authentic handwoven sarees in Chanderi, Mul Mul, Maheshwari & more." />
+     <meta property="og:url" content="https://neera.store/products" />
+     <meta property="og:type" content="website" />
+     <meta property="og:image" content="https://neera.store/theme-image.png" />
+     <meta name="twitter:card" content="summary_large_image" />
+     <meta name="twitter:title" content="Premium Handwoven Sarees | Neera Sarees" />
+     <meta name="twitter:description" content="Discover 137+ authentic handwoven sarees in Chanderi, Mul Mul, Maheshwari & more." />
+     <meta name="twitter:image" content="https://neera.store/theme-image.png" />
+   </Helmet>
+   ```
+5. Implement Helmet in Product pages:
+   - Open `src/ProductPage.jsx`
+   - Add dynamic meta tags using product data:
+   ```jsx
+   <Helmet>
+     <title>{product.name} - {product.fabric_type} | Neera Sarees</title>
+     <meta name="description" content={`${product.name}. ${product.fabric_type} saree, ${product.print_type}. Premium handwoven. ₹${product.selling_price || product.mrp}.`} />
+     <link rel="canonical" href={`https://neera.store/products/${product.fabric_type}/${product.slug}`} />
+     <meta property="og:title" content={`${product.name} | Neera Sarees`} />
+     <meta property="og:description" content={`${product.fabric_type} saree, ${product.print_type}. ₹${product.selling_price || product.mrp}`} />
+     <meta property="og:url" content={`https://neera.store/products/${product.fabric_type}/${product.slug}`} />
+     <meta property="og:type" content="product" />
+     <meta property="og:image" content={product.images[0]} />
+     <meta property="product:price:amount" content={product.selling_price || product.mrp} />
+     <meta property="product:price:currency" content="INR" />
+     <meta name="twitter:card" content="summary_large_image" />
+     <meta name="twitter:title" content={`${product.name} | Neera Sarees`} />
+     <meta name="twitter:description" content={`${product.fabric_type} saree, ₹${product.selling_price || product.mrp}`} />
+     <meta name="twitter:image" content={product.images[0]} />
+   </Helmet>
+   ```
+6. Implement Helmet in Category pages (Fabric & Print):
+   - Open `src/FabricPage.jsx`:
+   ```jsx
+   <Helmet>
+     <title>{fabricType} Sarees Collection | Neera Sarees</title>
+     <meta name="description" content={`Explore our collection of ${filteredProducts.length} premium ${fabricType} sarees. Authentic handwoven craftsmanship.`} />
+     <link rel="canonical" href={`https://neera.store/fabric/${fabricType}`} />
+     {/* Add OG and Twitter tags similar to above */}
+   </Helmet>
+   ```
+   - Open `src/PrintPage.jsx`:
+   ```jsx
+   <Helmet>
+     <title>{printType} Sarees Collection | Neera Sarees</title>
+     <meta name="description" content={`Discover ${filteredProducts.length} stunning ${printType} sarees. Traditional prints, modern elegance.`} />
+     <link rel="canonical" href={`https://neera.store/prints/${printType}`} />
+     {/* Add OG and Twitter tags */}
+   </Helmet>
+   ```
+7. Implement Helmet in other key pages:
+   - Contact Us, Privacy Policy, Terms & Conditions, Story, etc.
+   - Each with unique, descriptive meta tags
+8. Test meta tags:
+   - Start dev server: `npm run dev`
+   - Navigate to each page type
+   - View page source (Ctrl+U)
+   - Verify `<title>` and meta tags appear in `<head>`
+   - Verify tags are unique per page
+9. Verify character limits:
+   - Check 5 random pages
+   - Verify title ≤60 characters, description ≤155 characters
+10. Document implementation in PROGRESS.md:
+    - Pages modified: [list all files]
+    - Meta tags added: Title, Description, Canonical, OG, Twitter
+    - Character limits enforced: Yes
+    - Testing results: [summary]
+
+**Success Criteria:**
+
+- [ ] `react-helmet-async` verified in package.json
+- [ ] HelmetProvider configured in `src/main.jsx`
+- [ ] Meta tag utility created at `src/utils/metaTags.js` (optional if direct implementation preferred)
+- [ ] All Sarees page has comprehensive meta tags (title, description, canonical, OG, Twitter)
+- [ ] Product pages have dynamic meta tags using product data
+- [ ] Fabric category pages have meta tags
+- [ ] Print category pages have meta tags
+- [ ] Other key pages (Contact, Privacy, etc.) have meta tags
+- [ ] Character limits enforced (title ≤60, description ≤155)
+- [ ] Meta tags verified in page source for 3+ page types
+- [ ] Implementation documented in PROGRESS.md Phase React-2 Step 2
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 3: Implement Structured Data (Schema Markup)
+
+**Objective:** Add JSON-LD structured data to enable rich search results and improve search engine understanding of content.
+
+**Actions:**
+
+1. Create schema markup utility `src/utils/schemaMarkup.js`:
+   - Functions to generate JSON-LD for different schema types
+   - Product schema for product pages
+   - BreadcrumbList schema for navigation
+   - Organization schema site-wide
+   - CollectionPage schema for category pages
+2. Implement Organization schema (site-wide):
+   ```js
+   export function getOrganizationSchema() {
+     return {
+       "@context": "https://schema.org",
+       "@type": "Organization",
+       "name": "Neera Sarees",
+       "url": "https://neera.store",
+       "logo": "https://neera.store/Neera logo.png",
+       "description": "Premium handwoven sarees with authentic craftsmanship",
+       "sameAs": [
+         // Add social media links if available
+       ]
+     };
+   }
+   ```
+3. Implement Product schema for product pages:
+   ```js
+   export function getProductSchema(product) {
+     return {
+       "@context": "https://schema.org",
+       "@type": "Product",
+       "name": product.name,
+       "image": product.images,
+       "description": `${product.fabric_type} saree, ${product.print_type}`,
+       "sku": product.id.toString(),
+       "brand": {
+         "@type": "Brand",
+         "name": "Neera Sarees"
+       },
+       "offers": {
+         "@type": "Offer",
+         "url": `https://neera.store/products/${product.fabric_type}/${product.slug}`,
+         "priceCurrency": "INR",
+         "price": product.selling_price || product.mrp,
+         "availability": product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+         "priceValidUntil": new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0]
+       }
+     };
+   }
+   ```
+4. Implement BreadcrumbList schema:
+   ```js
+   export function getBreadcrumbSchema(breadcrumbs) {
+     return {
+       "@context": "https://schema.org",
+       "@type": "BreadcrumbList",
+       "itemListElement": breadcrumbs.map((crumb, index) => ({
+         "@type": "ListItem",
+         "position": index + 1,
+         "name": crumb.name,
+         "item": `https://neera.store${crumb.path}`
+       }))
+     };
+   }
+   ```
+5. Implement CollectionPage schema for category pages:
+   ```js
+   export function getCollectionSchema(name, description, url, numItems) {
+     return {
+       "@context": "https://schema.org",
+       "@type": "CollectionPage",
+       "name": name,
+       "description": description,
+       "url": url,
+       "numberOfItems": numItems
+     };
+   }
+   ```
+6. Add schema to Helmet in Product pages:
+   ```jsx
+   <Helmet>
+     {/* Meta tags */}
+     <script type="application/ld+json">
+       {JSON.stringify(getProductSchema(product))}
+     </script>
+     <script type="application/ld+json">
+       {JSON.stringify(getOrganizationSchema())}
+     </script>
+   </Helmet>
+   ```
+7. Add schema to All Sarees page:
+   ```jsx
+   <Helmet>
+     {/* Meta tags */}
+     <script type="application/ld+json">
+       {JSON.stringify(getCollectionSchema(
+         "Premium Handwoven Sarees Collection",
+         "Discover 137+ authentic handwoven sarees",
+         "https://neera.store/products",
+         filteredProducts.length
+       ))}
+     </script>
+     <script type="application/ld+json">
+       {JSON.stringify(getOrganizationSchema())}
+     </script>
+   </Helmet>
+   ```
+8. Add schema to Category pages (Fabric and Print):
+   - Similar CollectionPage schema with category-specific data
+9. Test schema markup:
+   - Navigate to product page
+   - View page source
+   - Verify `<script type="application/ld+json">` tags present
+   - Copy JSON-LD content
+   - Validate using Google Rich Results Test: https://search.google.com/test/rich-results
+   - Test 2-3 product pages, All Sarees page, 1 category page
+   - Document validation results
+10. Document implementation in PROGRESS.md:
+    - Schema utility created: `src/utils/schemaMarkup.js`
+    - Schema types implemented: Product, BreadcrumbList, Organization, CollectionPage
+    - Pages with schema: [list]
+    - Validation results: [Pass/Warnings/Errors for each page tested]
+
+**Success Criteria:**
+
+- [ ] Schema markup utility created at `src/utils/schemaMarkup.js`
+- [ ] Organization schema function implemented
+- [ ] Product schema function implemented
+- [ ] BreadcrumbList schema function implemented
+- [ ] CollectionPage schema function implemented
+- [ ] Schema added to product pages via Helmet
+- [ ] Schema added to All Sarees page
+- [ ] Schema added to category pages
+- [ ] Schema validated using Google Rich Results Test (no critical errors)
+- [ ] At least 3 pages tested and validated
+- [ ] Implementation documented in PROGRESS.md Phase React-2 Step 3
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 4: Optimize Content Structure & Semantic HTML
+
+**Objective:** Improve heading hierarchy, semantic HTML tags, and content structure for better SEO and accessibility—without any visual changes.
+
+**Actions:**
+
+1. Audit current heading structure:
+   - Navigate to All Sarees page in dev server
+   - Open DevTools → Elements tab
+   - Search for `<h1`, `<h2`, `<h3` tags
+   - Document current hierarchy: "Current: [description]"
+2. Implement proper heading hierarchy on All Sarees page:
+   - Ensure exactly ONE `<h1>` tag exists
+   - Recommended: `<h1>Premium Handwoven Sarees Collection</h1>`
+   - Add visually hidden class if H1 should not be visible:
+   ```jsx
+   <h1 className="sr-only">Premium Handwoven Sarees Collection</h1>
+   ```
+   - Add to CSS if needed:
+   ```css
+   .sr-only {
+     position: absolute;
+     width: 1px;
+     height: 1px;
+     padding: 0;
+     margin: -1px;
+     overflow: hidden;
+     clip: rect(0, 0, 0, 0);
+     white-space: nowrap;
+     border-width: 0;
+   }
+   ```
+   - Use `<h2>` for section headings if applicable (e.g., "Filter by Fabric", "Sort by")
+3. Implement heading hierarchy on Product pages:
+   - Ensure product name is in `<h1>` tag
+   - Example: `<h1>{product.name}</h1>`
+   - Use `<h2>` for sections like "Description", "Details", "Related Products"
+   - Verify no skipped heading levels (e.g., H1 → H3 without H2)
+4. Implement heading hierarchy on Category pages:
+   - Fabric page: `<h1>{fabricType} Sarees</h1>`
+   - Print page: `<h1>{printType} Sarees</h1>`
+   - Use H2 for subsections if needed
+5. Replace generic `<div>` tags with semantic HTML where appropriate:
+   - Navbar: Ensure wrapped in `<nav>` tag or has `role="navigation"`
+   - Main content area: Wrap in `<main>` tag or `role="main"`
+   - Product grid/list: Consider `<section>` with proper heading
+   - Individual products: Consider `<article>` tags if appropriate
+   - Example transformation:
+   ```jsx
+   // Before:
+   <div className="container">
+     <div className="product-grid">...</div>
+   </div>
+   
+   // After:
+   <main className="container">
+     <section className="product-grid" aria-label="Product Collection">...</section>
+   </main>
+   ```
+6. Add ARIA landmarks where semantic HTML isn't used:
+   - If navbar isn't `<nav>`, add `role="navigation"`
+   - If main content isn't `<main>`, add `role="main"`
+   - Add `aria-label` to sections for better accessibility
+7. Test that NO visual changes occurred:
+   - Compare pages before and after modifications
+   - Check spacing, fonts, colors, layout
+   - Verify only HTML structure changed, not CSS/styling
+8. Run Lighthouse accessibility audit:
+   - Check if accessibility score improved
+   - Document any new issues or improvements
+9. Document changes in PROGRESS.md:
+   - Files modified: [list]
+   - Heading hierarchy implemented: [summary]
+   - Semantic HTML added: [list of changes]
+   - Visual regression check: No changes (verified)
+   - Accessibility impact: [score change if any]
+
+**Success Criteria:**
+
+- [ ] Current heading structure audited and documented
+- [ ] All Sarees page has exactly one H1 tag
+- [ ] Product pages have H1 with product name
+- [ ] Category pages have H1 with category name
+- [ ] No skipped heading levels (proper H1 → H2 → H3 hierarchy)
+- [ ] Semantic HTML tags implemented (`<main>`, `<nav>`, `<section>`, `<article>` where appropriate)
+- [ ] ARIA landmarks added where needed
+- [ ] NO visual changes confirmed (layout, spacing, fonts unchanged)
+- [ ] Changes documented in PROGRESS.md Phase React-2 Step 4
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 5: Implement Descriptive Alt Text for Images
+
+**Objective:** Add descriptive alt text to all product images for SEO and accessibility without changing image formats or loading behavior.
+
+**Actions:**
+
+1. Audit current alt text coverage:
+   - Navigate to All Sarees page
+   - Open DevTools → Elements
+   - Inspect 10 random product images
+   - Check for `alt` attribute
+   - Document: "Current coverage: X/10 images have alt text"
+2. Locate image rendering code:
+   - Find where product images are rendered (likely in product card components)
+   - Example locations: `src/App.jsx`, `src/ProductPage.jsx`, `src/components/ProductImage.jsx`
+3. Implement alt text formula for product images:
+   - Format: `{product.name} - {fabric_type} {print_type} Saree - Neera Sarees`
+   - Example: "Blue Grey Chanderi Silk Saree - Chanderi Solid Saree - Neera Sarees"
+   - Keep under 125 characters for accessibility
+   - Ensure descriptive and keyword-rich
+4. Update product image components:
+   ```jsx
+   // Before:
+   <img src={product.images[0]} alt="product" />
+   
+   // After:
+   <img 
+     src={product.images[0]} 
+     alt={`${product.name} - ${product.fabric_type} ${product.print_type} Saree - Neera Sarees`}
+     loading="lazy" // Preserve existing lazy loading
+   />
+   ```
+5. Update All Sarees page product images:
+   - Apply alt text formula to all product images in grid
+   - Example implementation in `src/App.jsx`:
+   ```jsx
+   {filteredProducts.map(product => (
+     <div key={product.id}>
+       <img
+         src={product.images[0]}
+         alt={`${product.name} - ${product.fabric_type} ${product.print_type} Saree - Neera Sarees`}
+         loading="lazy"
+       />
+       {/* Rest of product card */}
+     </div>
+   ))}
+   ```
+6. Update Product detail page images:
+   - Main image and gallery images should have descriptive alt text
+   - Consider variations for multiple images: "Front view of [name]", "Detail of [name]", etc.
+7. Update other pages with images:
+   - Category pages (Fabric, Print)
+   - Story page if it has images
+   - Any hero/banner images
+8. Verify NO image format changes:
+   - Check that all images still use original extensions (.jpg, .jpeg, .png)
+   - Verify no webp, avif, or other format conversions
+   - Command to verify: `git diff src/` and check no src URL changes
+9. Verify lazy loading unchanged:
+   - Inspect images in DevTools
+   - Verify `loading="lazy"` attribute still present (if it was before)
+   - Test scrolling behavior - images should load progressively
+10. Test alt text coverage:
+    - Navigate to All Sarees page
+    - Inspect 10 random images
+    - Verify all have descriptive alt text
+    - Target: 100% coverage
+11. Document in PROGRESS.md:
+    - Alt text coverage: Before X% → After Y%
+    - Alt text formula: [description]
+    - Files modified: [list]
+    - Image formats: Unchanged (verified)
+    - Lazy loading: Unchanged (verified)
+
+**Success Criteria:**
+
+- [ ] Current alt text coverage audited (before state documented)
+- [ ] Alt text formula defined and implemented
+- [ ] All product images on All Sarees page have descriptive alt text
+- [ ] Product detail page images have alt text
+- [ ] Category page images have alt text
+- [ ] Alt text coverage target achieved (95%+ or 100%)
+- [ ] Image formats unchanged (no webp/avif/svg conversions)
+- [ ] Lazy loading behavior unchanged
+- [ ] Implementation documented in PROGRESS.md Phase React-2 Step 5
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 6: Implement Breadcrumb Navigation
+
+**Objective:** Add breadcrumb navigation to improve internal linking and user experience without disrupting layout.
+
+**Actions:**
+
+1. Create Breadcrumb component `src/components/Breadcrumb.jsx`:
+   ```jsx
+   import { Link } from 'react-router-dom';
+   
+   export default function Breadcrumb({ items }) {
+     return (
+       <nav aria-label="Breadcrumb" className="breadcrumb-container">
+         <ol className="breadcrumb-list">
+           {items.map((item, index) => (
+             <li key={index} className="breadcrumb-item">
+               {index < items.length - 1 ? (
+                 <>
+                   <Link to={item.path} className="breadcrumb-link">
+                     {item.name}
+                   </Link>
+                   <span className="breadcrumb-separator" aria-hidden="true"> / </span>
+                 </>
+               ) : (
+                 <span className="breadcrumb-current" aria-current="page">
+                   {item.name}
+                 </span>
+               )}
+             </li>
+           ))}
+         </ol>
+       </nav>
+     );
+   }
+   ```
+2. Add minimal breadcrumb styling (MUST NOT disrupt layout):
+   ```css
+   .breadcrumb-container {
+     font-size: 0.875rem;
+     padding: 1rem 0;
+   }
+   
+   .breadcrumb-list {
+     display: flex;
+     list-style: none;
+     padding: 0;
+     margin: 0;
+     flex-wrap: wrap;
+   }
+   
+   .breadcrumb-item {
+     display: inline;
+   }
+   
+   .breadcrumb-link {
+     color: #666;
+     text-decoration: none;
+   }
+   
+   .breadcrumb-link:hover {
+     text-decoration: underline;
+   }
+   
+   .breadcrumb-separator {
+     margin: 0 0.5rem;
+     color: #999;
+   }
+   
+   .breadcrumb-current {
+     color: #333;
+   }
+   ```
+3. Implement breadcrumbs on All Sarees page:
+   ```jsx
+   const breadcrumbs = [
+     { name: 'Home', path: '/' },
+     { name: 'All Sarees', path: '/products' }
+   ];
+   
+   return (
+     <>
+       <Breadcrumb items={breadcrumbs} />
+       {/* Rest of All Sarees page */}
+     </>
+   );
+   ```
+4. Implement breadcrumbs on Product pages:
+   ```jsx
+   const breadcrumbs = [
+     { name: 'Home', path: '/' },
+     { name: 'All Sarees', path: '/products' },
+     { name: product.fabric_type, path: `/fabric/${product.fabric_type}` },
+     { name: product.name, path: `/products/${product.fabric_type}/${product.slug}` }
+   ];
+   ```
+5. Implement breadcrumbs on Fabric category pages:
+   ```jsx
+   const breadcrumbs = [
+     { name: 'Home', path: '/' },
+     { name: 'Shop by Fabric', path: '/products' }, // Or appropriate parent
+     { name: `${fabricType} Sarees`, path: `/fabric/${fabricType}` }
+   ];
+   ```
+6. Implement breadcrumbs on Print category pages:
+   ```jsx
+   const breadcrumbs = [
+     { name: 'Home', path: '/' },
+     { name: 'Shop by Print', path: '/products' },
+     { name: `${printType} Sarees`, path: `/prints/${printType}` }
+   ];
+   ```
+7. Add BreadcrumbList schema to pages with breadcrumbs:
+   - Import schema function from `src/utils/schemaMarkup.js`
+   - Add to Helmet on each page:
+   ```jsx
+   <script type="application/ld+json">
+     {JSON.stringify(getBreadcrumbSchema(breadcrumbs))}
+   </script>
+   ```
+8. Test breadcrumb navigation:
+   - Click each breadcrumb link
+   - Verify navigation works correctly
+   - Test on 3 different product pages
+   - Test on 2 category pages
+9. Verify NO layout disruption:
+   - Compare page layout before and after breadcrumbs
+   - Check for:
+     - No excessive vertical spacing added
+     - No horizontal scroll introduced
+     - No changes to header/navbar position
+     - Content below breadcrumbs unchanged
+   - Test on both desktop and mobile viewports
+10. Document in PROGRESS.md:
+    - Breadcrumb component created: `src/components/Breadcrumb.jsx`
+    - Pages with breadcrumbs: [list]
+    - BreadcrumbList schema added: Yes
+    - Navigation tested: [summary]
+    - Layout integrity: Verified (no disruption)
+
+**Success Criteria:**
+
+- [ ] Breadcrumb component created at `src/components/Breadcrumb.jsx`
+- [ ] Breadcrumb styling added (minimal, non-disruptive)
+- [ ] Breadcrumbs implemented on All Sarees page
+- [ ] Breadcrumbs implemented on Product pages (dynamic)
+- [ ] Breadcrumbs implemented on Fabric category pages
+- [ ] Breadcrumbs implemented on Print category pages
+- [ ] BreadcrumbList schema added to pages with breadcrumbs
+- [ ] Breadcrumb navigation tested and working
+- [ ] Layout integrity verified (no disruption on desktop or mobile)
+- [ ] Implementation documented in PROGRESS.md Phase React-2 Step 6
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 7: Generate Sitemap & Configure Robots.txt
+
+**Objective:** Create XML sitemap with all URLs and configure robots.txt to guide search engine crawling. Prioritize All Sarees page as primary target.
+
+**Actions:**
+
+1. Create sitemap generation script `scripts/generate-sitemap.js`:
+   - Fetch all products from Supabase
+   - Generate URLs for:
+     - Homepage: `/`
+     - All Sarees: `/products` (priority: 1.0, changefreq: daily)
+     - Each product: `/products/{fabric}/{slug}` (priority: 0.8)
+     - Each fabric category: `/fabric/{fabric}` (priority: 0.7)
+     - Each print category: `/prints/{print}` (priority: 0.7)
+     - Key pages: `/contact-us`, `/privacy-policy`, `/terms`, `/story` (priority: 0.5)
+   - Example script structure:
+   ```js
+   import { createClient } from '@supabase/supabase-js';
+   import fs from 'fs';
+   
+   const supabase = createClient(
+     process.env.VITE_SUPABASE_URL,
+     process.env.VITE_SUPABASE_ANON_KEY
+   );
+   
+   async function generateSitemap() {
+     const { data: products } = await supabase
+       .from('products')
+       .select('fabric_type, slug, updated_at');
+     
+     const fabricTypes = [...new Set(products.map(p => p.fabric_type))];
+     const printTypes = [...new Set(products.map(p => p.print_type))];
+     
+     let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+     
+     // Homepage
+     sitemap += '  <url>\n';
+     sitemap += '    <loc>https://neera.store/</loc>\n';
+     sitemap += '    <changefreq>weekly</changefreq>\n';
+     sitemap += '    <priority>0.9</priority>\n';
+     sitemap += '  </url>\n';
+     
+     // All Sarees page (HIGHEST PRIORITY)
+     sitemap += '  <url>\n';
+     sitemap += '    <loc>https://neera.store/products</loc>\n';
+     sitemap += '    <changefreq>daily</changefreq>\n';
+     sitemap += '    <priority>1.0</priority>\n';
+     sitemap += '  </url>\n';
+     
+     // Product pages
+     products.forEach(product => {
+       sitemap += '  <url>\n';
+       sitemap += `    <loc>https://neera.store/products/${product.fabric_type}/${product.slug}</loc>\n`;
+       sitemap += '    <changefreq>weekly</changefreq>\n';
+       sitemap += '    <priority>0.8</priority>\n';
+       sitemap += '  </url>\n';
+     });
+     
+     // Fabric categories
+     fabricTypes.forEach(fabric => {
+       sitemap += '  <url>\n';
+       sitemap += `    <loc>https://neera.store/fabric/${fabric}</loc>\n`;
+       sitemap += '    <changefreq>weekly</changefreq>\n';
+       sitemap += '    <priority>0.7</priority>\n';
+       sitemap += '  </url>\n';
+     });
+     
+     // Print categories
+     printTypes.forEach(print => {
+       sitemap += '  <url>\n';
+       sitemap += `    <loc>https://neera.store/prints/${print}</loc>\n`;
+       sitemap += '    <changefreq>weekly</changefreq>\n';
+       sitemap += '    <priority>0.7</priority>\n';
+       sitemap += '  </url>\n';
+     });
+     
+     // Key pages
+     const keyPages = [
+       { path: '/contact-us', priority: 0.5 },
+       { path: '/privacy-policy', priority: 0.3 },
+       { path: '/terms', priority: 0.3 },
+       { path: '/story', priority: 0.6 }
+     ];
+     
+     keyPages.forEach(page => {
+       sitemap += '  <url>\n';
+       sitemap += `    <loc>https://neera.store${page.path}</loc>\n`;
+       sitemap += '    <changefreq>monthly</changefreq>\n';
+       sitemap += `    <priority>${page.priority}</priority>\n`;
+       sitemap += '  </url>\n';
+     });
+     
+     sitemap += '</urlset>';
+     
+     fs.writeFileSync('./public/sitemap.xml', sitemap);
+     console.log('✅ Sitemap generated successfully');
+     console.log(`   Total URLs: ${products.length + fabricTypes.length + printTypes.length + keyPages.length + 2}`);
+   }
+   
+   generateSitemap();
+   ```
+2. Run sitemap generation:
+   - Execute: `node scripts/generate-sitemap.js`
+   - Verify `public/sitemap.xml` created
+   - Open file and verify:
+     - Valid XML format
+     - All Sarees page has priority 1.0
+     - All expected URLs present
+     - Proper structure
+3. Create or update `public/robots.txt`:
+   ```
+   User-agent: *
+   Allow: /
+   
+   Sitemap: https://neera.store/sitemap.xml
+   ```
+4. Verify sitemap accessibility in dev server:
+   - Start server: `npm run dev`
+   - Navigate to: `http://localhost:5173/sitemap.xml`
+   - Verify sitemap displays in browser
+   - Navigate to: `http://localhost:5173/robots.txt`
+   - Verify robots.txt displays
+5. Count URLs in sitemap:
+   - Expected: ~137 products + fabric categories + print categories + key pages
+   - Should be 150+ total URLs
+   - Document count in PROGRESS.md
+6. Verify All Sarees page priority:
+   - Open `public/sitemap.xml`
+   - Find `/products` URL
+   - Verify `<priority>1.0</priority>`
+   - Verify `<changefreq>daily</changefreq>`
+7. Test sitemap with online validator:
+   - Use: https://www.xml-sitemaps.com/validate-xml-sitemap.html
+   - Or Google Search Console (if site already submitted)
+   - Document validation results
+8. Document in PROGRESS.md:
+   - Script created: `scripts/generate-sitemap.js`
+   - Sitemap generated: `public/sitemap.xml`
+   - Total URLs: [count]
+   - All Sarees priority: 1.0 (confirmed)
+   - robots.txt configured: Yes
+   - Files accessible in dev server: Verified
+   - Validation results: [summary]
+
+**Success Criteria:**
+
+- [ ] Sitemap generation script created at `scripts/generate-sitemap.js`
+- [ ] Script executed successfully
+- [ ] `public/sitemap.xml` file created
+- [ ] Sitemap contains 150+ URLs (products + categories + key pages)
+- [ ] All Sarees page (`/products`) has priority 1.0 and changefreq daily
+- [ ] `public/robots.txt` created/updated with sitemap reference
+- [ ] Sitemap accessible in dev server at `/sitemap.xml`
+- [ ] robots.txt accessible in dev server at `/robots.txt`
+- [ ] Sitemap validated (valid XML format)
+- [ ] Implementation documented in PROGRESS.md Phase React-2 Step 7
+
+**Mark this step complete only when all success criteria are met.**
+
+***
+
+## Step 8: Post-Optimization Testing & Documentation
+
+**Objective:** Measure SEO improvements, verify all optimizations work correctly, and document results for external verification.
+
+**Actions:**
+
+1. Run post-optimization Lighthouse audits:
+   - Same 3 page types as baseline (Step 1):
+     - All Sarees page: `http://localhost:5173/products`
+     - Sample product page (same one as baseline)
+     - Sample category page (same one as baseline)
+   - Document new scores in PROGRESS.md:
+     - SEO Score (out of 100)
+     - Performance Score
+     - Accessibility Score
+     - Best Practices Score
+2. Create before/after comparison table in PROGRESS.md:
+   ```
+   ### Post-Optimization Results (After SEO Implementation)
+   
+   | Page Type | SEO Score | Performance | Accessibility | Improvement |
+   |-----------|-----------|-------------|---------------|-------------|
+   | All Sarees | X/100 | Y/100 | Z/100 | +N points |
+   | Product | X/100 | Y/100 | Z/100 | +N points |
+   | Category | X/100 | Y/100 | Z/100 | +N points |
+   
+   **Changes Implemented:**
+   - Meta tags: ✅ Unique titles, descriptions, OG tags on all page types
+   - Structured data: ✅ Product, Organization, BreadcrumbList, CollectionPage schemas
+   - Heading hierarchy: ✅ Proper H1-H3 structure, semantic HTML
+   - Alt text: ✅ Descriptive alt text on 100% of product images
+   - Breadcrumbs: ✅ Navigation on all major page types
+   - Sitemap: ✅ 150+ URLs, All Sarees priority 1.0
+   - robots.txt: ✅ Configured with sitemap reference
+   ```
+3. Verify all optimizations in production-ready state:
+   - Meta tags present on all page types (spot check 5+ pages)
+   - Schema markup validates without critical errors (test 3 pages)
+   - Heading hierarchy correct (check 3 page types)
+   - Alt text coverage at 95%+ (check 10 images)
+   - Breadcrumbs functional (test navigation on 3 pages)
+   - Sitemap accessible and complete
+   - robots.txt configured correctly
+4. Final visual regression check:
+   - Compare All Sarees page with pre-optimization screenshots
+   - Verify:
+     - No layout changes
+     - No spacing/margin changes
+     - No font size changes
+     - No color changes
+     - No new visible elements (except breadcrumbs if intentionally visible)
+   - Document: "Visual regression check: PASS (zero visual changes)"
+5. Final constraint verification:
+   - Image formats unchanged: Verify 10 random images still .jpg/.jpeg/.png
+   - Lazy loading unchanged: Verify images load progressively on scroll
+   - No performance degradation: Performance scores ≥ baseline
+6. Calculate total SEO improvement:
+   - All Sarees page: +X points
+   - Product pages: +Y points
+   - Category pages: +Z points
+   - Average improvement: +N points
+7. Document all files modified during Phase React-2:
+   - List every file touched
+   - Summarize changes per file
+8. Update PROGRESS.md Phase React-2 summary:
+   - Status: ✅ COMPLETED (or current status)
+   - Started: [timestamp]
+   - Completed: [timestamp]
+   - Duration: [calculated]
+   - SEO improvement: [average +X points]
+   - All constraints satisfied: Yes/No
+   - Issues encountered: [list any challenges]
+   - Resolution: [how issues were resolved]
+9. Prepare for external verification:
+   - Ensure all 8 steps documented in PROGRESS.md
+   - Ensure checkboxes completed
+   - Ensure test results documented
+   - Ready for Part 1-8 external verification from instructions.mdc
+
+**Success Criteria:**
+
+- [ ] Post-optimization Lighthouse audits completed for 3 page types
+- [ ] Before/after comparison table created in PROGRESS.md
+- [ ] SEO score improvements documented (target: +15 to +30 points per page)
+- [ ] All optimizations verified working (meta tags, schema, headings, alt text, breadcrumbs, sitemap)
+- [ ] Visual regression check passed (zero visual changes)
+- [ ] Constraint verification passed (image formats unchanged, lazy loading unchanged, no performance degradation)
+- [ ] Total SEO improvement calculated and documented
+- [ ] All modified files listed in PROGRESS.md
+- [ ] Phase React-2 summary updated in PROGRESS.md with timestamps
+- [ ] Ready for external verification (all steps documented)
+
+**Mark this step complete only when all success criteria are met and Phase React-2 is ready for external verification.**
+
+***
+
+## Phase React-2 Complete
+
+Once Step 8 is complete, Phase React-2 implementation is done. The orchestrator (instructions.mdc) will then run the external verification process (Parts 1-8) to validate:
+
+- Meta Tags & SEO Fundamentals (Part 1)
+- Structured Data (Part 2)
+- Content Structure & Accessibility (Part 3)
+- Image Alt Text (Part 4)
+- Breadcrumbs & Internal Linking (Part 5)
+- Sitemap & Robots.txt (Part 6)
+- SEO Testing & Lighthouse Scores (Part 7)
+- Holistic Phase React-2 Vision (Part 8)
+
+After external verification, the orchestrator will update next-step.md and PROGRESS.md with the final Phase React-2 decision (COMPLETE / NEEDS ATTENTION / BLOCKED).
+
+**End of Phase React-2 Implementation Steps**

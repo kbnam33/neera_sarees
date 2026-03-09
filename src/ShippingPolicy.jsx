@@ -1,9 +1,27 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { getShippingPolicyMetaTags } from './utils/metaTags.js';
 
 const ShippingPolicy = () => {
+    const shippingMeta = getShippingPolicyMetaTags();
     return (
         // FIX: Changed pt-16 to pt-12 for consistent spacing
         <div className="bg-soft-beige min-h-screen pt-12 pb-16 font-sans">
+            <Helmet>
+                <title>{shippingMeta.title}</title>
+                <meta name="description" content={shippingMeta.description} />
+                <link rel="canonical" href={shippingMeta.canonical} />
+                <meta property="og:title" content={shippingMeta.openGraph.title} />
+                <meta property="og:description" content={shippingMeta.openGraph.description} />
+                <meta property="og:url" content={shippingMeta.openGraph.url} />
+                <meta property="og:type" content={shippingMeta.openGraph.type} />
+                <meta property="og:image" content={shippingMeta.openGraph.image} />
+                <meta property="og:site_name" content={shippingMeta.openGraph.siteName} />
+                <meta name="twitter:card" content={shippingMeta.twitter.card} />
+                <meta name="twitter:title" content={shippingMeta.twitter.title} />
+                <meta name="twitter:description" content={shippingMeta.twitter.description} />
+                <meta name="twitter:image" content={shippingMeta.twitter.image} />
+            </Helmet>
             <div className="max-w-4xl mx-auto px-4 sm:px-8">
                 <h1 className="text-3xl font-serif text-center text-deep-maroon mb-12">Shipping Policy</h1>
                 <div className="space-y-8 text-charcoal-gray">

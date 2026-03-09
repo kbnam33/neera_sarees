@@ -22,8 +22,18 @@ serve(async (req: Request) => {
     const base64Credentials = btoa(credentials) // Use btoa() instead of Buffer
     const authHeader = `Basic ${base64Credentials}`
 
+    const normalizedAmount = Number(amount)
+    if (!Number.isFinite(normalizedAmount) || normalizedAmount <= 0) {
+      throw new Error('Invalid amount provided for Razorpay order.')
+    }
+
+    const amountInPaise = Math.round(normalizedAmount * 100)
+    if (!Number.isInteger(amountInPaise) || amountInPaise <= 0) {
+      throw new Error('Calculated Razorpay amount is invalid.')
+    }
+
     const orderOptions = {
-      amount: amount * 100, // Amount in paisa
+      amount: amountInPaise, // Amount in paisa (must be integer)
       currency: 'INR',
       receipt: `receipt_order_${new Date().getTime()}`,
     }
@@ -40,7 +50,8 @@ serve(async (req: Request) => {
 
     if (!response.ok) {
       const errorBody = await response.json()
-      throw new Error(`Razorpay API Error: ${errorBody.error.description}`)
+      const description = errorBody?.error?.description || 'Unknown Razorpay error'
+      throw new Error(`Razorpay API Error: ${description}`)
     }
 
     const order = await response.json()

@@ -34,6 +34,11 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     const [error, setError] = useState(null);
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
     
+    const [discountCode, setDiscountCode] = useState('');
+    const [appliedDiscount, setAppliedDiscount] = useState(null);
+    const [discountError, setDiscountError] = useState(null);
+    const [applyingDiscount, setApplyingDiscount] = useState(false);
+    
     useEffect(() => {
         // If there's no active session, redirect to the login page.
         // Pass the current location so we can come back here after login.
@@ -56,10 +61,108 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     }, [session, navigate]);
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    
+    const calculateDiscountAmount = () => {
+        if (!appliedDiscount) return 0;
+        
+        if (appliedDiscount.discount_type === 'percentage') {
+            const discountAmount = (subtotal * appliedDiscount.discount_value) / 100;
+            if (appliedDiscount.max_discount_amount) {
+                return Math.min(discountAmount, appliedDiscount.max_discount_amount);
+            }
+            return discountAmount;
+        } else if (appliedDiscount.discount_type === 'fixed') {
+            return Math.min(appliedDiscount.discount_value, subtotal);
+        }
+        return 0;
+    };
+    
+    const discountAmount = Number(calculateDiscountAmount().toFixed(2));
+    const finalTotal = Number(Math.max(subtotal - discountAmount, 0).toFixed(2));
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setShippingInfo(prev => ({ ...prev, [id]: value }));
+    };
+    
+    const handleApplyDiscount = async () => {
+        if (!discountCode.trim()) {
+            setDiscountError('Please enter a discount code');
+            return;
+        }
+        
+        setApplyingDiscount(true);
+        setDiscountError(null);
+        
+        try {
+            const { data, error } = await supabase
+                .from('discount_codes')
+                .select('*')
+                .eq('code', discountCode.toUpperCase())
+                .eq('is_active', true)
+                .single();
+            
+            if (error) {
+                console.error('Discount code query error:', error);
+                // Check if the table doesn't exist
+                if (error.code === 'PGRST116' || error.message.includes('relation') || error.message.includes('does not exist')) {
+                    setDiscountError('Discount feature not available. Please run database migrations.');
+                } else {
+                    setDiscountError('Invalid or expired discount code');
+                }
+                setAppliedDiscount(null);
+                return;
+            }
+            
+            if (!data) {
+                setDiscountError('Invalid or expired discount code');
+                setAppliedDiscount(null);
+                return;
+            }
+            
+            const now = new Date();
+            const validFrom = new Date(data.valid_from);
+            const validUntil = data.valid_until ? new Date(data.valid_until) : null;
+            
+            if (now < validFrom) {
+                setDiscountError('This discount code is not yet active');
+                setAppliedDiscount(null);
+                return;
+            }
+            
+            if (validUntil && now > validUntil) {
+                setDiscountError('This discount code has expired');
+                setAppliedDiscount(null);
+                return;
+            }
+            
+            if (data.min_order_amount && subtotal < data.min_order_amount) {
+                setDiscountError(`Minimum order amount of ₹${data.min_order_amount} required`);
+                setAppliedDiscount(null);
+                return;
+            }
+            
+            if (data.usage_limit && data.times_used >= data.usage_limit) {
+                setDiscountError('This discount code has reached its usage limit');
+                setAppliedDiscount(null);
+                return;
+            }
+            
+            setAppliedDiscount(data);
+            setDiscountError(null);
+        } catch (err) {
+            console.error('Discount validation error:', err);
+            setDiscountError('Failed to validate discount code. Database setup may be required.');
+            setAppliedDiscount(null);
+        } finally {
+            setApplyingDiscount(false);
+        }
+    };
+    
+    const handleRemoveDiscount = () => {
+        setAppliedDiscount(null);
+        setDiscountCode('');
+        setDiscountError(null);
     };
 
     const handleSubmitOrder = async (e) => {
@@ -77,11 +180,18 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
 
             const orderPayload = {
                 user_id: session.user.id,
-                total_price: subtotal,
+                total_price: finalTotal,
                 shipping_address: shippingInfo,
                 products: cartItems,
                 payment_status: 'pending',
             };
+            
+            // Add discount fields only if discount is applied
+            if (appliedDiscount) {
+                orderPayload.original_price = subtotal;
+                orderPayload.discount_code = appliedDiscount.code;
+                orderPayload.discount_amount = discountAmount;
+            }
 
             const { data: pendingOrderData, error: pendingOrderError } = await supabase
                 .from('orders')
@@ -89,13 +199,60 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                 .select()
                 .single();
 
-            if (pendingOrderError) throw pendingOrderError;
+            if (pendingOrderError) {
+                console.error('Order insertion error:', pendingOrderError);
+                throw new Error(`Failed to create order: ${pendingOrderError.message}`);
+            }
+            
+            // Update discount usage count (ignore errors if table doesn't exist)
+            if (appliedDiscount) {
+                try {
+                    await supabase
+                        .from('discount_codes')
+                        .update({ times_used: appliedDiscount.times_used + 1 })
+                        .eq('id', appliedDiscount.id);
+                } catch (discountUpdateError) {
+                    console.warn('Failed to update discount usage:', discountUpdateError);
+                    // Continue anyway - don't fail the order
+                }
+            }
 
             const { data: orderData, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
-                body: { amount: subtotal },
+                body: { amount: finalTotal },
             });
-            if (orderError) throw new Error(orderError.message);
-            if (!orderData.id) throw new Error("Failed to create Razorpay order.");
+            
+            if (orderError) {
+                console.error('Razorpay order creation error:', orderError);
+                let detailedMessage = orderError.message;
+                // Supabase FunctionsHttpError includes a Response object in `context`
+                // that often contains the real backend error payload.
+                if (orderError.context) {
+                    try {
+                        const errorPayload = await orderError.context.json();
+                        if (errorPayload?.error) {
+                            detailedMessage = errorPayload.error;
+                        } else {
+                            detailedMessage = JSON.stringify(errorPayload);
+                        }
+                    } catch (contextParseError) {
+                        console.warn('Could not parse function error context:', contextParseError);
+                    }
+                }
+                throw new Error(`Payment initialization failed: ${detailedMessage}`);
+            }
+            
+            if (!orderData) {
+                throw new Error("No response from payment gateway. Please try again.");
+            }
+            
+            if (orderData.error) {
+                console.error('Razorpay API error:', orderData.error);
+                throw new Error(`Payment gateway error: ${orderData.error}`);
+            }
+            
+            if (!orderData.id) {
+                throw new Error("Failed to create payment order. Please try again.");
+            }
 
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -158,7 +315,8 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
         } catch (error) {
-            setError(error.message);
+            console.error('Checkout error:', error);
+            setError(error.message || 'An unexpected error occurred. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -190,7 +348,7 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                             </div>
                             <div>
                                 <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
-                                <input type="tel" id="phone" value={shippingInfo.phone} readOnly className="w-full p-3 bg-gray-100 border border-gray-300 rounded-sm text-gray-500 cursor-not-allowed" />
+                                <input type="tel" id="phone" value={shippingInfo.phone} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
                             </div>
                             <div>
                                 <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL FOR ORDER CONFIRMATION</label>
@@ -246,13 +404,63 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                                 <p className="text-gray-600">Subtotal</p>
                                 <p className="text-charcoal-gray">₹ {subtotal.toFixed(2)}</p>
                             </div>
+                            
+                            {/* Discount Code Section */}
+                            <div className="py-4 space-y-3">
+                                {!appliedDiscount ? (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Discount code"
+                                            value={discountCode}
+                                            onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon uppercase"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleApplyDiscount}
+                                            disabled={applyingDiscount || !discountCode.trim()}
+                                            className="px-4 py-2 bg-charcoal-gray text-white text-xs font-semibold tracking-wider hover:bg-charcoal-gray/90 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-sm transition-colors"
+                                        >
+                                            {applyingDiscount ? 'APPLYING...' : 'APPLY'}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-sm px-3 py-2">
+                                        <div className="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                            <span className="text-sm font-semibold text-green-800">{appliedDiscount.code}</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={handleRemoveDiscount}
+                                            className="text-xs text-red-600 hover:text-red-800 font-medium"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                )}
+                                {discountError && (
+                                    <p className="text-xs text-red-600">{discountError}</p>
+                                )}
+                            </div>
+                            
+                            {appliedDiscount && (
+                                <div className="flex justify-between text-sm text-green-600">
+                                    <p className="font-medium">Discount ({appliedDiscount.discount_type === 'percentage' ? `${appliedDiscount.discount_value}%` : 'Flat'})</p>
+                                    <p className="font-semibold">- ₹ {discountAmount.toFixed(2)}</p>
+                                </div>
+                            )}
+                            
                             <div className="flex justify-between text-sm">
                                 <p className="text-gray-600">Shipping</p>
-                                <p className="text-charcoal-gray font-semibold">FREE</p>
+                                <p className="text-charcoal-gray font-semibold">Based on location</p>
                             </div>
                             <div className="flex justify-between text-lg font-bold pt-2 mt-2 border-t border-gray-300">
                                 <p className="text-deep-maroon">Total</p>
-                                <p className="text-deep-maroon">₹ {subtotal.toFixed(2)}</p>
+                                <p className="text-deep-maroon">₹ {finalTotal.toFixed(2)}</p>
                             </div>
                         </div>
                     </div>

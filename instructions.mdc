@@ -1,0 +1,1569 @@
+- "**/*.{jsx,tsx,ts,js,mdc,md}"
+- "src/**/*"
+- "components/**/*"
+- "lib/**/*"
+alwaysTry: false
+
+
+# NEERA SAREES: REACT VERSION OPTIMIZATION
+
+## React Workflow Orchestrator - instructions.mdc
+
+**Version:** 1.0
+
+***
+
+## EXECUTION OVERVIEW
+
+This orchestrator executes optimization phases for the React version of Neera Sarees. It follows a phase-by-phase progression with Ralph loop validation at every level.
+
+**Your Role as AI Agent:**
+
+- Always read @next-step.md to start execution
+- Do not execute any other phases unless the user explicitly instructs otherwise
+
+***
+
+## CONTEXT MANAGEMENT
+
+**Load Temporarily:**
+
+- Refer files only when explicitly referenced
+
+**Never Load:**
+
+- PRD.md (source document, not needed during execution)
+
+
+# PHASE REACT-1: TRANSFORM "SHOP BY PRINT" TO USE print_type COLUMN
+
+## Steps To Execute
+
+### Step 1: Execute @Phase-react-1.mdc
+
+### Step 2: External Verification (Ralph Loop)
+
+After Phase-react-1.mdc execution completes, perform external verification using the Ralph Loop methodology (DECIDE → EXECUTE → CHECK).
+
+
+## Part 1: Database Column Verification
+
+**PLAN - What to Verify:**
+
+- print_type column exists in products table
+- Column has valid data
+- Data distribution is acceptable
+- Verification script executed successfully
+
+**EXECUTE - Verification Checks:**
+
+**Check 1.1: Verification Script Exists**
+
+- Check `scripts/verify-print-column-react.js` exists
+- Expected: Script file present in repository
+
+**Check 1.2: Column Existence Confirmed**
+
+- Check PROGRESS.md Phase React-1 logs
+- Look for print_type column status
+- Expected: Documented as "Exists" with data type
+
+**Check 1.3: Data Population Status**
+
+- Check PROGRESS.md for products with print_type count
+- Verify at least 50% of products have print_type data
+- Expected: Adequate data population documented
+
+**Check 1.4: Unique Print Types**
+
+- Check PROGRESS.md for list of unique print types
+- Verify at least 3 print types exist
+- Expected: Multiple print categories available
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 1.1: Verification script exists in `scripts/` directory
+- [ ] Check 1.2: print_type column confirmed to exist
+- [ ] Check 1.3: At least 50% of products have print_type data
+- [ ] Check 1.4: At least 3 unique print types documented
+
+**Part 1 Result:**
+
+- If all 4 checks pass → Part 1: ✅ PASS
+- If 3 checks pass → Part 1: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 1: ❌ FAIL
+
+**Mark Part 1 complete and document result in PROGRESS.md before proceeding to Part 2.**
+
+***
+
+## Part 2: Implementation Verification
+
+**PLAN - What to Verify:**
+
+- App.jsx modified correctly
+- Print extraction logic implemented
+- Old prints table query removed
+- Code compiles without errors
+
+**EXECUTE - Verification Checks:**
+
+**Check 2.1: App.jsx Modified**
+
+- Open `src/App.jsx`
+- Search for print extraction logic after products fetch
+- Verify old `from('prints')` query removed
+- Expected: New implementation present, old code removed
+
+**Check 2.2: Print Extraction Logic**
+
+- Find code that extracts unique print types from products
+- Check for `[...new Set(...)]` pattern or equivalent
+- Verify sorting applied (alphabetical)
+- Expected: Proper extraction and sorting logic
+
+**Check 2.3: Data Structure Maintained**
+
+- Check extracted prints formatted as `[{ id, name }]`
+- Verify compatibility with existing code
+- Expected: Data structure matches original format
+
+**Check 2.4: Code Compiles**
+
+- Check PROGRESS.md for compilation status
+- Verify no syntax errors reported
+- Run `npm run dev` if needed to verify
+- Expected: Code compiles successfully
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 2.1: `src/App.jsx` modified, old prints query removed
+- [ ] Check 2.2: Print extraction logic correctly implemented
+- [ ] Check 2.3: Data structure maintained as `[{ id, name }]`
+- [ ] Check 2.4: Code compiles without errors
+
+**Part 2 Result:**
+
+- If all 4 checks pass → Part 2: ✅ PASS
+- If 3 checks pass → Part 2: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 2: ❌ FAIL
+
+**Mark Part 2 complete and document result in PROGRESS.md before proceeding to Part 3.**
+
+***
+
+## Part 3: Dropdown Functionality Verification
+
+**PLAN - What to Verify:**
+
+- Desktop dropdown displays print types
+- Mobile menu shows print types
+- Print types are alphabetically sorted
+- Dropdown behavior unchanged from before
+
+**EXECUTE - Verification Checks:**
+
+**Check 3.1: Desktop Dropdown Test**
+
+- Start dev server: `npm run dev`
+- Navigate to homepage
+- Hover over "Shop by Print" in navbar
+- Verify dropdown displays print categories
+- Expected: Print types visible in dropdown
+
+**Check 3.2: Print Types Display**
+
+- Count number of print types in dropdown
+- Verify alphabetical sorting
+- Check categories match database unique values
+- Expected: All print types present and sorted
+
+**Check 3.3: Mobile Menu Test**
+
+- Switch to mobile viewport (≤768px)
+- Open mobile menu (hamburger icon)
+- Expand "Shop by Print" section
+- Expected: Print types display correctly on mobile
+
+**Check 3.4: Navigation Test**
+
+- Click on 2-3 different print types
+- Verify navigation to `/print/[name]` routes
+- Check products display on each page
+- Expected: Navigation works, products filter correctly
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 3.1: Desktop dropdown displays print types
+- [ ] Check 3.2: All print types present and alphabetically sorted
+- [ ] Check 3.3: Mobile menu shows print types correctly
+- [ ] Check 3.4: Navigation works for multiple print types
+
+**Part 3 Result:**
+
+- If all 4 checks pass → Part 3: ✅ PASS
+- If 3 checks pass → Part 3: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 3: ❌ FAIL
+
+**Mark Part 3 complete and document result in PROGRESS.md before proceeding to Part 4.**
+
+***
+
+## Part 4: Data Consistency Verification
+
+**PLAN - What to Verify:**
+
+- Product filtering works correctly
+- Products match their print types
+- Cross-category verification (fabric + print)
+- No data mismatches
+
+**EXECUTE - Verification Checks:**
+
+**Check 4.1: Product Count Accuracy**
+
+- For each print type, count products in database
+- Check displayed product count on print pages
+- Verify counts match
+- Expected: Database counts match displayed counts
+
+**Check 4.2: Print Filtering Accuracy**
+
+- Navigate to 3 different print category pages
+- Verify products shown match the print_type
+- Check for any misplaced products
+- Expected: All products have correct print_type
+
+**Check 4.3: Cross-Category Verification**
+
+- Find a product that has both fabric and print
+- Verify it appears in both categories
+- Example: "Solid Mul Mul Saree" in fabric:mul-mul AND print:solid
+- Expected: Products correctly categorized in both dimensions
+
+**Check 4.4: Empty State Handling**
+
+- If any print category is empty, verify:
+    - Empty state message displays
+    - "Back to All Sarees" link works
+    - No console errors
+- Expected: Graceful empty state handling (if applicable)
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 4.1: Product counts match database for all print types
+- [ ] Check 4.2: Product filtering accurate (tested on 3 categories)
+- [ ] Check 4.3: Cross-category products appear in both fabric and print
+- [ ] Check 4.4: Empty state handled gracefully (if applicable)
+
+**Part 4 Result:**
+
+- If all 4 checks pass → Part 4: ✅ PASS
+- If 3 checks pass → Part 4: ⚠️ PARTIAL (document missing item)
+- If <3 checks pass → Part 4: ❌ FAIL
+
+**Mark Part 4 complete and document result in PROGRESS.md before proceeding to Part 5.**
+
+***
+
+## Part 5: UI/UX Preservation Verification
+
+**PLAN - What to Verify:**
+
+- NO visual changes to navbar
+- NO layout changes to dropdown
+- NO styling modifications
+- Behavior identical to before transformation
+
+**EXECUTE - Verification Checks:**
+
+**Check 5.1: Navbar Appearance Unchanged**
+
+- Compare navbar visually with previous version
+- Check "Shop by Print" button position unchanged
+- Verify styling, colors, fonts identical
+- Expected: Zero visual changes
+
+**Check 5.2: Dropdown Styling Unchanged**
+
+- Open "Shop by Print" dropdown
+- Check dropdown position, width, styling
+- Verify hover effects same as before
+- Compare with "Shop by Fabric" for consistency
+- Expected: Dropdown styling identical to previous version
+
+**Check 5.3: Mobile Menu Layout Unchanged**
+
+- Open mobile menu
+- Check "Shop by Print" section placement
+- Verify expansion behavior unchanged
+- Check styling matches original
+- Expected: Mobile menu visually identical
+
+**Check 5.4: Behavior Consistency**
+
+- Test dropdown open/close timing
+- Check animation speeds unchanged
+- Verify click interactions same as before
+- Expected: Behavior identical to original implementation
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 5.1: Navbar appearance completely unchanged
+- [ ] Check 5.2: Dropdown styling and position identical
+- [ ] Check 5.3: Mobile menu layout unchanged
+- [ ] Check 5.4: Interaction behavior consistent with original
+
+**Part 5 Result:**
+
+- If all 4 checks pass → Part 5: ✅ PASS
+- If 3 checks pass → Part 5: ⚠️ PARTIAL (document changes)
+- If <3 checks pass → Part 5: ❌ FAIL (UI/UX changed - violates phase constraint)
+
+**Mark Part 5 complete and document result in PROGRESS.md before proceeding to Part 6.**
+
+***
+
+## Part 6: Code Quality Verification
+
+**PLAN - What to Verify:**
+
+- Code is clean and documented
+- No debugging code left behind
+- Formatting consistent
+- No unused imports or variables
+
+**EXECUTE - Verification Checks:**
+
+**Check 6.1: Inline Documentation**
+
+- Open `src/App.jsx`
+- Check for inline comments explaining print extraction
+- Verify comments are concise and meaningful
+- Expected: Proper inline documentation present
+
+**Check 6.2: Code Cleanliness**
+
+- Check no console.log statements left behind
+- Verify no commented-out old code remaining
+- Check no TODO or FIXME comments
+- Expected: Clean, production-ready code
+
+**Check 6.3: Code Formatting**
+
+- Check indentation consistent (2 spaces)
+- Verify proper line breaks and spacing
+- Check follows existing code style in App.jsx
+- Expected: Consistent formatting throughout
+
+**Check 6.4: No Unused Code**
+
+- Check no unused imports at top of file
+- Verify no unused variables
+- Check no dead code paths
+- Expected: No unused code present
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 6.1: Inline documentation present and meaningful
+- [ ] Check 6.2: No debugging code, console.logs, or old comments
+- [ ] Check 6.3: Code formatting consistent with project standards
+- [ ] Check 6.4: No unused imports, variables, or dead code
+
+**Part 6 Result:**
+
+- If all 4 checks pass → Part 6: ✅ PASS
+- If 3 checks pass → Part 6: ⚠️ PARTIAL (document issues)
+- If <3 checks pass → Part 6: ❌ FAIL
+
+**Mark Part 6 complete and document result in PROGRESS.md before proceeding to Part 7.**
+
+***
+
+## Part 7: Documentation Completeness
+
+**PLAN - What to Verify:**
+
+- PROGRESS.md complete for Phase React-1
+- All 8 steps documented
+- next-step.md updated
+- Implementation summary present
+
+**EXECUTE - Verification Checks:**
+
+**Check 7.1: PROGRESS.md Phase React-1 Entry**
+
+- Open PROGRESS.md
+- Verify "Phase React-1" section exists
+- Check all 8 steps documented with checkboxes
+- Verify timestamps and duration recorded
+- Expected: Complete Phase React-1 documentation
+
+**Check 7.2: Implementation Details**
+
+- Check PROGRESS.md documents:
+    - Data source change (prints table → print_type column)
+    - Code modifications in App.jsx
+    - Testing results for all verification checks
+    - Any issues encountered and resolutions
+- Expected: Thorough implementation documentation
+
+**Check 7.3: Test Results Documentation**
+
+- Verify PROGRESS.md documents test results:
+    - Desktop dropdown test results
+    - Mobile menu test results
+    - Product filtering verification
+    - Cross-browser testing (if performed)
+- Expected: Complete test results documented
+
+**Check 7.4: next-step.md Update**
+
+- Check next-step.md content
+- Should reference next React phase or completion message
+- Expected: next-step.md properly updated
+
+**VALIDATE - Assessment:**
+
+**Success Criteria:**
+
+- [ ] Check 7.1: PROGRESS.md Phase React-1 entry complete with all 8 steps
+- [ ] Check 7.2: Implementation details thoroughly documented
+- [ ] Check 7.3: Test results documented for all verification checks
+- [ ] Check 7.4: next-step.md updated appropriately
+
+**Part 7 Result:**
+
+- If all 4 checks pass → Part 7: ✅ PASS
+- If 3 checks pass → Part 7: ⚠️ PARTIAL (document missing items)
+- If <3 checks pass → Part 7: ❌ FAIL
+
+**Mark Part 7 complete and document result in PROGRESS.md before proceeding to Part 8.**
+
+***
+
+## Part 8: Holistic Vision
+
+**DECIDE - Aggregate Results:**
+
+Review all parts and count results:
+
+**Parts Summary:**
+
+- [ ] Part 1: Database Column Verification - Result: _____
+- [ ] Part 2: Implementation Verification - Result: _____
+- [ ] Part 3: Dropdown Functionality - Result: _____
+- [ ] Part 4: Data Consistency - Result: _____
+- [ ] Part 5: UI/UX Preservation - Result: _____
+- [ ] Part 6: Code Quality - Result: _____
+- [ ] Part 7: Documentation Completeness - Result: _____
+
+Count PASS/PARTIAL/FAIL from Parts 1-7:
+
+**Scenario A: All parts PASS (7/7)**
+
+- Decision: Phase React-1 ✅ COMPLETE
+- Action: Document success in PROGRESS.md
+- Mark: "**External Verification:** Phase React-1 COMPLETE - Shop by Print backend transformation successful, all 7 parts verified. Zero UI/UX changes. Print categories now sourced from print_type column."
+- Next: Update next-step.md for next phase
+
+**Scenario B: 5-6 parts PASS, 1-2 PARTIAL, Part 5 NOT FAIL**
+
+- Decision: Phase React-1 ⚠️ COMPLETE with notes
+- Action: Document partial items in PROGRESS.md
+- Mark: "**External Verification:** Phase React-1 COMPLETE with minor gaps - [list gaps]"
+- Critical Check: Verify Part 5 (UI/UX Preservation) is NOT FAIL
+    - If Part 5 FAIL → Phase React-1 FAILED (UI/UX constraint violated)
+- Assess: If gaps are non-blocking and UI/UX unchanged → Can proceed
+- If gaps are functional → Request human review
+
+**Scenario C: 4+ parts FAIL OR Part 5 FAIL**
+
+- Decision: Phase React-1 ❌ FAILED
+- Action: Document failures in PROGRESS.md
+- Mark: "**External Verification:** Phase React-1 FAILED - [list failures]"
+- Special Note: If Part 5 FAIL (UI/UX changed):
+    - Mark: "Critical constraint violated: UI/UX modifications detected. Phase requires UI/UX to remain unchanged."
+- Rollback: Revert changes in App.jsx if functionality broken
+- Next: Do NOT proceed to next phase, request human intervention
+
+**Document final holistic decision in PROGRESS.md under Phase React-1 External Verification section.**
+
+**Holistic Assessment:**
+
+- [ ] All parts reviewed and aggregated
+- [ ] Final decision made (COMPLETE/COMPLETE with notes/FAILED)
+- [ ] UI/UX preservation constraint verified (Part 5 status critical)
+- [ ] Decision documented in PROGRESS.md External Verification section
+- [ ] next-step.md verified based on decision
+
+**Mark Part 8 complete only when holistic decision is documented.**
+
+***
+
+## Update next-step.md
+
+Based on holistic decision:
+
+- If Phase React-1 COMPLETE or COMPLETE with notes → Update next-step.md to next React phase
+- If Phase React-1 FAILED → Revert next-step.md to Phase React-1 for retry
+
+**Phase React-1 External Verification Complete.**
+
+# PHASE REACT-2: SEO OPTIMIZATION FOR REACT VERSION
+
+## Steps To Execute
+
+### Step 1: Execute @Phase-react-2.mdc
+
+### Step 2: External Verification (Ralph Loop)
+
+After Phase-react-2.mdc execution completes, perform external verification using the Ralph Loop methodology (DECIDE → EXECUTE → CHECK).
+
+***
+
+## Part 1: Meta Tags \& SEO Fundamentals Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Confirm that all pages have unique, optimized meta tags implemented via React Helmet that enable search engine visibility and click-through.
+
+**What We're Verifying:**
+
+- React Helmet installed and configured
+- All page types have unique meta tags
+- Character limits enforced (≤60 title, ≤155 description)
+- Open Graph and Twitter Card tags present
+- Meta tags pre-rendered in page source
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 1 PASS
+- 4/5 checks pass → Part 1 PARTIAL (retry once)
+- <4/5 checks pass → Part 1 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 1.1: React Helmet Installation**
+
+- Open `package.json`
+- Search for `react-helmet-async` in dependencies
+- Verify version number present
+- Expected: Library installed and documented
+
+**Check 1.2: Meta Tags on All Sarees Page**
+
+- Start dev server: `npm run dev`
+- Navigate to `/products` (All Sarees page)
+- View page source (Ctrl+U or right-click → View Page Source)
+
+```
+- Search for `<title>` tag in `<head>`
+```
+
+- Verify title contains "All Sarees" or "Premium Handwoven Sarees"
+- Check meta description present
+- Expected: Unique meta tags visible in page source
+
+**Check 1.3: Character Limit Enforcement**
+
+- Check PROGRESS.md Phase React-2 Step 2 logs for character limit verification
+- Or manually check 3 pages:
+    - All Sarees page title length
+    - Product page title length
+    - Category page title length
+- Count characters (title ≤60, description ≤155)
+- Expected: All within limits
+
+**Check 1.4: Open Graph Tags Present**
+
+- View page source of All Sarees page
+- Search for `<meta property="og:title"`
+- Search for `<meta property="og:description"`
+- Search for `<meta property="og:image"`
+- Expected: At least 3 OG tags present
+
+**Check 1.5: Dynamic Meta Tags on Product Pages**
+
+- Navigate to 2 different product pages
+- View page source for each
+- Compare title tags - should be different (unique per product)
+- Verify product name appears in title
+- Expected: Meta tags unique per product
+
+Record the result of each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 1.1: ✓ (React Helmet installed in package.json)
+- Check 1.2: ✓ (All Sarees page has meta tags in source)
+- Check 1.3: ✓ (Character limits enforced)
+- Check 1.4: ✓ (Open Graph tags present)
+- Check 1.5: ✓ (Product page meta tags unique)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 1 Status: ✅ PASS
+- Log: "Part 1 (Meta Tags \& SEO Fundamentals): All 5 checks passed"
+- Action: Continue to Part 2 verification
+
+**If 4/5 checks passed:**
+
+- Part 1 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 1 verification once:
+        - Focus on the failed check
+        - Re-run all 5 checks
+    - If after retry 5/5 pass → Part 1 PASS, continue to Part 2
+    - If still 4/5 → Escalate to Part 1 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 1 Status: ❌ FAIL
+- Action:
+    - Log failure details in PROGRESS.md under Phase React-2
+    - Meta tags are critical for SEO visibility
+    - Continue to Part 2, but Part 1 failure will weigh heavily in final Phase React-2 decision
+
+***
+
+## Part 2: Structured Data (Schema) Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Ensure proper JSON-LD schema markup exists on all page types for rich search results.
+
+**What We're Verifying:**
+
+- Product schema on product pages
+- BreadcrumbList schema on relevant pages
+- Organization schema site-wide
+- CollectionPage schema on category pages
+- Schema validates without critical errors
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 2 PASS
+- 4/5 checks pass → Part 2 PARTIAL (retry once)
+- <4/5 checks pass → Part 2 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 2.1: Schema Utility Exists**
+
+- Verify `src/utils/schemaMarkup.js` file exists
+- Open file and check for schema generation functions
+- Expected: File present with Product, BreadcrumbList, Organization, CollectionPage functions
+
+**Check 2.2: Product Schema on Product Pages**
+
+- Navigate to a product page
+- View page source
+- Search for `<script type="application/ld+json"`
+- Look for `"@type": "Product"` in JSON-LD
+- Verify product name, price, image present in schema
+- Expected: Product schema present with real data
+
+**Check 2.3: BreadcrumbList Schema**
+
+- View page source of product page
+- Search for `"@type": "BreadcrumbList"`
+- Verify breadcrumb items present with positions
+- Check URLs in breadcrumb are correct
+- Expected: BreadcrumbList schema present
+
+**Check 2.4: Organization Schema**
+
+- View page source of homepage or any page
+- Search for `"@type": "Organization"`
+- Verify organization name is "Neera Sarees"
+- Check URL is "https://neera.store"
+- Expected: Organization schema present site-wide
+
+**Check 2.5: Schema Validation**
+
+- Use Google Rich Results Test: https://search.google.com/test/rich-results
+- Test 2 product pages
+- Test All Sarees page
+- Check validation results: No critical errors (warnings acceptable)
+- Expected: Schema validates, rich results eligible
+
+Record results for each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 2.1: ✓ (Schema utility file exists)
+- Check 2.2: ✓ (Product schema on product pages)
+- Check 2.3: ✓ (BreadcrumbList schema present)
+- Check 2.4: ✓ (Organization schema present)
+- Check 2.5: ✓ (Schema validates - no critical errors)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 2 Status: ✅ PASS
+- Log: "Part 2 (Structured Data): All 5 checks passed"
+- Action: Continue to Part 3 verification
+
+**If 4/5 checks passed:**
+
+- Part 2 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 2 verification once:
+        - Re-check missing or failed items
+    - If after retry 5/5 pass → Part 2 PASS, continue to Part 3
+    - If still 4/5 → Escalate to Part 2 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 2 Status: ❌ FAIL
+- Action:
+    - Log failure in PROGRESS.md
+    - Note: Schema markup important for rich results and SEO
+    - Continue to Part 3, but this will influence final Phase React-2 decision
+
+***
+
+## Part 3: Content Structure \& Accessibility Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Confirm proper heading hierarchy, semantic HTML, and content structure across all pages without visual changes.
+
+**What We're Verifying:**
+
+- Heading hierarchy correct (one H1, no skipped levels)
+- Semantic HTML tags used (main, nav, section, article)
+- ARIA landmarks implemented
+- All Sarees page optimized as primary target
+- Zero visual/layout changes from optimizations
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 3 PASS
+- 4/5 checks pass → Part 3 PARTIAL (retry once)
+- <4/5 checks pass → Part 3 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 3.1: Heading Hierarchy on All Sarees Page**
+
+- Navigate to `/products` (All Sarees page)
+- Open browser DevTools (F12)
+- Use Elements tab or accessibility inspector
+- Count H1 tags (should be exactly 1)
+- Verify H1 contains "All Sarees" or similar
+- Check H2 tags used for sections (if any)
+- Expected: One H1, proper hierarchy
+
+**Check 3.2: Heading Hierarchy on Product Pages**
+
+- Navigate to 2 different product pages
+- Check each has exactly one H1 (product name)
+- Verify no skipped heading levels (H1 → H2 → H3, not H1 → H3)
+- Expected: Proper heading hierarchy on both
+
+**Check 3.3: Semantic HTML Implementation**
+
+- View page source of All Sarees page
+- Search for `<main>` tag
+- Search for `<nav>` tag (navbar)
+
+```
+- Search for semantic tags like `<section>` or `<article>`
+```
+
+- Expected: Semantic HTML tags present
+
+**Check 3.4: ARIA Landmarks**
+
+- Open DevTools accessibility inspector
+- Check for landmarks: main, navigation
+- Or search page source for `role="main"`, `aria-label` attributes
+- Expected: ARIA landmarks implemented
+
+**Check 3.5: Visual Regression Check**
+
+- Compare current All Sarees page with pre-optimization screenshots (if available)
+- Or visually inspect:
+    - Font sizes unchanged
+    - Spacing/margins unchanged
+    - Layout identical
+    - No new visual elements
+- Check product pages and category pages similarly
+- Expected: Zero visual changes detected
+
+Record results for each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 3.1: ✓ (All Sarees page has proper H1 and hierarchy)
+- Check 3.2: ✓ (Product pages have proper hierarchy)
+- Check 3.3: ✓ (Semantic HTML tags present)
+- Check 3.4: ✓ (ARIA landmarks implemented)
+- Check 3.5: ✓ (No visual changes - layout identical)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 3 Status: ✅ PASS
+- Log: "Part 3 (Content Structure \& Accessibility): All 5 checks passed"
+- Action: Continue to Part 4 verification
+
+**If 4/5 checks passed:**
+
+- Part 3 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 3 verification once:
+        - Focus on failed area
+    - Critical: If Check 3.5 (Visual Regression) failed → Immediate FAIL, do not retry
+    - If after retry 5/5 pass → Part 3 PASS, continue to Part 4
+    - If still 4/5 → Escalate to Part 3 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 3 Status: ❌ FAIL
+- Action:
+    - Log critical failures in PROGRESS.md
+    - Special case: If Check 3.5 failed (visual changes detected):
+        - Mark: "CRITICAL CONSTRAINT VIOLATED - Visual changes detected"
+        - This is a blocker for entire Phase React-2
+    - Continue to Part 4, but visual changes = automatic phase failure
+
+***
+
+## Part 4: Image Alt Text Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Ensure all product images have descriptive alt text without any image format changes or loading behavior modifications.
+
+**What We're Verifying:**
+
+- Alt text present on product images
+- Alt text descriptive and follows format standards
+- Image formats unchanged (jpg/jpeg/png as-is)
+- Lazy loading behavior unchanged
+- Coverage target met (95%+ images have alt text)
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 4 PASS
+- 4/5 checks pass → Part 4 PARTIAL (retry once)
+- <4/5 checks pass → Part 4 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 4.1: Alt Text Coverage on All Sarees Page**
+
+- Navigate to `/products` (All Sarees page)
+- Open DevTools, inspect 10 random product images
+- Check each `<img>` tag for `alt` attribute
+- Verify alt text is descriptive (not empty, not generic "image")
+- Count how many have proper alt text: [X]/10
+- Expected: At least 9/10 (90%+)
+
+**Check 4.2: Alt Text Format Quality**
+
+- Check 3 product images
+- Verify alt text follows format: `{product.name} - {fabric_type} - {print_type} - Neera Sarees`
+- Or similar descriptive format
+- Check alt text is not just "product" or "saree"
+- Expected: Descriptive, formatted alt text
+
+**Check 4.3: Alt Text on Product Detail Pages**
+
+- Navigate to 2 product detail pages
+- Inspect main product image
+- Check for alt attribute with product-specific text
+- Expected: Product images have unique, descriptive alt text
+
+**Check 4.4: Image Format Unchanged**
+
+- View page source or inspect image elements
+- Check `src` attributes on 10 images
+- Verify extensions are still .jpg, .jpeg, or .png (original formats)
+- Verify NO .webp, .avif, or .svg conversions
+- Expected: All image formats unchanged from original
+
+**Check 4.5: Lazy Loading Unchanged**
+
+- Inspect image elements in DevTools
+- Check for `loading` attribute
+- Verify lazy loading still in place (if it was before)
+- Or verify loading behavior hasn't changed (images load on scroll)
+- Test: Scroll down All Sarees page, images load progressively
+- Expected: Lazy loading behavior identical to before
+
+Record results for each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 4.1: ✓ (90%+ coverage on All Sarees page)
+- Check 4.2: ✓ (Alt text descriptive and formatted)
+- Check 4.3: ✓ (Product pages have alt text)
+- Check 4.4: ✓ (Image formats unchanged - no webp/avif/svg)
+- Check 4.5: ✓ (Lazy loading behavior unchanged)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 4 Status: ✅ PASS
+- Log: "Part 4 (Image Alt Text): All 5 checks passed"
+- Action: Continue to Part 5 verification
+
+**If 4/5 checks passed:**
+
+- Part 4 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 4 verification once:
+        - Focus on failed check
+    - Critical: If Check 4.4 (Image formats) or Check 4.5 (Lazy loading) failed → Immediate FAIL
+    - If after retry 5/5 pass → Part 4 PASS, continue to Part 5
+    - If still 4/5 → Escalate to Part 4 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 4 Status: ❌ FAIL
+- Action:
+    - Log failure in PROGRESS.md
+    - Special cases:
+        - If Check 4.4 failed: "CRITICAL CONSTRAINT VIOLATED - Image formats changed"
+        - If Check 4.5 failed: "CRITICAL CONSTRAINT VIOLATED - Lazy loading modified"
+    - Either constraint violation = automatic phase failure
+    - Continue to Part 5, but track constraint violations
+
+***
+
+## Part 5: Breadcrumbs \& Internal Linking Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Verify breadcrumb navigation and internal linking implemented correctly without layout disruption.
+
+**What We're Verifying:**
+
+- Breadcrumb component exists and functional
+- Breadcrumbs display on correct pages
+- Breadcrumb navigation works
+- Internal linking optimized
+- No layout shift from breadcrumb addition
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 5 PASS
+- 4/5 checks pass → Part 5 PARTIAL (retry once)
+- <4/5 checks pass → Part 5 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 5.1: Breadcrumb Component Exists**
+
+- Verify `src/components/Breadcrumb.jsx` file exists
+- Open file and check component structure
+- Verify it accepts items array as prop
+- Expected: Breadcrumb component created
+
+**Check 5.2: Breadcrumbs on All Sarees Page**
+
+- Navigate to `/products` (All Sarees page)
+- Look for breadcrumb display (usually top of page, below header)
+- Verify breadcrumb shows: "Home → All Sarees" or similar
+- Expected: Breadcrumb visible on All Sarees page
+
+**Check 5.3: Breadcrumbs on Product Pages**
+
+- Navigate to 2 product pages
+- Check breadcrumb displays
+- Verify dynamic path: "Home → [Fabric/Print] → Product Name"
+- Click "Home" link in breadcrumb → should navigate to homepage
+- Expected: Breadcrumbs functional on product pages
+
+**Check 5.4: Breadcrumbs on Category Pages**
+
+- Navigate to a fabric category page (e.g., `/fabric/Mul Mul`)
+- Check breadcrumb shows: "Home → Shop by Fabric → Mul Mul"
+- Navigate to a print category page
+- Check breadcrumb shows: "Home → Shop by Print → [Print Name]"
+- Expected: Breadcrumbs on category pages
+
+**Check 5.5: Layout Integrity Check**
+
+- Compare page layout before and after breadcrumb addition
+- Check that breadcrumbs fit naturally without:
+    - Pushing content down excessively
+    - Causing horizontal scroll
+    - Changing spacing of other elements
+    - Altering header/navbar position
+- Test on mobile viewport as well
+- Expected: Breadcrumbs integrate seamlessly, no layout disruption
+
+Record results for each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 5.1: ✓ (Breadcrumb component exists)
+- Check 5.2: ✓ (Breadcrumbs on All Sarees page)
+- Check 5.3: ✓ (Breadcrumbs functional on product pages)
+- Check 5.4: ✓ (Breadcrumbs on category pages)
+- Check 5.5: ✓ (No layout disruption from breadcrumbs)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 5 Status: ✅ PASS
+- Log: "Part 5 (Breadcrumbs \& Internal Linking): All 5 checks passed"
+- Action: Continue to Part 6 verification
+
+**If 4/5 checks passed:**
+
+- Part 5 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 5 verification once:
+        - Focus on failed check
+    - Critical: If Check 5.5 (Layout Integrity) failed → This is a constraint violation
+    - If after retry 5/5 pass → Part 5 PASS, continue to Part 6
+    - If still 4/5 → Escalate to Part 5 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 5 Status: ❌ FAIL
+- Action:
+    - Log failure in PROGRESS.md
+    - If Check 5.5 failed: "Layout disruption detected from breadcrumbs"
+    - Continue to Part 6, but layout changes tracked as potential violation
+
+***
+
+## Part 6: Sitemap \& Robots.txt Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Ensure sitemap generated with all URLs, All Sarees page prioritized, and robots.txt properly configured.
+
+**What We're Verifying:**
+
+- sitemap.xml exists and accessible
+- All product and category URLs in sitemap
+- All Sarees page has priority 1.0
+- robots.txt exists and references sitemap
+- Both files accessible via dev server
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 6 PASS
+- 4/5 checks pass → Part 6 PARTIAL (retry once)
+- <4/5 checks pass → Part 6 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 6.1: Sitemap Generation Script Exists**
+
+- Verify `scripts/generate-sitemap.js` file exists
+- Check PROGRESS.md for sitemap generation execution log
+- Expected: Script exists and was executed
+
+**Check 6.2: sitemap.xml File Exists**
+
+- Check `public/sitemap.xml` file exists
+- Open file and verify XML format
+- Count number of URLs (should be 130+ products + categories + key pages)
+- Expected: sitemap.xml exists with comprehensive URL list
+
+**Check 6.3: All Sarees Page Priority**
+
+- Open `public/sitemap.xml`
+- Search for `/products` URL (All Sarees page)
+
+```
+- Verify `<priority>1.0</priority>` tag
+```
+
+```
+- Verify `<changefreq>daily</changefreq>` or similar high frequency
+```
+
+- Expected: All Sarees page has highest priority
+
+**Check 6.4: robots.txt Configuration**
+
+- Check `public/robots.txt` file exists
+- Open file and verify content:
+    - `User-agent: *`
+    - `Disallow:` (allow all)
+    - `Sitemap: https://neera.store/sitemap.xml`
+- Expected: robots.txt properly configured
+
+**Check 6.5: File Accessibility**
+
+- Start dev server: `npm run dev`
+- Navigate to `http://localhost:5173/sitemap.xml` (or appropriate port)
+- Verify sitemap displays in browser
+- Navigate to `http://localhost:5173/robots.txt`
+- Verify robots.txt displays
+- Expected: Both files accessible
+
+Record results for each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 6.1: ✓ (Sitemap script exists)
+- Check 6.2: ✓ (sitemap.xml exists with 130+ URLs)
+- Check 6.3: ✓ (All Sarees page priority 1.0)
+- Check 6.4: ✓ (robots.txt configured correctly)
+- Check 6.5: ✓ (Both files accessible in dev server)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 6 Status: ✅ PASS
+- Log: "Part 6 (Sitemap \& Robots.txt): All 5 checks passed"
+- Action: Continue to Part 7 verification
+
+**If 4/5 checks passed:**
+
+- Part 6 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 6 verification once:
+        - Focus on failed check
+    - If after retry 5/5 pass → Part 6 PASS, continue to Part 7
+    - If still 4/5 → Escalate to Part 6 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 6 Status: ❌ FAIL
+- Action:
+    - Log failure in PROGRESS.md
+    - Note: Sitemap crucial for search engine crawling
+    - Continue to Part 7, but sitemap issues will impact final decision
+
+***
+
+## Part 7: SEO Testing \& Lighthouse Scores Verification (Ralph Loop)
+
+### PLAN
+
+**Vision:** Verify SEO improvements through Lighthouse audits and ensure All Sarees page optimized as primary target.
+
+**What We're Verifying:**
+
+- Post-optimization Lighthouse SEO scores
+- Improvement from baseline (Step 1)
+- All Sarees page achieves high SEO score
+- No performance degradation
+- Before/after comparison documented
+
+**Success Criteria:**
+
+- 5/5 checks pass → Part 7 PASS
+- 4/5 checks pass → Part 7 PARTIAL (retry once)
+- <4/5 checks pass → Part 7 FAIL
+
+***
+
+### EXECUTE
+
+Run these verification checks:
+
+**Check 7.1: Lighthouse Audit on All Sarees Page**
+
+- Open Chrome DevTools on `/products` (All Sarees page)
+- Run Lighthouse audit (Desktop mode)
+- Focus on SEO score
+- Document score: [X]/100
+- Expected: SEO score ≥90
+
+**Check 7.2: Lighthouse on Product Page**
+
+- Navigate to a product page
+- Run Lighthouse audit
+- Document SEO score: [X]/100
+- Expected: SEO score ≥85
+
+**Check 7.3: Lighthouse on Category Page**
+
+- Navigate to a fabric or print category page
+- Run Lighthouse audit
+- Document SEO score: [X]/100
+- Expected: SEO score ≥85
+
+**Check 7.4: Before/After Comparison**
+
+- Compare current scores with baseline from Phase React-2 Step 1
+- Calculate improvement for each page type:
+    - All Sarees: Before [X] → After [Y] = +[Z] improvement
+    - Product: Before [X] → After [Y] = +[Z] improvement
+    - Category: Before [X] → After [Y] = +[Z] improvement
+- Expected: Improvement documented for all page types
+
+**Check 7.5: Performance Score Check**
+
+- Verify Lighthouse Performance scores didn't degrade
+- All Sarees page: Performance score ≥[baseline score]
+- Product page: Performance score ≥[baseline score]
+- Expected: No performance regression from SEO changes
+
+Record results for each check.
+
+***
+
+### VALIDATE
+
+**Expected Results:**
+
+- Check 7.1: ✓ (All Sarees SEO score ≥90)
+- Check 7.2: ✓ (Product page SEO score ≥85)
+- Check 7.3: ✓ (Category page SEO score ≥85)
+- Check 7.4: ✓ (Improvement documented for all pages)
+- Check 7.5: ✓ (No performance regression)
+
+**Actual Results:**
+
+Count how many checks passed: [X]/5
+
+***
+
+### DECIDE
+
+**If 5/5 checks passed:**
+
+- Part 7 Status: ✅ PASS
+- Log: "Part 7 (SEO Testing \& Lighthouse): All 5 checks passed"
+- Action: Continue to Part 8 holistic verification
+
+**If 4/5 checks passed:**
+
+- Part 7 Status: ⚠️ PARTIAL
+- Action:
+    - Retry Part 7 verification once:
+        - Re-run Lighthouse audits
+        - Focus on failed checks
+    - If after retry 5/5 pass → Part 7 PASS, continue to Part 8
+    - If still 4/5 → Escalate to Part 7 FAIL
+
+**If <4/5 checks passed:**
+
+- Part 7 Status: ❌ FAIL
+- Action:
+    - Log failure in PROGRESS.md
+    - Note: SEO scores not meeting targets indicates incomplete optimization
+    - Continue to Part 8 for holistic assessment
+
+***
+
+## Part 8: Holistic Phase React-2 Vision (Ralph Loop)
+
+### PLAN
+
+**Vision:** Decide whether React SEO optimization is comprehensive, effective, and constraint-compliant enough to be considered complete.
+
+**What We're Verifying:**
+
+- All parts (1-7) results aggregated
+- Phase React-2 Status in PROGRESS.md
+- Critical constraints satisfied (no visual changes, no image format changes, no lazy loading changes)
+- SEO improvement achieved
+- All Sarees page optimized as primary target
+- Documentation complete
+
+**Success Criteria:**
+
+- Parts 1-7 all PASS + constraints satisfied → Phase React-2 COMPLETE
+- Any PARTIAL / minor issues only + constraints satisfied → Phase React-2 NEEDS ATTENTION
+- Any FAIL in Parts 1-7 OR constraint violated → Phase React-2 BLOCKED
+
+***
+
+### EXECUTE
+
+Aggregate results:
+
+- Part 1 (Meta Tags \& SEO Fundamentals): [PASS / PARTIAL / FAIL]
+- Part 2 (Structured Data): [PASS / PARTIAL / FAIL]
+- Part 3 (Content Structure \& Accessibility): [PASS / PARTIAL / FAIL]
+- Part 4 (Image Alt Text): [PASS / PARTIAL / FAIL]
+- Part 5 (Breadcrumbs \& Internal Linking): [PASS / PARTIAL / FAIL]
+- Part 6 (Sitemap \& Robots.txt): [PASS / PARTIAL / FAIL]
+- Part 7 (SEO Testing \& Lighthouse): [PASS / PARTIAL / FAIL]
+
+Additional holistic checks:
+
+**Check 8.1: Phase React-2 Status in PROGRESS.md**
+
+- Open PROGRESS.md
+- Verify Phase React-2 section exists
+- Check status field (IN PROGRESS / COMPLETED / INCOMPLETE / FAILED)
+- Expected for "COMPLETE" scenario: ✅ COMPLETED
+
+**Check 8.2: Critical Constraints Verification**
+
+- Review all parts for constraint violations:
+    - Part 3 Check 3.5: Visual changes? [Yes/No]
+    - Part 4 Check 4.4: Image formats changed? [Yes/No]
+    - Part 4 Check 4.5: Lazy loading changed? [Yes/No]
+    - Part 5 Check 5.5: Layout disruption? [Yes/No]
+- Expected for "COMPLETE": All constraints satisfied (No to all questions)
+
+**Check 8.3: SEO Improvement Achieved**
+
+- Review Part 7 Lighthouse scores
+- Verify All Sarees page SEO score ≥90
+- Verify improvement from baseline documented
+- Expected: Measurable SEO improvement
+
+**Check 8.4: All Sarees Page Primary Target Status**
+
+- Verify sitemap priority 1.0 for `/products`
+- Verify comprehensive meta tags on All Sarees page
+- Verify schema markup on All Sarees page
+- Expected: All Sarees page fully optimized
+
+**Check 8.5: Documentation Completeness**
+
+- Verify PROGRESS.md Phase React-2 has all 8 steps documented
+- Check before/after comparison table exists
+- Verify timestamps and duration recorded
+- Expected: Complete documentation
+
+Record overall impression.
+
+***
+
+### VALIDATE
+
+**Scenario A: Comprehensive SEO Success**
+
+- Parts 1-7: All PASS
+- Check 8.1: Phase React-2 status = ✅ COMPLETED
+- Check 8.2: All constraints satisfied (no visual changes, no image format changes, no lazy loading changes)
+- Check 8.3: SEO scores improved (All Sarees ≥90)
+- Check 8.4: All Sarees page fully optimized (priority 1.0, comprehensive meta/schema)
+- Check 8.5: Documentation complete
+
+**Result:** Phase React-2 COMPLETE
+
+***
+
+**Scenario B: Acceptable with Minor Gaps**
+
+- Parts 1-7: Mostly PASS, with at most 1-2 PARTIAL and no FAIL
+- Check 8.2: All critical constraints satisfied (most important)
+- Check 8.3: SEO improvement achieved (even if not perfect scores)
+- Phase React-2 status may be ✅ COMPLETED or ⚠️ NEEDS ATTENTION
+- Minor gaps exist (e.g., one category missing breadcrumb, non-critical schema warnings)
+
+**Result:** Phase React-2 NEEDS ATTENTION, but SEO foundation solid
+
+***
+
+**Scenario C: Blocked - Constraints Violated**
+
+- Check 8.2 shows constraint violations:
+    - Visual changes detected (Part 3 Check 3.5 failed)
+    - Image formats changed (Part 4 Check 4.4 failed)
+    - Lazy loading modified (Part 4 Check 4.5 failed)
+    - Layout disruption (Part 5 Check 5.5 failed)
+- OR Parts 1-7: Multiple FAIL (3+ parts failed)
+- OR Phase React-2 status = ❌ FAILED in PROGRESS.md
+
+**Result:** Phase React-2 BLOCKED
+
+***
+
+### DECIDE
+
+**If Scenario A (Phase React-2 COMPLETE):**
+
+Proceed to Final Phase React-2 Decision below.
+
+**If Scenario B (Phase React-2 NEEDS ATTENTION):**
+
+Proceed to Final Phase React-2 Decision below.
+
+**If Scenario C (Phase React-2 BLOCKED):**
+
+Proceed to Final Phase React-2 Decision below.
+
+***
+
+## Final Phase React-2 Decision
+
+Based on Part 8 holistic verification outcome:
+
+### ✅ If Phase React-2 COMPLETE (Scenario A)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+
+```
+Execute Phase React-3 by following @instructions.mdc
+```
+
+Or if no Phase React-3 exists:
+
+```
+React SEO optimization complete. Ready for deployment.
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase React-2 section:
+
+- Update **Phase React-2 Status:** ✅ COMPLETED
+- Log orchestrator decision: "External verification: Phase React-2 COMPLETE – React version SEO comprehensively optimized. Meta tags, structured data, heading structure, alt text, breadcrumbs, and sitemap implemented. All Sarees page optimized as primary target (priority 1.0). Lighthouse SEO scores improved across all page types. Zero visual/design changes. Image formats unchanged. Lazy loading preserved. Ready for deployment."
+
+Do NOT add any banner blocks or "Next Steps" subsections.
+
+***
+
+### ⚠️ If Phase React-2 NEEDS ATTENTION (Scenario B)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+
+```
+Execute Phase React-3 by following @instructions.mdc (Phase React-2 has minor gaps to address in parallel)
+```
+
+Or if no Phase React-3:
+
+```
+Address Phase React-2 minor gaps before deployment
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase React-2 section:
+
+- Update **Phase React-2 Status:** ⚠️ NEEDS ATTENTION
+- List specific gaps or minor issues
+- Log orchestrator decision: "External verification: Phase React-2 NEEDS ATTENTION – SEO foundation implemented with minor gaps: [list gaps]. Critical constraints satisfied (no visual/design changes, image formats unchanged, lazy loading preserved). Lighthouse scores improved. Can proceed with caution or address gaps before deployment."
+
+***
+
+### ❌ If Phase React-2 BLOCKED (Scenario C)
+
+**Step 1: Update next-step.md (FIRST)**
+
+Overwrite the entire next-step.md file with:
+
+```
+Fix critical issues in Phase React-2 before proceeding
+```
+
+**Step 2: Update PROGRESS.md (SECOND)**
+
+Append to PROGRESS.md within Phase React-2 section:
+
+- Update **Phase React-2 Status:** ❌ FAILED
+- List blocking issues and constraint violations
+- Log orchestrator decision: "Phase React-2 BLOCKED – Critical issues: [list issues]"
+- If constraint violated, specifically note: "CRITICAL CONSTRAINT VIOLATED: [Visual changes detected / Image formats changed / Lazy loading modified / Layout disruption occurred]"
+- Action required: "Revert changes that violated constraints and retry Phase React-2"
+
+**Phase React-2 External Verification Complete.**

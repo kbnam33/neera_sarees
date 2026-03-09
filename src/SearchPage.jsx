@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const SearchPage = ({ allProducts }) => {
     const [searchParams] = useSearchParams();
@@ -40,6 +41,11 @@ const SearchPage = ({ allProducts }) => {
     return (
         // FIX: Changed pt-32 to pt-12 for consistent spacing
         <div className="bg-soft-beige pt-12 pb-20 min-h-screen">
+            <Helmet>
+                <title>Search Sarees – Neera | Cotton &amp; Linen Office Wear Sarees</title>
+                <meta name="description" content="Search Neera's collection of Mulmul cotton, linen, and Chettinad sarees for working women. Find your perfect office wear saree at neera.store." />
+                <meta name="robots" content="noindex, follow" />
+            </Helmet>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-8 mb-12">
                     <h1 className="text-4xl font-serif text-deep-maroon">Search Results</h1>
