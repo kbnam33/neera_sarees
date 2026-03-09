@@ -10,9 +10,17 @@ const FabricPage = ({ allProducts }) => {
     const { fabricName } = useParams();
 
     const filteredProducts = allProducts.filter(p => p.fabric_type.toLowerCase() === fabricName.toLowerCase());
-    
+
+    const fabricDescriptions = {
+        mulmul: "Feather-light Mulmul cotton sarees built for long office days. Breathable, soft, and non-clingy even in Chennai heat.",
+        linen: "Crisp pure linen sarees that look structured from the first meeting to the last. Perfect office wear for working women.",
+        chettinad: "Bold Chettinad cotton sarees with neat pleats and striking borders. Heritage weave that works beautifully in offices, schools, and corporate spaces.",
+        default: `Explore Neera's ${fabricName.toLowerCase()} sarees – handpicked for working women who want comfort, elegance, and everyday wearability.`
+    };
+    const fabricDesc = fabricDescriptions[fabricName.toLowerCase()] || fabricDescriptions.default;
+
     // Generate meta tags
-    const fabricMeta = getFabricCategoryMetaTags(fabricName, filteredProducts.length);
+    const fabricMeta = getFabricCategoryMetaTags(fabricName, fabricDesc);
     const collectionSchema = getCollectionSchema(
         `${fabricName} Sarees Collection`,
         `Explore ${filteredProducts.length} premium ${fabricName} sarees with authentic handwoven craftsmanship.`,
@@ -65,7 +73,8 @@ const FabricPage = ({ allProducts }) => {
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <Breadcrumb items={breadcrumbs} />
                 <div className="text-center border-b border-gray-200 pb-8 mb-12">
-                    <h1 className="text-4xl font-serif text-deep-maroon capitalize">{fabricName}</h1>
+                    <h1 className="text-4xl font-serif text-deep-maroon capitalize">{fabricName} Sarees for Working Women – Neera</h1>
+                    <p className="mt-4 text-charcoal-gray/80 max-w-2xl mx-auto">{fabricDesc}</p>
                 </div>
                 {filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-12">

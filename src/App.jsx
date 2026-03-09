@@ -397,10 +397,10 @@ const BrandHero = ({ products }) => {
             <div className="absolute inset-0 z-10 flex items-end justify-center md:items-end md:justify-start">
                 <div className="w-full md:w-auto px-6 md:px-10 pb-12 md:pb-20 text-center md:text-left md:ml-6 lg:ml-8 xl:ml-10">
                     <h1 className="font-serif text-5xl md:text-6xl leading-[1.05]">
-                        Composed in Silence.
+                        Cotton &amp; Linen Sarees for Working Women
                     </h1>
                     <p className="mt-5 text-white/90 max-w-md mx-auto md:mx-0">
-                        Clothing shaped by patience, restraint, and clarity.
+                        Neera crafts Mulmul cotton, pure linen, and Chettinad sarees designed for the working woman – breathable, minimal, and office-ready. Free shipping across India.
                     </p>
                     <div className="mt-10 flex items-center justify-center md:justify-start gap-3">
                         <Link
@@ -762,13 +762,19 @@ function AppContent() {
             }
             setLoading(true);
             
-            const { data: productsData, error: productsError } = await supabase.from('products').select('*');
+            const { data: productsData, error: productsError } = await supabase.from('products').select('*').eq('is_public', true);
             if (productsError) { setError(productsError.message); setLoading(false); return; }
 
-            const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*');
+            const { data: fabricsData, error: fabricsError } = await supabase.from('fabrics').select('*').eq('is_public', true);
             if (fabricsError) { setError(fabricsError.message); setLoading(false); return; }
 
-            const productsWithSlugs = (productsData || []).map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
+            // Filter products to only those belonging to a public fabric
+            const publicFabricNames = (fabricsData || []).map(f => (f.name || '').toLowerCase());
+            const visibleProducts = (productsData || []).filter(p =>
+              publicFabricNames.length === 0 || publicFabricNames.includes((p.fabric_type || '').toLowerCase())
+            );
+
+            const productsWithSlugs = visibleProducts.map(product => ({ ...product, slug: product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, '') }));
             
             // Extract unique print types from products table (replaces separate prints table)
             // Ensures print categories auto-update when new print types are added to products

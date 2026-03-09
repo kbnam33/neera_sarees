@@ -54,12 +54,15 @@ export function generateMetaTags({
  * Generate meta tags for homepage
  */
 export function getHomeMetaTags() {
-  return generateMetaTags({
-    title: 'Neera - Handwoven Sarees of Timeless Elegance',
-    description: 'Discover Neera, a world of pure, handwoven sarees that blend traditional craftsmanship with modern style. Shop our exclusive collection of silk, cotton, and mangalagiri sarees.',
+  const meta = generateMetaTags({
+    title: 'Neera Sarees \u2013 Cotton & Linen Sarees for Working Women',
+    description: 'Neera crafts Mulmul cotton, pure linen, and Chettinad sarees built for working women. Breathable, office-ready, and elegantly minimal. Free shipping across India.',
     canonical: '/',
     type: 'website'
   });
+  // Set full title with site name (beyond 60-char SEO truncation used for og:title)
+  meta.title = 'Neera Sarees \u2013 Cotton & Linen Sarees for Working Women | neera.store';
+  return meta;
 }
 
 /**
@@ -80,9 +83,9 @@ export function getAllSareesMetaTags(productCount = 137) {
  * @param {Object} product - Product data
  */
 export function getProductMetaTags(product) {
-  const title = `${product.name} - ${product.fabric_type} | Neera Sarees`;
-  const price = product.selling_price || product.mrp;
-  const description = `${product.name}. ${product.fabric_type} saree, ${product.print_type}. Premium handwoven. ₹${price}.`;
+  const fabricType = product.fabric_type || 'Handloom';
+  const title = `${product.name} \u2013 ${fabricType} Saree for Working Women | Neera Sarees`;
+  const description = `Shop ${product.name}, a ${fabricType.toLowerCase()} saree for working women by Neera. Breathable, office-ready, and elegantly crafted. Free shipping across India.`;
   
   return generateMetaTags({
     title: title,
@@ -96,13 +99,13 @@ export function getProductMetaTags(product) {
 /**
  * Generate meta tags for fabric category page
  * @param {string} fabricType - Fabric type name
- * @param {number} productCount - Number of products in category
+ * @param {string} fabricDesc - Fabric-specific description
  */
-export function getFabricCategoryMetaTags(fabricType, productCount) {
+export function getFabricCategoryMetaTags(fabricType, fabricDesc) {
   return generateMetaTags({
-    title: `${fabricType} Sarees Collection | Neera Sarees`,
-    description: `Explore our collection of ${productCount} premium ${fabricType} sarees. Authentic handwoven craftsmanship with modern elegance.`,
-    canonical: `/fabric/${fabricType}`,
+    title: `${fabricType} Sarees for Working Women | Neera Sarees`,
+    description: `${fabricDesc} Shop online at neera.store. Free shipping across India.`,
+    canonical: `/fabric/${fabricType.toLowerCase()}`,
     type: 'website'
   });
 }

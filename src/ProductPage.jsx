@@ -317,7 +317,10 @@ const ProductPage = ({ allProducts, session }) => {
                     </div>
                      {/* --- Details Section --- */}
                     <div className="w-full lg:sticky top-28 self-start">
-                        <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight">{product.name}</h1>
+                        <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight">
+                            {product.name}
+                            <span className="sr-only"> – {product.fabric_type} Saree for Working Women</span>
+                        </h1>
                         
                         {/* --- MODIFICATION: Using product.short_description --- */}
                         <p className="text-md text-charcoal-gray/80 mt-3 mb-6 max-w-prose">
@@ -376,7 +379,7 @@ const ProductPage = ({ allProducts, session }) => {
             
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-24 border-t border-gray-200">
                 <div className="mb-12 text-center md:text-left">
-                    <h2 className="text-3xl lg:text-4xl font-serif text-deep-maroon tracking-wider">You May Also Like</h2>
+                    <h2 className="text-3xl lg:text-4xl font-serif text-deep-maroon tracking-wider">More {product.fabric_type} Sarees for Working Women</h2>
                     <p className="text-sm text-gray-500 mt-2">Discover other pieces from our curated collection.</p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
