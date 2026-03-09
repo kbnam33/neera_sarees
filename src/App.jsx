@@ -24,9 +24,6 @@ import { ASSETS } from './assets.js';
 import { getHomeMetaTags, getAllSareesMetaTags } from './utils/metaTags.js';
 import { getOrganizationSchema, getWebSiteSchema, getCollectionSchema, getItemListSchema } from './utils/schemaMarkup.js';
 
-// Premium hero/header background (subtle terracotta)
-const HERO_BG = '#E9D9CA';
-
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
 const UserIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg> );
@@ -116,9 +113,7 @@ const SearchOverlay = ({ isOpen, onClose }) => {
 };
 
 // --- MOBILE MENU ---
-const MobileMenu = ({ isOpen, onClose, fabrics, prints, session }) => {
-    const [isFabricOpen, setIsFabricOpen] = useState(false);
-    const [isPrintOpen, setIsPrintOpen] = useState(false);
+const MobileMenu = ({ isOpen, onClose, session, onOpenSearch }) => {
     const navigate = useNavigate();
 
     if (!isOpen) return null;
@@ -129,59 +124,70 @@ const MobileMenu = ({ isOpen, onClose, fabrics, prints, session }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-soft-beige z-[100] flex flex-col animate-fadeIn" onClick={onClose}>
-            <div className="flex justify-end p-8">
-                <button className="text-charcoal-gray hover:text-deep-maroon" onClick={onClose}>
-                    <CloseIcon />
+        <div className="fixed inset-0 z-50 bg-white flex flex-col">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-[#EDE8E2]">
+                <span className="font-serif text-deep-maroon text-lg">Neera</span>
+                <button onClick={onClose} className="text-charcoal-gray">
+                    <CloseIcon className="w-5 h-5" />
                 </button>
             </div>
-            <nav className="flex flex-col h-full px-8 pb-8" onClick={(e) => e.stopPropagation()}>
-                <div className="flex-grow space-y-4 text-left overflow-y-auto">
-                    <Link to="/products" className="block text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200" onClick={onClose}>All Sarees</Link>
-                    <div>
-                        <button onClick={() => setIsFabricOpen(!isFabricOpen)} className="w-full flex justify-between items-center text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200">
-                           <span>Shop by Fabric</span>
-                           <ChevronDownIcon className={`w-6 h-6 transition-transform duration-300 ${isFabricOpen ? 'rotate-180' : ''}`} />
-                        </button>
-                        {isFabricOpen && (
-                             <ul className="pl-4 pt-4 space-y-3 animate-fadeInDown" style={{animationDuration: '0.3s'}}>
-                                {fabrics.map(fabric => (
-                                    <li key={fabric.id}>
-                                        <Link to={`/fabric/${fabric.name}`} className="text-charcoal-gray hover:text-deep-maroon transition-colors text-lg" onClick={onClose}>
-                                            {fabric.name}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                     <div>
-                        <button onClick={() => setIsPrintOpen(!isPrintOpen)} className="w-full flex justify-between items-center text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200">
-                           <span>Shop by Print</span>
-                           <ChevronDownIcon className={`w-6 h-6 transition-transform duration-300 ${isPrintOpen ? 'rotate-180' : ''}`} />
-                        </button>
-                        {isPrintOpen && (
-                             <ul className="pl-4 pt-4 space-y-3 animate-fadeInDown" style={{animationDuration: '0.3s'}}>
-                                {prints.map(print => (
-                                    <li key={print.id}>
-                                        <Link to={`/print/${print.name}`} className="text-charcoal-gray hover:text-deep-maroon transition-colors text-lg" onClick={onClose}>
-                                            {print.name}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                    <Link to="/story" className="block text-3xl font-serif text-deep-maroon py-4 border-b border-gray-200" onClick={onClose}>Our Story</Link>
+            <nav className="flex flex-col px-6 pt-8 gap-1 overflow-y-auto">
+                <p className="text-[9px] tracking-[0.35em] text-charcoal-gray/35 uppercase font-sans mb-3">COLLECTION</p>
+                <button
+                    onClick={() => handleNavigate('/fabric/linen')}
+                    className="text-left font-serif text-deep-maroon text-2xl py-3 border-b border-[#F0EAE2] w-full flex items-center justify-between"
+                >
+                    Presentation Days
+                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
+                </button>
+                <button
+                    onClick={() => handleNavigate('/fabric/Mul Mul Cotton')}
+                    className="text-left font-serif text-deep-maroon text-2xl py-3 border-b border-[#F0EAE2] w-full flex items-center justify-between"
+                >
+                    Everyday at Work
+                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
+                </button>
+
+                <div className="mt-6 mb-2">
+                    <p className="text-[9px] tracking-[0.35em] text-charcoal-gray/35 uppercase font-sans">EXPLORE</p>
                 </div>
-                <div className="flex-shrink-0 pt-6 flex justify-center items-center gap-x-8">
-                     <button onClick={() => handleNavigate(session ? '/profile' : '/auth')} className="flex items-center gap-x-2 text-charcoal-gray">
-                        <UserIcon />
-                        <span className="text-sm">{session ? 'Profile' : 'Sign In'}</span>
+                <button
+                    onClick={() => handleNavigate('/products')}
+                    className="text-left font-serif text-deep-maroon text-2xl py-3 border-b border-[#F0EAE2] w-full flex items-center justify-between"
+                >
+                    All Sarees
+                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
+                </button>
+                <button
+                    onClick={() => handleNavigate('/story')}
+                    className="text-left font-serif text-deep-maroon text-2xl py-3 border-b border-[#F0EAE2] w-full flex items-center justify-between"
+                >
+                    Our Story
+                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
+                </button>
+                <button
+                    onClick={() => handleNavigate('/contact-us')}
+                    className="text-left font-serif text-deep-maroon text-2xl py-3 border-b border-[#F0EAE2] w-full flex items-center justify-between"
+                >
+                    Contact
+                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
+                </button>
+
+                <div className="mt-auto px-6 pb-10 pt-6 flex items-center gap-6 border-t border-[#EDE8E2]">
+                    <button
+                        onClick={() => handleNavigate(session ? '/profile' : '/auth')}
+                        className="text-xs tracking-[0.2em] uppercase text-charcoal-gray/60 font-sans hover:text-deep-maroon transition-colors duration-200"
+                    >
+                        {session ? 'My Account' : 'Sign In'}
                     </button>
-                    <button onClick={() => setIsSearchOpen(true)} className="flex items-center gap-x-2 text-charcoal-gray">
-                        <SearchIcon />
-                        <span className="text-sm">Search</span>
+                    <button
+                        onClick={() => {
+                            onClose();
+                            onOpenSearch();
+                        }}
+                        className="text-xs tracking-[0.2em] uppercase text-charcoal-gray/60 font-sans hover:text-deep-maroon transition-colors duration-200"
+                    >
+                        Search
                     </button>
                 </div>
             </nav>
@@ -191,20 +197,13 @@ const MobileMenu = ({ isOpen, onClose, fabrics, prints, session }) => {
 
 
 // --- HEADER ---
-const Header = ({ session, fabrics, prints, products }) => {
+const Header = ({ session }) => {
     const { cartItems } = useCart();
-    const [activeDropdown, setActiveDropdown] = useState(null); // 'fabric' or 'print'
+    const [activeDropdown, setActiveDropdown] = useState(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [hoveredFabric, setHoveredFabric] = useState(null);
-    const [hoveredPrint, setHoveredPrint] = useState(null);
-    const [isNavSticky, setIsNavSticky] = useState(false);
-    const [navBarHeight, setNavBarHeight] = useState(64);
-    const [logoBarHeight, setLogoBarHeight] = useState(0);
     const location = useLocation();
     const dropdownTimeoutRef = useRef(null);
-    const navBarRef = useRef(null);
-    const logoBarRef = useRef(null);
 
     const handleDropdownEnter = (type) => {
         clearTimeout(dropdownTimeoutRef.current);
@@ -222,154 +221,117 @@ const Header = ({ session, fabrics, prints, products }) => {
         setActiveDropdown(null);
     }, [location.pathname]);
 
-    useEffect(() => {
-        // Navbar is not sticky for this design
-        setIsNavSticky(false);
-    }, []);
-
-    // Dynamically set the visible header height so main content starts exactly below it
-    useEffect(() => {
-        // Fix header height to a single unified row (no growth or oscillation)
-        const VISIBLE_HEADER = 96;
-        document.documentElement.style.setProperty('--header-visible-height', `${VISIBLE_HEADER}px`);
-        setLogoBarHeight(VISIBLE_HEADER);
-        setNavBarHeight(0);
-        const onResize = () => {
-            document.documentElement.style.setProperty('--header-visible-height', `${VISIBLE_HEADER}px`);
-        };
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
-    }, []);
-
-    const navLinkClasses = "relative uppercase text-xs tracking-widest after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2 after:w-0 after:h-[1px] after:bg-current after:transition-all after:duration-300 hover:after:w-full hover:after:left-0";
+    const navLinkClasses = "relative text-charcoal-gray hover:text-deep-maroon text-xs tracking-[0.2em] uppercase font-sans transition-colors duration-200 after:content-[''] after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[1px] after:bg-deep-maroon after:transition-all after:duration-300 hover:after:w-full";
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-
-    const latestProduct = useMemo(() => {
-        return products.length > 0 ? [...products].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] : null;
-    }, [products]);
-
-    const displayFabricProducts = useMemo(() => {
-        if (hoveredFabric) {
-            return products.filter(p => p.fabric_type === hoveredFabric).slice(0, 2);
-        }
-        return latestProduct ? [latestProduct] : [];
-    }, [hoveredFabric, products, latestProduct]);
-
-    const displayPrintProducts = useMemo(() => {
-        if (hoveredPrint) {
-            // Assumes a 'print_type' column on your products table
-            return products.filter(p => p.print_type === hoveredPrint).slice(0, 2);
-        }
-        return latestProduct ? [latestProduct] : [];
-    }, [hoveredPrint, products, latestProduct]);
 
     return (
         <>
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} fabrics={fabrics} prints={prints} session={session} />
-            
-            {/* Two-line header (logo row + nav row), not sticky. Background inherits from body. */}
-            <header className="relative z-50">
-                <div className="w-full">
-                    {/* Top logo row */}
-                    <div className="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-center">
-                        <Link to="/" className="flex items-center">
-                            <picture>
-                                <source type="image/webp" srcSet={ASSETS.LOGO_WEBP_URL} />
-                                <img src={ASSETS.LOGO_PNG_URL} alt="Neera" decoding="async" width={256} height={256} className="h-32 w-auto" />
-                            </picture>
+            <MobileMenu
+                isOpen={isMobileMenuOpen}
+                onClose={() => setIsMobileMenuOpen(false)}
+                session={session}
+                onOpenSearch={() => setIsSearchOpen(true)}
+            />
+
+            <header className="w-full bg-white border-b border-[#EDE8E2] z-50">
+                <div className="hidden md:flex max-w-screen-xl mx-auto px-6 h-16 items-center justify-between relative">
+                    <nav className="hidden md:flex items-center gap-8">
+                        <Link to="/" className={navLinkClasses}>Home</Link>
+                        <div
+                            className="relative"
+                            onMouseEnter={() => handleDropdownEnter('shop')}
+                            onMouseLeave={handleDropdownLeave}
+                        >
+                            <button className={`${navLinkClasses} flex items-center gap-1.5 bg-transparent border-none cursor-pointer`}>
+                                Shop
+                                <ChevronDownIcon className="w-3 h-3" />
+                            </button>
+                            <div className={`absolute top-full left-0 mt-3 w-64 bg-white border border-[#EDE8E2] shadow-sm transition-all duration-200 ${activeDropdown === 'shop' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'}`}>
+                                <div className="p-5 flex flex-col gap-1">
+                                    <p className="text-[10px] tracking-[0.3em] text-charcoal-gray/40 uppercase mb-2 font-sans">COLLECTION</p>
+                                    <Link
+                                        to="/fabric/linen"
+                                        onClick={() => setActiveDropdown(null)}
+                                        className="text-deep-maroon font-serif text-base py-1.5 hover:translate-x-1 transition-transform duration-200 block"
+                                    >
+                                        Presentation Days
+                                    </Link>
+                                    <Link
+                                        to="/fabric/Mul Mul Cotton"
+                                        onClick={() => setActiveDropdown(null)}
+                                        className="text-deep-maroon font-serif text-base py-1.5 hover:translate-x-1 transition-transform duration-200 block"
+                                    >
+                                        Everyday at Work
+                                    </Link>
+                                    <div className="border-t border-[#EDE8E2] mt-3 pt-3">
+                                        <Link
+                                            to="/products"
+                                            onClick={() => setActiveDropdown(null)}
+                                            className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-deep-maroon/60 hover:text-deep-maroon transition-colors duration-200 font-sans"
+                                        >
+                                            View All Sarees
+                                            <ArrowRightIcon className="w-3 h-3" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <Link to="/contact-us" className={navLinkClasses}>Contact</Link>
+                    </nav>
+
+                    <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+                        <Link to="/" className="font-serif text-deep-maroon text-xl tracking-wide">Neera</Link>
+                        <span className="text-[8px] tracking-[0.3em] text-deep-maroon/40 uppercase font-sans mt-0.5">SAREES FOR WORKING WOMEN</span>
+                    </div>
+
+                    <div className="flex items-center gap-5">
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="text-charcoal-gray hover:text-deep-maroon transition-colors duration-200"
+                        >
+                            <SearchIcon className="w-4 h-4" />
+                        </button>
+                        <Link
+                            to={session ? '/profile' : '/auth'}
+                            className="text-charcoal-gray hover:text-deep-maroon transition-colors duration-200"
+                        >
+                            <UserIcon className="w-4 h-4" />
+                        </Link>
+                        <Link
+                            to="/cart"
+                            className="relative text-charcoal-gray hover:text-deep-maroon transition-colors duration-200"
+                        >
+                            <ShoppingBagIcon className="w-4 h-4" />
+                            {cartItemCount > 0 && (
+                                <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-deep-maroon text-white text-[8px] flex items-center justify-center rounded-full">
+                                    {cartItemCount}
+                                </span>
+                            )}
                         </Link>
                     </div>
-                    {/* Bottom navigation row */}
-                    <div className={`w-full transition-colors duration-300 ease-out ${activeDropdown ? 'bg-soft-beige' : ''}`}>
-                        <div
-                            className={`max-w-[1400px] mx-auto px-8 h-16 grid items-center ${activeDropdown ? '' : 'border-t border-gray-700/30'}`}
-                            style={{ gridTemplateColumns: '1fr auto 1fr', color: '#3A3530' }}
-                        >
-                            {/* Left: primary nav */}
-                            <nav className="hidden md:flex items-center gap-x-10 font-sans col-[1/2] justify-self-start" style={{ color: '#3A3530' }}>
-                                    <Link to="/products" className={navLinkClasses}>All Sarees</Link>
-                                    <div onMouseEnter={() => handleDropdownEnter('fabric')} onMouseLeave={handleDropdownLeave}>
-                                        <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
-                                           Shop by Fabric <ChevronDownIcon />
-                                        </button>
-                                    </div>
-                                    <div onMouseEnter={() => handleDropdownEnter('print')} onMouseLeave={handleDropdownLeave}>
-                                        <button className={`flex items-center gap-x-1.5 ${navLinkClasses}`}>
-                                           Shop by Print <ChevronDownIcon />
-                                        </button>
-                                    </div>
-                                     <Link to="/story" className={navLinkClasses}>Our Story</Link>
-                                </nav>
-                            {/* Center spacer to preserve logo’s optical centering */}
-                            <div className="col-[2/3]" />
-                            {/* Right: actions */}
-                            <div className="flex items-center gap-x-6 col-[3/4] justify-self-end">
-                                <button onClick={() => setIsSearchOpen(true)}><SearchIcon /></button>
-                                {session ? (<Link to="/profile"><UserIcon /></Link>) : (<Link to="/auth"><UserIcon /></Link>)}
-                                <Link to="/cart" className="relative">
-                                    <ShoppingBagIcon />
-                                    {cartItemCount > 0 && (<span className="absolute -top-1.5 -right-1.5 bg-lotus-gold text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">{cartItemCount}</span>)}
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Hover dropdown panel (always mounted for smooth animation) */}
-                    <div
-                        onMouseEnter={() => activeDropdown && handleDropdownEnter(activeDropdown)}
-                        onMouseLeave={handleDropdownLeave}
-                        className={`absolute left-0 right-0 transform transition-all duration-300 ease-out ${activeDropdown ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'} bg-soft-beige`}
-                    >
-                        <div className="max-w-[1400px] mx-auto px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="md:col-span-1">
-                                <h3 className="font-serif text-lg mb-4">{activeDropdown === 'fabric' ? 'Fabric Types' : activeDropdown === 'print' ? 'Print Types' : ''}</h3>
-                                <ul className="space-y-3">
-                                    {(activeDropdown === 'fabric' ? fabrics : prints).map(item => (
-                                        <li
-                                            key={item.id}
-                                            onMouseEnter={() => activeDropdown === 'fabric' ? setHoveredFabric(item.name) : setHoveredPrint(item.name)}
-                                        >
-                                            <Link to={`/${activeDropdown || 'fabric'}/${item.name}`} className="hover:text-deep-maroon transition-colors text-sm" onClick={() => setActiveDropdown(null)}>
-                                                {item.name}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div className="md:col-span-2 grid grid-cols-2 gap-6">
-                                {((activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts).filter(p => p?.images?.[0]).slice(0,2).length > 0) ? (
-                                    (activeDropdown === 'fabric' ? displayFabricProducts : displayPrintProducts)
-                                        .filter(p => p?.images?.[0])
-                                        .slice(0, 2)
-                                        .map((p, idx) => (
-                                            <Link
-                                                key={p.id || idx}
-                                                to={`/products/${p.fabric_type}/${p.slug}`}
-                                                className="group"
-                                                onClick={() => setActiveDropdown(null)}
-                                            >
-                                                <div className="mb-2 overflow-hidden flex items-center justify-center aspect-[3/4] w-full max-w-[420px] mx-auto">
-                                                    <img
-                                                        src={p.images[0]}
-                                                        alt={p.name || 'preview'}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                    />
-                                                </div>
-                                                <h4 className="text-sm font-serif group-hover:text-deep-maroon transition-colors truncate">
-                                                    {p.name || ''}
-                                                </h4>
-                                                <p className="text-xs text-gray-500">Shop Now</p>
-                                            </Link>
-                                        ))
-                                ) : (
-                                    <div className="col-span-2 flex items-center justify-center h-full text-center text-gray-400 text-sm">
-                                        <p>No products found.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                </div>
+
+                <div className="md:hidden flex items-center justify-between px-5 h-14 border-b border-[#EDE8E2]">
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="text-charcoal-gray">
+                        <MenuIcon className="w-5 h-5" />
+                    </button>
+                    <Link to="/" className="flex flex-col items-center">
+                        <span className="font-serif text-deep-maroon text-lg">Neera</span>
+                        <span className="text-[7px] tracking-[0.25em] text-deep-maroon/40 uppercase font-sans">SAREES FOR WORKING WOMEN</span>
+                    </Link>
+                    <div className="flex items-center gap-4">
+                        <button onClick={() => setIsSearchOpen(true)} className="text-charcoal-gray">
+                            <SearchIcon className="w-4 h-4" />
+                        </button>
+                        <Link to="/cart" className="relative text-charcoal-gray">
+                            <ShoppingBagIcon className="w-4 h-4" />
+                            {cartItemCount > 0 && (
+                                <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-deep-maroon text-white text-[8px] flex items-center justify-center rounded-full">
+                                    {cartItemCount}
+                                </span>
+                            )}
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -380,177 +342,130 @@ const Header = ({ session, fabrics, prints, products }) => {
 // --- BRAND HERO (cinematic background with bottom-anchored content) ---
 const BrandHero = ({ products }) => {
     return (
-        <section
-            className="relative overflow-hidden text-white"
-            style={{ height: '100vh', width: '100%' }}
-            aria-label="Neera hero"
-        >
-            {/* Background image */}
-            <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: "url('/orange-saree-display.png')" }}
+        <section className="relative w-screen h-screen overflow-hidden">
+            {/* Place neera-hero-section.mp4 in public/ for this hero video background */}
+            <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                src="/neera-hero-section.mp4"
+                poster="/neera-home-page.jpeg"
             />
-            {/* Lighter gradient veil for legibility */}
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/10 via-black/20 to-black/40" />
+            <div
+                className="absolute inset-0"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.0) 100%)' }}
+            />
+            <div className="absolute bottom-0 left-0 w-full px-8 md:px-16 pb-14 md:pb-20">
+                <p className="text-white/60 text-xs tracking-[0.35em] uppercase mb-4 font-sans">FOR THE WOMAN WHO WORKS</p>
+                <h1 className="text-white font-serif text-4xl md:text-6xl lg:text-7xl leading-tight mb-5 max-w-2xl">Sarees built for your 9 to 5.</h1>
+                <p className="text-white/75 text-base md:text-lg font-sans font-light mb-9 max-w-md leading-relaxed">Cotton. Linen. All day.</p>
+                <Link
+                    to="/products"
+                    className="inline-flex items-center gap-3 bg-white text-deep-maroon text-xs tracking-[0.2em] uppercase font-sans px-8 py-4 hover:bg-deep-maroon hover:text-white transition-all duration-300"
+                >
+                    Shop Office Wear Sarees
+                    <ArrowRightIcon className="w-4 h-4" />
+                </Link>
+            </div>
+        </section>
+    );
+};
 
-            {/* Premium placement: bottom-left on desktop, bottom center on mobile */}
-            <div className="absolute inset-0 z-10 flex items-end justify-center md:items-end md:justify-start">
-                <div className="w-full md:w-auto px-6 md:px-10 pb-12 md:pb-20 text-center md:text-left md:ml-6 lg:ml-8 xl:ml-10">
-                    <h1 className="font-serif text-5xl md:text-6xl leading-[1.05]">
-                        Cotton &amp; Linen Sarees for Working Women
-                    </h1>
-                    <p className="mt-5 text-white/90 max-w-md mx-auto md:mx-0">
-                        Neera crafts Mulmul cotton, pure linen, and Chettinad sarees designed for the working woman – breathable, minimal, and office-ready. Free shipping across India.
-                    </p>
-                    <div className="mt-10 flex items-center justify-center md:justify-start gap-3">
-                        <Link
-                            to="/products"
-                            className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
-                            aria-label="Shop New Arrivals"
-                        >
-                            Shop New Arrivals
-                            <span className="ml-2 inline-block">
-                                <ArrowRightIcon className="w-5 h-5" />
-                            </span>
-                        </Link>
-                    </div>
+const TrustStrip = () => {
+    return (
+        <section className="w-full bg-[#F5EFE8] border-y border-[#E0D5C8]">
+            <div className="max-w-screen-xl mx-auto px-6 py-7 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E0D5C8]">
+                <div className="flex flex-col items-center md:items-start justify-center px-8 py-5 md:py-0 gap-1">
+                    <p className="text-deep-maroon text-xs tracking-[0.25em] uppercase font-sans font-semibold">Cotton & Linen Only</p>
+                    <p className="text-charcoal-gray/70 text-sm font-sans leading-snug">Breathable. Minimal. Office-appropriate.</p>
+                </div>
+                <div className="flex flex-col items-center md:items-start justify-center px-8 py-5 md:py-0 gap-1">
+                    <p className="text-deep-maroon text-xs tracking-[0.25em] uppercase font-sans font-semibold">Built for 8-Hour Days</p>
+                    <p className="text-charcoal-gray/70 text-sm font-sans leading-snug">Pleats that stay. Fabric that doesn&apos;t cling.</p>
+                </div>
+                <div className="flex flex-col items-center md:items-start justify-center px-8 py-5 md:py-0 gap-1">
+                    <p className="text-deep-maroon text-xs tracking-[0.25em] uppercase font-sans font-semibold">Free Shipping Across India</p>
+                    <p className="text-charcoal-gray/70 text-sm font-sans leading-snug">Every order. No minimum.</p>
                 </div>
             </div>
         </section>
     );
 };
 
-// --- CLASSIC HERO (previous three-column layout with product images) ---
-const ClassicHero = ({ products }) => {
-    const leftProduct = useMemo(() => {
-        const target = 'black with orange mul mul saree';
-        const list = Array.isArray(products) ? products : [];
-        return list.find(p => (p.name || '').toLowerCase() === target && Array.isArray(p.images) && p.images.length > 0)
-            || list.find(p => Array.isArray(p.images) && p.images.length > 0);
-    }, [products]);
-    const rightProduct = useMemo(() => {
-        const target = 'dark blue printed mul mul saree';
-        const list = Array.isArray(products) ? products : [];
-        return list.find(p => (p.name || '').toLowerCase() === target && Array.isArray(p.images) && p.images.length > 0)
-            || list.filter(p => Array.isArray(p.images) && p.images.length > 0)[1];
-    }, [products]);
+const CollectionEntry = ({ products }) => {
+    const productsWithImages = useMemo(
+        () => (Array.isArray(products) ? products.filter((p) => p?.images?.[0]) : []),
+        [products]
+    );
+
+    const presentationProduct = useMemo(() => {
+        return (
+            productsWithImages.find((p) => {
+                const fabric = (p.fabric_type || '').toLowerCase();
+                return fabric === 'linen';
+            }) || productsWithImages[0] || null
+        );
+    }, [productsWithImages]);
+
+    const everydayProduct = useMemo(() => {
+        return (
+            productsWithImages.find((p) => {
+                const fabric = (p.fabric_type || '').toLowerCase();
+                return fabric === 'mul mul cotton' || fabric.includes('mul');
+            }) || productsWithImages[1] || productsWithImages[0] || null
+        );
+    }, [productsWithImages]);
 
     return (
-        <section
-            className="relative overflow-hidden text-charcoal-gray"
-            style={{ 
-                height: '100vh',
-                width: '100%',
-                backgroundColor: HERO_BG
-            }}
-            aria-label="Neera classic hero"
-        >
-            <div className="w-full">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-0 items-stretch">
-                    {/* Left model/image (edge-aligned) */}
-                    <div className="hidden md:block" style={{ height: '100vh' }}>
-                        {leftProduct && (
-                            <div className="relative overflow-hidden w-full h-full">
-                                <img
-                                    src={leftProduct.images[0]}
-                                    alt={leftProduct.name}
-                                    loading="lazy"
-                                    decoding="async"
-                                    width={900}
-                                    height={1200}
-                                    className="w-full h-full object-cover transform scale-[1.10]"
-                                    style={{ objectPosition: 'center' }}
-                                />
-                            </div>
-                        )}
-                    </div>
+        <section className="w-full bg-white">
+            <div className="max-w-screen-xl mx-auto px-6 md:px-16 pt-20 pb-24">
+                <p className="text-deep-maroon/50 text-xs tracking-[0.35em] uppercase font-sans mb-3">SHOP THE COLLECTION</p>
+                <h2 className="font-serif text-deep-maroon text-3xl md:text-4xl mb-14">Start here.</h2>
 
-                    {/* Center text panel */}
-                    <div className="flex items-center justify-start px-6 md:px-10" style={{ height: '100vh' }}>
-                        <div className="text-left max-w-md">
-                            <h1 className="font-serif text-5xl md:text-6xl leading-[1.05] text-deep-maroon mb-4">
-                                New Arrivals
-                            </h1>
-                            <p className="text-charcoal-gray/80 max-w-md mb-8">
-                                New expressions, grounded in continuity.
-                            </p>
-                            <div className="flex flex-wrap gap-3">
-                                <Link
-                                    to="/products"
-                                    className="inline-flex items-center justify-center px-6 py-3 text-sm tracking-widest uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
-                                    aria-label="Shop New Arrivals"
-                                >
-                                    Shop New Arrivals
-                                    <span className="ml-2 inline-block">
-                                        <ArrowRightIcon className="w-5 h-5" />
-                                    </span>
-                                </Link>
-                            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                    <Link to="/fabric/linen" className="group relative block overflow-hidden">
+                        <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EAE2]">
+                            <img
+                                src="/neera-home-page.jpeg"
+                                alt="Presentation Days - Linen Sarees for Office"
+                                className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                            />
                         </div>
-                    </div>
+                        <div className="pt-5">
+                            <p className="text-deep-maroon/50 text-xs tracking-[0.3em] uppercase font-sans mb-1">Pure Linen</p>
+                            <h3 className="font-serif text-deep-maroon text-xl md:text-2xl mb-2">Presentation Days</h3>
+                            <p className="text-charcoal-gray/65 text-sm font-sans leading-relaxed mb-4">Crisp structure that holds the drape. Looks senior-level from the first meeting to the last.</p>
+                            <span className="inline-flex items-center gap-2 text-deep-maroon text-xs tracking-[0.2em] uppercase font-sans group-hover:gap-4 transition-all duration-300">
+                                Shop Now
+                                <ArrowRightIcon className="w-3.5 h-3.5" />
+                            </span>
+                        </div>
+                    </Link>
 
-                    {/* Right model/image (edge-aligned) */}
-                    <div className="hidden md:block" style={{ height: '100vh' }}>
-                        {rightProduct && (
-                            <div className="relative overflow-hidden w-full h-full">
+                    <Link to="/fabric/Mul Mul Cotton" className="group relative block overflow-hidden">
+                        <div className="relative aspect-[3/4] overflow-hidden bg-[#EDE8E2]">
+                            {everydayProduct?.images?.[0] ? (
                                 <img
-                                    src={rightProduct.images[0]}
-                                    alt={rightProduct.name}
-                                    loading="lazy"
-                                    decoding="async"
-                                    width={900}
-                                    height={1200}
-                                    className="w-full h-full object-cover transform scale-[1.10]"
-                                    style={{ objectPosition: 'center' }}
+                                    src={everydayProduct.images[0]}
+                                    alt="Everyday at Work - Mulmul Cotton Sarees"
+                                    className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                                 />
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-};
-// --- WEAVERS STORY SECTION ---
-const WeaversStory = () => {
-    return (
-        <section
-            className="relative overflow-hidden w-full"
-            aria-label="Weavers at work"
-            style={{ minHeight: '100vh' }}
-        >
-            <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: "url('/weavers-hand-bg.png')" }}
-            />
-            {/* Premium gradient veil for legibility (mirrors hero feel) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70" />
-
-            {/* Minimal, impact-centric overlay */}
-            <div className="absolute inset-0 z-10 flex items-end justify-center">
-                <div className="w-full px-4 pb-10 text-center">
-                    <h2 className="font-serif text-white text-5xl md:text-6xl leading-[1.05] tracking-tight">
-                        Tradition, refined for now.
-                    </h2>
-                    <p className="mt-3 text-white/90 text-sm md:text-base max-w-xl mx-auto">
-                        An inherited language, expressed with modern restraint
-                    </p>
-                    <div className="mt-8 flex items-center justify-center gap-3">
-                        <Link
-                            to="/products"
-                            className="inline-flex items-center justify-center px-8 py-3 text-[12px] tracking-[0.28em] uppercase bg-deep-maroon text-white hover:bg-deep-maroon-dark transition-colors"
-                            aria-label="Explore collections"
-                        >
-                            Explore Collections
-                        </Link>
-                        <Link
-                            to="/story"
-                            className="inline-flex items-center justify-center px-8 py-3 text-[12px] tracking-[0.28em] uppercase border border-white/80 text-white hover:bg-white hover:text-black transition-colors"
-                            aria-label="Discover our story"
-                        >
-                            Our Story
-                        </Link>
-                    </div>
+                            ) : (
+                                <div className="w-full h-full bg-[#E5DDD5]" />
+                            )}
+                        </div>
+                        <div className="pt-5">
+                            <p className="text-deep-maroon/50 text-xs tracking-[0.3em] uppercase font-sans mb-1">Mulmul Cotton</p>
+                            <h3 className="font-serif text-deep-maroon text-xl md:text-2xl mb-2">Everyday at Work</h3>
+                            <p className="text-charcoal-gray/65 text-sm font-sans leading-relaxed mb-4">Feather-light. Doesn&apos;t cling. Stays soft after 8 hours in the office.</p>
+                            <span className="inline-flex items-center gap-2 text-deep-maroon text-xs tracking-[0.2em] uppercase font-sans group-hover:gap-4 transition-all duration-300">
+                                Shop Now
+                                <ArrowRightIcon className="w-3.5 h-3.5" />
+                            </span>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </section>
@@ -584,50 +499,6 @@ const HomeProductSection = ({ title, products }) => {
                 </div>
             </div>
         </section>
-    );
-};
-
-
-// --- STORY HIGHLIGHT SECTION ---
-const StoryHighlight = () => {
-    return (
-    <section className="bg-soft-beige py-20 md:py-32 overflow-hidden">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-center">
-                
-                <div className="lg:col-span-10">
-                    <AnimatedUncrop>
-                        <div className="p-2 border border-black">
-                            <img 
-                                src={ASSETS.STORY_HIGHLIGHT_URL} 
-                                alt="A serene, sunlit room with a draped saree."
-                                loading="lazy"
-                                decoding="async"
-                                width={1600}
-                                height={1000}
-                                className="w-full h-auto object-cover"
-                            />
-                        </div>
-                    </AnimatedUncrop>
-                </div>
-                <div className="lg:col-span-8 lg:col-start-3 -mt-16 lg:-mt-24 relative z-10">
-                    <AnimatedUncrop delay={200}>
-                        <div className="p-8 md:p-12 border border-black bg-soft-beige">
-                            <div className="max-w-xl">
-                                <h2 className="text-4xl lg:text-5xl font-serif text-black leading-tight mb-6 font-normal">
-                                    New Arrivals
-                                </h2>
-                                <p className="text-charcoal-gray-dark leading-relaxed mb-10">
-                                    New expressions, grounded in continuity.
-                                </p>
-                                
-                            </div>
-                        </div>
-                    </AnimatedUncrop>
-                </div>
-            </div>
-        </div>
-    </section>
     );
 };
 
@@ -890,11 +761,11 @@ function AppContent() {
                     </>
                 )}
             </Helmet>
-            <Header session={session} fabrics={fabrics} prints={prints} products={products} />
+            <Header session={session} />
             {/* Header is not fixed; no top padding required */}
             <main>
                 <Routes>
-                    <Route path="/" element={<><BrandHero products={products} /><WeaversStory /><ClassicHero products={products} /><HomeProductSection title="New Arrivals" products={homeNewArrivals} /></>} />
+                    <Route path="/" element={<><BrandHero products={products} /><TrustStrip /><CollectionEntry products={products} /><HomeProductSection title="New In" products={homeNewArrivals} /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
                     <Route path="/print/:printName" element={<PrintPage allProducts={products} />} /> {/* New route for prints */}
