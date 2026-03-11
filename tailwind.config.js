@@ -15,13 +15,15 @@ export default {
         'xl': '1280px',
       },
       colors: {
-        'soft-beige': '#F5EFE8',
-        'deep-maroon': '#6B1E2E',
-        'deep-maroon-dark': '#4a1528',
-        'lotus-gold': '#C9A24A',
-        'charcoal-gray': '#3B3B3B',
-        'charcoal-gray-dark': '#2c2c2c',
-        'brand-dark': '#121212',
+        'neera-bg': '#F2EDE6',
+        'neera-bg-deep': '#EBE4DC',
+        'neera-text': '#2C2420',
+        'neera-text-soft': '#7A6E68',
+        'neera-text-muted': '#A89E98',
+        'neera-accent': '#5C1F2E',
+        'neera-accent-soft': '#8B3A4A',
+        'neera-border': '#DDD6CE',
+        'neera-white': '#FAF7F4',
       },
       fontFamily: {
         'sans': ['Lato', 'sans-serif'],
@@ -29,6 +31,9 @@ export default {
       },
       textShadow: {
         'glow': '0px 2px 15px rgba(0,0,0,0.5)',
+      },
+      scale: {
+        '103': '1.03',
       },
       keyframes: {
         fadeInUp: {

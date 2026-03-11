@@ -16,7 +16,7 @@ export function getOrganizationSchema() {
     "name": "Neera Sarees",
     "url": BASE_URL,
     "logo": `${BASE_URL}/Neera%20logo.png`,
-    "description": "Premium handwoven sarees with authentic craftsmanship. Discover Chanderi, Mul Mul, Maheshwari and more traditional Indian sarees.",
+    "description": "Neera crafts Mulmul cotton, pure linen, and Chettinad sarees for working women. Breathable, office-ready, and minimal. Free shipping across India.",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "IN"

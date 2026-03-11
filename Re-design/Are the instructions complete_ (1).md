@@ -1,3 +1,31 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
+
+# Are the instructions complete?
+
+No, the following are missing or incomplete:
+
+***
+
+## What was covered
+
+- Global color system (`tailwind.config.js`)
+- Base CSS (`index.css`)
+- Section 1 – Hero (`BrandHero`)
+- Section 2 – Trust Strip (`TrustStrip`) marquee
+- Section 3 – Collection Entry (`CollectionEntry`) horizontal cards
+- Header full redesign including dropdown z-index fix
+- Tagline replacement (`PURE IN EVERY THREAD`)
+- `FabricPage` 4-column grid
+- `HomeProductSection` redesign
+- `Footer` redesign
+- `SearchOverlay` color update
+- Logo image reference
+- `scale-103` Tailwind fix
+
+***
+
+## What is still missing
+
 ### 1. Mobile header background color
 
 The mobile header `<div>` still references old color classes. Replace `className` background on the mobile header wrapper with `style={{ backgroundColor: '#F2EDE6', borderBottom: '1px solid #DDD6CE' }}`.
@@ -72,3 +100,8 @@ Replace the title with `'All Sarees – Cotton & Linen Office Wear Sarees | Neer
 ### 15. `utils/schemaMarkup.js` — `getOrganizationSchema` description outdated
 
 Replace the `description` field value from `"Premium handwoven sarees with authentic craftsmanship..."` with `"Neera crafts Mulmul cotton, pure linen, and Chettinad sarees for working women. Breathable, office-ready, and minimal. Free shipping across India."`.
+
+***
+
+These 15 items complete the full rebrand. Once all of the above are applied along with the previously given instructions, the entire site — every page, every component — will be consistent with the new `#F2EDE6` base, `#5C1F2E` accent, and `PURE IN EVERY THREAD` brand identity.
+

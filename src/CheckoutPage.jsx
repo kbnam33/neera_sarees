@@ -10,9 +10,9 @@ const BackArrowIcon = ({ className = "w-4 h-4" }) => (
 );
 
 const LoadingOverlay = ({ message }) => (
-    <div className="fixed inset-0 bg-soft-beige bg-opacity-90 z-[200] flex flex-col items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-deep-maroon"></div>
-        <p className="mt-4 text-lg font-serif text-deep-maroon">{message}</p>
+    <div className="fixed inset-0 bg-neera-bg bg-opacity-90 z-[200] flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neera-accent"></div>
+        <p className="mt-4 text-lg font-serif text-neera-accent">{message}</p>
     </div>
 );
 
@@ -324,56 +324,56 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     
     // Render nothing or a loader while redirecting
     if (!session) {
-        return <div className="bg-soft-beige min-h-screen flex items-center justify-center font-serif text-deep-maroon text-lg">Redirecting to login...</div>;
+        return <div className="bg-neera-bg min-h-screen flex items-center justify-center font-serif text-neera-accent text-lg">Redirecting to login...</div>;
     }
     
     return (
         // FIX: Changed pt-16 pb-16 to py-16
-        <div className="bg-soft-beige min-h-screen py-16 font-sans">
+        <div className="bg-neera-bg min-h-screen py-16 font-sans" style={{ backgroundColor: '#F2EDE6' }}>
             {isPlacingOrder && <LoadingOverlay message="Placing Your Order..." />}
             {loading && !isPlacingOrder && <LoadingOverlay message="Processing..." />}
 
             <div className="max-w-6xl mx-auto px-4 sm:px-8">
-                <button onClick={() => navigate('/cart')} className="text-sm text-charcoal-gray hover:text-deep-maroon mb-8 flex items-center gap-x-2 transition-colors">
+                <button onClick={() => navigate('/cart')} className="text-sm text-neera-text hover:text-neera-accent mb-8 flex items-center gap-x-2 transition-colors">
                     <BackArrowIcon />
                     <span>Back to Cart</span>
                 </button>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
                     <div className="lg:order-1">
                         <form onSubmit={handleSubmitOrder} className="space-y-5">
-                             <h2 className="text-2xl font-serif text-deep-maroon mb-6">Shipping Address</h2>
+                             <h2 className="text-2xl font-serif text-neera-accent mb-6">Shipping Address</h2>
                              <div>
-                                <label htmlFor="name" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">FULL NAME</label>
-                                <input type="text" id="name" value={shippingInfo.name} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                <label htmlFor="name" className="block text-xs font-medium text-neera-text tracking-wider mb-1">FULL NAME</label>
+                                <input type="text" id="name" value={shippingInfo.name} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div>
-                                <label htmlFor="phone" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">PHONE</label>
-                                <input type="tel" id="phone" value={shippingInfo.phone} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                <label htmlFor="phone" className="block text-xs font-medium text-neera-text tracking-wider mb-1">PHONE</label>
+                                <input type="tel" id="phone" value={shippingInfo.phone} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div>
-                                <label htmlFor="email" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">EMAIL FOR ORDER CONFIRMATION</label>
-                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                <label htmlFor="email" className="block text-xs font-medium text-neera-text tracking-wider mb-1">EMAIL FOR ORDER CONFIRMATION</label>
+                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div>
-                                <label htmlFor="address" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">ADDRESS</label>
-                                <input type="text" id="address" placeholder="Street address, apartment, etc." value={shippingInfo.address} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                <label htmlFor="address" className="block text-xs font-medium text-neera-text tracking-wider mb-1">ADDRESS</label>
+                                <input type="text" id="address" placeholder="Street address, apartment, etc." value={shippingInfo.address} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
-                                    <label htmlFor="city" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">CITY</label>
-                                    <input type="text" id="city" value={shippingInfo.city} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                    <label htmlFor="city" className="block text-xs font-medium text-neera-text tracking-wider mb-1">CITY</label>
+                                    <input type="text" id="city" value={shippingInfo.city} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                                 </div>
                                 <div>
-                                    <label htmlFor="state" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">STATE</label>
-                                    <input type="text" id="state" value={shippingInfo.state} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                    <label htmlFor="state" className="block text-xs font-medium text-neera-text tracking-wider mb-1">STATE</label>
+                                    <input type="text" id="state" value={shippingInfo.state} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                                 </div>
                             </div>
                              <div>
-                                <label htmlFor="postalCode" className="block text-xs font-medium text-charcoal-gray tracking-wider mb-1">POSTAL CODE</label>
-                                <input type="text" id="postalCode" value={shippingInfo.postalCode} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon transition-shadow" />
+                                <label htmlFor="postalCode" className="block text-xs font-medium text-neera-text tracking-wider mb-1">POSTAL CODE</label>
+                                <input type="text" id="postalCode" value={shippingInfo.postalCode} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div className="pt-4">
-                                 <button type="submit" disabled={loading || cartItems.length === 0} className="w-full bg-deep-maroon text-white py-3.5 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold">
+                                 <button type="submit" disabled={loading || cartItems.length === 0} className="w-full py-3.5 tracking-widest transition-colors duration-300 disabled:bg-gray-400 rounded-sm text-sm font-semibold" style={{ backgroundColor: '#5C1F2E', color: '#FAF7F4' }}>
                                     {loading ? 'INITIALIZING...' : `PROCEED TO PAYMENT`}
                                 </button>
                             </div>
@@ -382,7 +382,7 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                     </div>
 
                     <div className="lg:order-2 bg-white/60 p-8 rounded-lg border border-gray-200 h-fit">
-                        <h2 className="text-2xl font-serif text-deep-maroon border-b border-gray-300 pb-4 mb-6">Your Order</h2>
+                        <h2 className="text-2xl font-serif text-neera-accent border-b border-gray-300 pb-4 mb-6">Your Order</h2>
                         <div className="space-y-4">
                             {cartItems.map(item => {
                                 const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://placehold.co/64x80/F8F5EF/5B1A32?text=Neera';
@@ -391,18 +391,18 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                                     <div className="flex items-center gap-x-4">
                                         <div className="w-16 h-20 bg-gray-100 rounded-md overflow-hidden relative">
                                             <img src={imageUrl} alt={item.name} loading="lazy" decoding="async" width={64} height={80} className="w-full h-full object-cover" />
-                                            <span className="absolute -top-2 -right-2 bg-charcoal-gray text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">{item.quantity}</span>
+                                            <span className="absolute -top-2 -right-2 bg-neera-text text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">{item.quantity}</span>
                                         </div>
-                                        <p className="text-charcoal-gray flex-1">{item.name}</p>
+                                        <p className="text-neera-text flex-1">{item.name}</p>
                                     </div>
-                                    <p className="font-semibold text-charcoal-gray whitespace-nowrap">₹ {(item.price * item.quantity).toFixed(2)}</p>
+                                    <p className="font-semibold text-neera-text whitespace-nowrap">₹ {(item.price * item.quantity).toFixed(2)}</p>
                                 </div>
                             )})}
                         </div>
                         <div className="mt-6 pt-6 border-t border-gray-300 space-y-2">
                             <div className="flex justify-between text-sm">
                                 <p className="text-gray-600">Subtotal</p>
-                                <p className="text-charcoal-gray">₹ {subtotal.toFixed(2)}</p>
+                                <p className="text-neera-text">₹ {subtotal.toFixed(2)}</p>
                             </div>
                             
                             {/* Discount Code Section */}
@@ -414,13 +414,13 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                                             placeholder="Discount code"
                                             value={discountCode}
                                             onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-deep-maroon uppercase"
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-neera-accent uppercase"
                                         />
                                         <button
                                             type="button"
                                             onClick={handleApplyDiscount}
                                             disabled={applyingDiscount || !discountCode.trim()}
-                                            className="px-4 py-2 bg-charcoal-gray text-white text-xs font-semibold tracking-wider hover:bg-charcoal-gray/90 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-sm transition-colors"
+                                            className="px-4 py-2 bg-neera-text text-white text-xs font-semibold tracking-wider hover:bg-neera-text/90 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-sm transition-colors"
                                         >
                                             {applyingDiscount ? 'APPLYING...' : 'APPLY'}
                                         </button>
@@ -456,11 +456,11 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                             
                             <div className="flex justify-between text-sm">
                                 <p className="text-gray-600">Shipping</p>
-                                <p className="text-charcoal-gray font-semibold">Based on location</p>
+                                <p className="text-neera-text font-semibold">Based on location</p>
                             </div>
                             <div className="flex justify-between text-lg font-bold pt-2 mt-2 border-t border-gray-300">
-                                <p className="text-deep-maroon">Total</p>
-                                <p className="text-deep-maroon">₹ {finalTotal.toFixed(2)}</p>
+                                <p className="text-neera-accent">Total</p>
+                                <p className="text-neera-accent">₹ {finalTotal.toFixed(2)}</p>
                             </div>
                         </div>
                     </div>

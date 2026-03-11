@@ -38,28 +38,28 @@ const ProfilePage = ({ session }) => {
     }, [session]);
 
     if (loading) {
-        return <div className="bg-soft-beige min-h-screen pt-40 text-center font-serif">Loading your orders...</div>;
+        return <div className="bg-neera-bg min-h-screen pt-40 text-center font-serif">Loading your orders...</div>;
     }
 
     if (error) {
-        return <div className="bg-soft-beige min-h-screen pt-40 text-center text-red-600 font-serif">Error: {error}</div>;
+        return <div className="bg-neera-bg min-h-screen pt-40 text-center text-red-600 font-serif">Error: {error}</div>;
     }
 
     return (
         // FIX: Changed pt-32 to pt-12 for consistent spacing
-        <div className="bg-soft-beige min-h-screen pt-12 pb-24 font-sans">
+        <div className="bg-neera-bg min-h-screen pt-12 pb-24 font-sans">
             <div className="max-w-screen-lg mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-10 mb-16">
-                    <h1 className="text-5xl font-serif text-deep-maroon">Order History</h1>
-                    <p className="text-charcoal-gray/80 mt-3 max-w-xl mx-auto">Review your past orders and their details. Thank you for being a valued part of the Neera family.</p>
+                    <h1 className="text-5xl font-serif text-neera-accent">Order History</h1>
+                    <p className="text-neera-text/80 mt-3 max-w-xl mx-auto">Review your past orders and their details. Thank you for being a valued part of the Neera family.</p>
                 </div>
 
                 {orders.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="text-lg text-charcoal-gray mb-8">You have not placed any orders yet.</p>
+                        <p className="text-lg text-neera-text mb-8">You have not placed any orders yet.</p>
                         <Link
                             to="/products"
-                            className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-white uppercase bg-deep-maroon px-10 py-4 transition-all duration-300 hover:bg-deep-maroon-dark shadow-lg"
+                            className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-white uppercase bg-neera-accent px-10 py-4 transition-all duration-300 hover:bg-neera-accent shadow-lg"
                         >
                             Explore the Collection <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                         </Link>
@@ -71,18 +71,18 @@ const ProfilePage = ({ session }) => {
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left mb-6 pb-6 border-b border-gray-200">
                                     <div>
                                         <p className="text-xs text-gray-500 tracking-wider uppercase">Order Placed</p>
-                                        <p className="font-semibold text-charcoal-gray mt-1">{new Date(order.created_at).toLocaleDateString()}</p>
+                                        <p className="font-semibold text-neera-text mt-1">{new Date(order.created_at).toLocaleDateString()}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500 tracking-wider uppercase">Total</p>
-                                        <p className="font-semibold text-charcoal-gray mt-1">₹{order.total_price.toFixed(2)}</p>
+                                        <p className="font-semibold text-neera-text mt-1">₹{order.total_price.toFixed(2)}</p>
                                     </div>
                                     <div className="col-span-2 md:col-span-1">
                                         <p className="text-xs text-gray-500 tracking-wider uppercase">Order ID</p>
-                                        <p className="font-mono text-charcoal-gray mt-1 text-sm truncate">{order.id}</p>
+                                        <p className="font-mono text-neera-text mt-1 text-sm truncate">{order.id}</p>
                                     </div>
                                     <div className="col-span-2 md:col-span-1 text-center md:text-right">
-                                         <Link to={`/order/${order.id}`} className="inline-block border border-deep-maroon text-deep-maroon py-2 px-5 text-xs tracking-wider font-semibold hover:bg-deep-maroon hover:text-white transition-colors duration-300">
+                                         <Link to={`/order/${order.id}`} className="inline-block border border-neera-accent text-neera-accent py-2 px-5 text-xs tracking-wider font-semibold hover:bg-neera-accent hover:text-white transition-colors duration-300">
                                             VIEW ORDER
                                         </Link>
                                     </div>
@@ -102,12 +102,12 @@ const ProfilePage = ({ session }) => {
                                         </div>
                                         {order.products.length > 4 && (
                                             <div className="w-16 h-24 flex items-center justify-center bg-gray-200 rounded-md shadow-inner border-2 border-white -ml-8 z-10">
-                                                <span className="text-sm font-bold text-charcoal-gray">+{order.products.length - 4}</span>
+                                                <span className="text-sm font-bold text-neera-text">+{order.products.length - 4}</span>
                                             </div>
                                         )}
                                     </div>
                                     <div className="flex-grow text-center md:text-left mt-4 md:mt-0">
-                                        <p className="font-serif text-lg text-charcoal-gray leading-tight">
+                                        <p className="font-serif text-lg text-neera-text leading-tight">
                                             {order.products.length > 0 ? order.products[0].name : 'Order Item'}
                                             {order.products.length > 1 && `, & ${order.products.length - 1} other item(s)`}
                                         </p>

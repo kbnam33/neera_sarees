@@ -14,13 +14,13 @@ const OrderConfirmationPage = ({ order }) => {
     if (!order) {
         // Fallback for when the page is refreshed or accessed directly
         return (
-            <div className="bg-soft-beige min-h-screen flex items-center justify-center text-center">
+            <div className="bg-neera-bg min-h-screen flex items-center justify-center text-center">
                 <div>
-                    <h1 className="text-2xl font-serif text-deep-maroon mb-4">Looking for an order?</h1>
-                    <p className="text-charcoal-gray mb-8">Your order details couldn't be found. Please check your email for the confirmation.</p>
+                    <h1 className="text-2xl font-serif text-neera-accent mb-4">Looking for an order?</h1>
+                    <p className="text-neera-text mb-8">Your order details couldn't be found. Please check your email for the confirmation.</p>
                     <button 
                         onClick={() => navigate('/')}
-                        className="bg-deep-maroon text-white py-3 px-8 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300"
+                        className="bg-neera-accent text-white py-3 px-8 tracking-widest hover:bg-neera-accent transition-colors duration-300"
                     >
                         CONTINUE SHOPPING
                     </button>
@@ -32,13 +32,13 @@ const OrderConfirmationPage = ({ order }) => {
     const { shipping_address: address, products, total_price } = order;
     
     return (
-        <div className="bg-soft-beige min-h-screen py-16 px-4 sm:px-8 font-sans">
+        <div className="bg-neera-bg min-h-screen py-16 px-4 sm:px-8 font-sans">
             <div className="max-w-2xl mx-auto text-center">
                 <div className="flex justify-center text-green-600 mb-4">
                     <CheckCircleIcon />
                 </div>
-                <h1 className="text-4xl font-serif text-deep-maroon mb-2">Order Placed!</h1>
-                <p className="text-charcoal-gray mb-4">Thank you, {address.name}. Your order has been confirmed.</p>
+                <h1 className="text-4xl font-serif text-neera-accent mb-2">Order Placed!</h1>
+                <p className="text-neera-text mb-4">Thank you, {address.name}. Your order has been confirmed.</p>
                 <p className="text-sm text-gray-500 mb-8">You'll receive a confirmation email with your order details shortly.</p>
             </div>
 
@@ -46,7 +46,7 @@ const OrderConfirmationPage = ({ order }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Order Summary */}
                     <div>
-                        <h2 className="text-lg font-semibold text-charcoal-gray mb-4 border-b pb-2">Order Summary</h2>
+                        <h2 className="text-lg font-semibold text-neera-text mb-4 border-b pb-2">Order Summary</h2>
                         <div className="space-y-4">
                             {products.map(item => {
                                 const imageUrl = item.images && item.images.length > 0 ? item.images[0] : 'https://placehold.co/64x80/F8F5EF/5B1A32?text=Neera';
@@ -54,10 +54,10 @@ const OrderConfirmationPage = ({ order }) => {
                                 <div key={item.id} className="flex items-center gap-x-4">
                                     <img src={imageUrl} alt={item.name} loading="lazy" decoding="async" width={64} height={80} className="w-16 h-20 object-cover rounded-md" />
                                     <div className="flex-grow">
-                                        <p className="font-semibold text-charcoal-gray text-sm">{item.name}</p>
+                                        <p className="font-semibold text-neera-text text-sm">{item.name}</p>
                                         <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-semibold text-charcoal-gray">₹{(item.price * item.quantity).toFixed(2)}</p>
+                                    <p className="text-sm font-semibold text-neera-text">₹{(item.price * item.quantity).toFixed(2)}</p>
                                 </div>
                             )})}
                         </div>
@@ -70,7 +70,7 @@ const OrderConfirmationPage = ({ order }) => {
                                 <span className="text-gray-600">Shipping</span>
                                 <span>Based on location</span>
                             </div>
-                            <div className="flex justify-between font-bold mt-2 text-base text-deep-maroon">
+                            <div className="flex justify-between font-bold mt-2 text-base text-neera-accent">
                                 <span>Total</span>
                                 <span>₹{total_price.toFixed(2)}</span>
                             </div>
@@ -79,14 +79,14 @@ const OrderConfirmationPage = ({ order }) => {
 
                     {/* Shipping Details */}
                     <div>
-                        <h2 className="text-lg font-semibold text-charcoal-gray mb-4 border-b pb-2">Shipping To</h2>
+                        <h2 className="text-lg font-semibold text-neera-text mb-4 border-b pb-2">Shipping To</h2>
                         <div className="text-sm text-gray-700 space-y-1">
                             <p className="font-bold">{address.name}</p>
                             <p>{address.address}</p>
                             <p>{address.city}, {address.state} {address.postalCode}</p>
                         </div>
                         <div className="mt-6 pt-4 border-t">
-                            <h3 className="font-semibold text-charcoal-gray mb-2">Estimated Delivery</h3>
+                            <h3 className="font-semibold text-neera-text mb-2">Estimated Delivery</h3>
                             <p className="text-sm text-gray-700">7-8 Weeks (Made to Order)</p>
                         </div>
                     </div>
@@ -96,7 +96,7 @@ const OrderConfirmationPage = ({ order }) => {
             <div className="text-center mt-12">
                 <button 
                     onClick={() => navigate('/')}
-                    className="bg-deep-maroon text-white py-3 px-10 tracking-widest hover:bg-deep-maroon-dark transition-colors duration-300 text-sm"
+                    className="bg-neera-accent text-white py-3 px-10 tracking-widest hover:bg-neera-accent transition-colors duration-300 text-sm"
                 >
                     CONTINUE SHOPPING
                 </button>

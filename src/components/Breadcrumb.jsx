@@ -11,7 +11,7 @@ const Breadcrumb = ({ items }) => {
   if (!items || items.length === 0) return null;
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-8 font-sans text-xs tracking-widest text-gray-500">
+    <nav aria-label="Breadcrumb" className="mb-8 font-sans text-xs tracking-widest text-neera-text-muted">
       <ol className="flex items-center flex-wrap">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -22,14 +22,14 @@ const Breadcrumb = ({ items }) => {
                 <>
                   <Link 
                     to={item.path} 
-                    className="hover:text-black transition-colors"
+                    className="hover:text-neera-text transition-colors"
                   >
                     {item.name}
                   </Link>
                   <span className="mx-2" aria-hidden="true">/</span>
                 </>
               ) : (
-                <span className="text-charcoal-gray" aria-current="page">
+                <span className="text-neera-text" aria-current="page">
                   {item.name}
                 </span>
               )}

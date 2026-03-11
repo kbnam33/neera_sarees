@@ -98,17 +98,17 @@ const AuthPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-soft-beige font-sans flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen bg-neera-bg font-sans flex flex-col items-center justify-center p-4">
             <div className="absolute top-8 left-8">
-                 <Link to="/" className="text-xs tracking-widest uppercase text-gray-500 hover:text-deep-maroon">
+                 <Link to="/" className="text-xs tracking-widest uppercase text-gray-500 hover:text-neera-accent">
                     &larr; Home
                 </Link>
             </div>
             <div className="w-full max-w-sm text-center">
-                <h1 className="text-4xl font-serif text-deep-maroon mb-4">
+                <h1 className="text-4xl font-serif text-neera-accent mb-4">
                     {isLogin ? 'Welcome Back' : 'Create Account'}
                 </h1>
-                <p className="text-charcoal-gray mb-10">
+                <p className="text-neera-text mb-10">
                     {isLogin ? 'Sign in to continue your journey.' : 'Join the world of Neera.'}
                 </p>
 
@@ -121,7 +121,7 @@ const AuthPage = () => {
                             value={fullName} 
                             onChange={(e) => setFullName(e.target.value)} 
                             required 
-                            className="w-full p-3 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-deep-maroon" 
+                            className="w-full p-3 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-neera-accent" 
                         />
                     )}
                     <div className="flex">
@@ -133,7 +133,7 @@ const AuthPage = () => {
                             value={phone} 
                             onChange={(e) => setPhone(e.target.value)} 
                             required 
-                            className="w-full p-3 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-deep-maroon" 
+                            className="w-full p-3 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-neera-accent" 
                         />
                     </div>
                     <input 
@@ -143,10 +143,10 @@ const AuthPage = () => {
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)} 
                         required 
-                        className="w-full p-3 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-deep-maroon" 
+                        className="w-full p-3 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-neera-accent" 
                     />
                     <div className="pt-4">
-                        <button type="submit" disabled={loading} className="w-full bg-deep-maroon text-white py-3 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark disabled:bg-gray-400">
+                        <button type="submit" disabled={loading} className="w-full bg-neera-accent text-white py-3 tracking-widest uppercase text-sm hover:bg-neera-accent disabled:bg-gray-400">
                             {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
                         </button>
                     </div>
@@ -156,7 +156,7 @@ const AuthPage = () => {
                 {message && <p className="mt-4 text-center text-sm text-green-600">{message}</p>}
 
                 <div className="text-center pt-6">
-                    <button onClick={() => { setIsLogin(!isLogin); resetState(); }} className="text-sm text-gray-600 hover:text-deep-maroon hover:underline">
+                    <button onClick={() => { setIsLogin(!isLogin); resetState(); }} className="text-sm text-gray-600 hover:text-neera-accent hover:underline">
                         {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
                     </button>
                 </div>

@@ -40,7 +40,7 @@ const SearchPage = ({ allProducts }) => {
 
     return (
         // FIX: Changed pt-32 to pt-12 for consistent spacing
-        <div className="bg-soft-beige pt-12 pb-20 min-h-screen">
+        <div className="bg-neera-bg pt-12 pb-20 min-h-screen">
             <Helmet>
                 <title>Search Sarees – Neera | Cotton &amp; Linen Office Wear Sarees</title>
                 <meta name="description" content="Search Neera's collection of Mulmul cotton, linen, and Chettinad sarees for working women. Find your perfect office wear saree at neera.store." />
@@ -48,8 +48,8 @@ const SearchPage = ({ allProducts }) => {
             </Helmet>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-8 mb-12">
-                    <h1 className="text-4xl font-serif text-deep-maroon">Search Results</h1>
-                    {query && <p className="mt-2 text-gray-600">Showing results for: <span className="font-semibold text-charcoal-gray">"{query}"</span></p>}
+                    <h1 className="text-4xl font-serif text-neera-accent">Search Results</h1>
+                    {query && <p className="mt-2 text-gray-600">Showing results for: <span className="font-semibold text-neera-text">"{query}"</span></p>}
                 </div>
                 {filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
@@ -62,16 +62,16 @@ const SearchPage = ({ allProducts }) => {
                                     <div className="overflow-hidden mb-4 bg-gray-100">
                                         <img src={imageUrl} alt={product.name} loading="lazy" decoding="async" width={900} height={1200} className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 transform scale-[1.12] group-hover:scale-[1.16]" />
                                     </div>
-                                    <h3 className="text-md font-serif text-charcoal-gray">{product.name}</h3>
-                                    <p className="text-md text-deep-maroon font-sans">₹ {product.price.toFixed(2)}</p>
+                                    <h3 className="text-md font-serif text-neera-text">{product.name}</h3>
+                                    <p className="text-md text-neera-accent font-sans">₹ {product.price.toFixed(2)}</p>
                                 </Link>
                             );
                         })}
                     </div>
                 ) : (
                     <div className="text-center py-16">
-                        <p className="text-charcoal-gray text-lg">No products found matching your search.</p>
-                        <Link to="/products" className="text-sm text-deep-maroon hover:underline mt-6 inline-block">
+                        <p className="text-neera-text text-lg">No products found matching your search.</p>
+                        <Link to="/products" className="text-sm text-neera-accent hover:underline mt-6 inline-block">
                             &larr; Explore All Sarees
                         </Link>
                     </div>

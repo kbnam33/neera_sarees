@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ASSETS } from './assets.js'; // Import the new assets file
@@ -52,7 +52,7 @@ const AnimatedSection = ({ children, className }) => {
 const StoryPage = () => {
     const storyMeta = getStoryMetaTags();
     return (
-        <div className="bg-soft-beige text-charcoal-gray font-sans overflow-x-hidden">
+        <div className="bg-neera-bg text-neera-text font-sans overflow-x-hidden" style={{ backgroundColor: '#F2EDE6' }}>
             <Helmet>
                 <title>{storyMeta.title}</title>
                 <meta name="description" content={storyMeta.description} />
@@ -72,7 +72,10 @@ const StoryPage = () => {
                 {/* Fill viewport below the currently visible header height */}
                 <section className="flex items-center justify-center" style={{ height: 'calc(100vh - var(--header-visible-height, 192px))' }}>
                     <div className="text-center p-4">
-                        <h1 className="text-6xl md:text-8xl font-serif text-deep-maroon leading-none">
+                        <h1
+                            className="text-4xl sm:text-5xl md:text-8xl font-serif text-neera-accent leading-[1.05] max-w-5xl mx-auto"
+                            style={{ textWrap: 'balance' }}
+                        >
                             The Story Behind Neera – Sarees for Working Women
                         </h1>
                     </div>
@@ -80,10 +83,10 @@ const StoryPage = () => {
             </AnimatedSection>
 
             <AnimatedSection>
-                <section className="py-20 md:py-32 bg-soft-beige">
+                <section className="py-20 md:py-32 bg-neera-bg">
                     <div className="max-w-screen-xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         <div>
-                            <div className="p-2 border border-charcoal-gray-dark shadow-2xl">
+                            <div className="p-2 border border-neera-text shadow-2xl">
                                  <img src={ASSETS.THEME_IMAGE_URL} alt="A rich, textured saree in a traditional setting" loading="lazy" decoding="async" width={1600} height={1000} className="w-full h-full object-cover" />
                             </div>
                         </div>
@@ -91,7 +94,7 @@ const StoryPage = () => {
                             <h2 className="text-3xl lg:text-4xl font-serif text-brand-dark leading-tight mb-6">
                                 The Meaning of Neera
                             </h2>
-                            <p className="text-charcoal-gray/90 leading-relaxed max-w-md">
+                            <p className="text-neera-text/90 leading-relaxed max-w-md">
                                 At Neera, we believe every saree carries the grace of tradition and the freshness of modern style. Inspired by the Sanskrit meaning of Neera—pure water—our brand symbolizes purity, elegance, and timeless beauty. Neera Sarees specialises in cotton sarees for working women: Mulmul cotton sarees, linen sarees for office wear, and Chettinad cotton sarees crafted to move with you through the demands of professional life.
                             </p>
                         </div>
@@ -100,13 +103,13 @@ const StoryPage = () => {
             </AnimatedSection>
             
             <AnimatedSection>
-                 <section className="py-20 md:py-32 bg-soft-beige">
+                 <section className="py-20 md:py-32 bg-neera-bg">
                     <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                         <div className="max-w-xl">
                            <h2 className="text-4xl lg:text-5xl font-serif text-brand-dark leading-tight mb-6">
                                Fluidity and Grace
                            </h2>
-                           <p className="text-charcoal-gray/90 leading-relaxed">
+                           <p className="text-neera-text/90 leading-relaxed">
                                Just as water flows effortlessly, our office-ready sarees are designed to bring fluidity, comfort, and charm to every occasion – from boardrooms to classrooms. Each piece in our collection is handpicked to be breathable, elegant, and truly wearable all day.
                            </p>
                         </div>
@@ -118,11 +121,11 @@ const StoryPage = () => {
             </AnimatedSection>
 
             <AnimatedSection>
-                <section className="py-20 md:py-32 bg-soft-beige">
+                <section className="py-20 md:py-32 bg-neera-bg">
                      <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                          <div className="max-w-xl">
                             <h2 className="text-4xl lg:text-5xl font-serif text-brand-dark leading-tight mb-6">Embrace a Story</h2>
-                            <p className="text-charcoal-gray/90 leading-relaxed">
+                            <p className="text-neera-text/90 leading-relaxed">
                                With Neera, you don’t just wear a saree—you embrace a story of purity, tradition, and modern elegance. It is a quiet dialogue between the weaver's patient hand and the timeless grace of your own style.
                             </p>
                          </div>
@@ -135,8 +138,8 @@ const StoryPage = () => {
             
             <section className="bg-gray-100 py-20 md:py-28 text-center">
                  <div className="max-w-2xl mx-auto px-4">
-                     <h2 className="text-3xl font-serif text-deep-maroon mb-8">Explore the Collection</h2>
-                     <Link to="/products" className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-white uppercase bg-deep-maroon px-10 py-4 transition-all duration-300 hover:bg-deep-maroon-dark shadow-lg">
+                     <h2 className="text-3xl font-serif text-neera-accent mb-8">Explore the Collection</h2>
+                     <Link to="/products" className="group inline-flex items-center gap-x-3 text-sm font-semibold tracking-widest text-white uppercase bg-neera-accent px-10 py-4 transition-all duration-300 hover:bg-neera-accent shadow-lg">
                         View All Sarees <ArrowRightIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
                  </div>

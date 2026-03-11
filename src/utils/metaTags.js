@@ -55,8 +55,8 @@ export function generateMetaTags({
  */
 export function getHomeMetaTags() {
   const meta = generateMetaTags({
-    title: 'Neera Sarees \u2013 Cotton & Linen Sarees for Working Women',
-    description: 'Neera crafts Mulmul cotton, pure linen, and Chettinad sarees built for working women. Breathable, office-ready, and elegantly minimal. Free shipping across India.',
+    title: 'Neera – Cotton & Linen Sarees for Working Women',
+    description: 'Shop Neera\'s Mulmul cotton, pure linen, and Chettinad sarees designed for the working woman. Breathable, office-ready, and elegantly minimal. Free shipping across India.',
     canonical: '/',
     type: 'website'
   });
@@ -71,8 +71,8 @@ export function getHomeMetaTags() {
  */
 export function getAllSareesMetaTags(productCount = 137) {
   return generateMetaTags({
-    title: 'Premium Handwoven Sarees | Neera Sarees Collection',
-    description: `Discover ${productCount}+ authentic handwoven sarees in Chanderi, Mul Mul, Maheshwari & more. Traditional craftsmanship, modern elegance.`,
+    title: 'All Sarees – Cotton & Linen Office Wear Sarees | Neera',
+    description: 'Browse Neera\'s full collection of office wear sarees – Mulmul cotton, pure linen, and Chettinad sarees for working women. Free shipping across India.',
     canonical: '/products',
     type: 'website'
   });

@@ -98,5 +98,3 @@ The marquee ticker for Section 2 replaces the 3-column grid because it adds move
 
 The Collection Entry cards shift from portrait-image-only to a horizontal split (image left, text right) so that both the image and the text are visible within a single viewport height without scrolling — the image takes 42% of the card width and the text sits beside it at reading height, solving the scroll problem directly.
 
-
-#Next: `Redesign_2.md`

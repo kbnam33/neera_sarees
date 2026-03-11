@@ -1,7 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import ProductImage from './components/ProductImage.jsx';
 import Breadcrumb from './components/Breadcrumb.jsx';
 import { getFabricCategoryMetaTags } from './utils/metaTags.js';
 import { getCollectionSchema, getOrganizationSchema, getBreadcrumbSchema } from './utils/schemaMarkup.js';
@@ -39,7 +38,7 @@ const FabricPage = ({ allProducts }) => {
 
     return (
         // FIX: Changed pt-16 to pt-12 for consistent spacing
-        <div className="bg-soft-beige pt-12 pb-20">
+        <div className="bg-neera-bg pt-12 pb-20">
             <Helmet>
                 <title>{fabricMeta.title}</title>
                 <meta name="description" content={fabricMeta.description} />
@@ -72,28 +71,39 @@ const FabricPage = ({ allProducts }) => {
             </Helmet>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <Breadcrumb items={breadcrumbs} />
-                <div className="text-center border-b border-gray-200 pb-8 mb-12">
-                    <h1 className="text-4xl font-serif text-deep-maroon capitalize">{fabricName} Sarees for Working Women – Neera</h1>
-                    <p className="mt-4 text-charcoal-gray/80 max-w-2xl mx-auto">{fabricDesc}</p>
+                <div className="mb-10 pb-8 border-b border-neera-border">
+                    <p className="text-neera-text-muted text-[9px] tracking-[0.4em] uppercase font-sans mb-2">THE COLLECTION</p>
+                    <h1 className="font-serif text-neera-text text-3xl md:text-4xl mb-4 capitalize">{fabricName} Sarees for Working Women</h1>
+                    <p className="text-neera-text-soft text-sm font-sans leading-relaxed max-w-xl">{fabricDesc}</p>
                 </div>
                 {filteredProducts.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-12">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
                         {filteredProducts.map((product) => (
-                             <div key={product.id}>
-                                <ProductImage 
-                                    images={product.images}
-                                    altText={`${product.name} - ${product.fabric_type} ${product.print_type || ''} Saree`}
-                                    productUrl={`/products/${product.fabric_type}/${product.slug}`}
-                                />
-                                <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
-                                <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
+                             <div key={product.id} className="group">
+                                <Link to={`/products/${product.fabric_type}/${product.slug}`} className="block">
+                                    <div className="aspect-[3/4] overflow-hidden mb-3">
+                                        {product.images?.[0] ? (
+                                            <img
+                                                src={product.images[0]}
+                                                alt={`${product.name} - ${product.fabric_type} ${product.print_type || ''} Saree`}
+                                                loading="lazy"
+                                                decoding="async"
+                                                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-103"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full" style={{ backgroundColor: '#DDD6CE' }} />
+                                        )}
+                                    </div>
+                                </Link>
+                                <h3 className="font-serif text-neera-text text-sm mb-1">{product.name}</h3>
+                                <p className="text-neera-text-muted text-xs font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
                             </div>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-16">
-                        <p className="text-charcoal-gray">No products found in this collection yet.</p>
-                        <Link to="/products" className="text-sm text-deep-maroon hover:underline mt-4 inline-block">
+                        <p className="text-neera-text">No products found in this collection yet.</p>
+                        <Link to="/products" className="text-sm text-neera-accent hover:underline mt-4 inline-block">
                             &larr; Back to All Sarees
                         </Link>
                     </div>

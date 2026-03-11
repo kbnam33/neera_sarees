@@ -32,7 +32,7 @@ const PrintPage = ({ allProducts }) => {
 
     return (
         // FIX: Changed pt-16 to pt-12 for consistent spacing
-        <div className="bg-soft-beige pt-12 pb-20">
+        <div className="bg-neera-bg pt-12 pb-20">
             <Helmet>
                 <title>{printMeta.title}</title>
                 <meta name="description" content={printMeta.description} />
@@ -66,7 +66,7 @@ const PrintPage = ({ allProducts }) => {
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                 <Breadcrumb items={breadcrumbs} />
                 <div className="text-center border-b border-gray-200 pb-8 mb-12">
-                    <h1 className="text-4xl font-serif text-deep-maroon capitalize">{printName}</h1>
+                    <h1 className="text-4xl font-serif text-neera-accent capitalize">{printName}</h1>
                 </div>
                 {filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-12">
@@ -77,15 +77,15 @@ const PrintPage = ({ allProducts }) => {
                                     altText={`${product.name} - ${product.fabric_type} ${product.print_type || ''} Saree`}
                                     productUrl={`/products/${product.fabric_type}/${product.slug}`}
                                 />
-                                <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{product.name}</h3>
-                                <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
+                                <h3 className="text-lg font-serif text-neera-text group-hover:text-neera-accent transition-colors">{product.name}</h3>
+                                <p className="text-md text-neera-accent/90 font-sans mt-1">₹ {product.price.toFixed(2)}</p>
                             </div>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-16">
-                        <p className="text-charcoal-gray">No products found in this collection yet.</p>
-                        <Link to="/products" className="text-sm text-deep-maroon hover:underline mt-4 inline-block">
+                        <p className="text-neera-text">No products found in this collection yet.</p>
+                        <Link to="/products" className="text-sm text-neera-accent hover:underline mt-4 inline-block">
                             &larr; Back to All Sarees
                         </Link>
                     </div>

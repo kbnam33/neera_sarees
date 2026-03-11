@@ -145,7 +145,7 @@ const ProductInfoTabs = ({product}) => {
 
     return (
         <div className="mt-16">
-            <div className="border-b border-gray-200">
+            <div className="border-b border-neera-border">
                 <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
                     {Object.keys(tabs).map((key) => (
                         <button
@@ -153,7 +153,7 @@ const ProductInfoTabs = ({product}) => {
                             onClick={() => setActiveTab(key)}
                             className={`${
                                 activeTab === key
-                                    ? 'border-deep-maroon text-deep-maroon'
+                                    ? 'border-neera-accent text-neera-accent'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                             } whitespace-nowrap py-4 px-1 border-b-2 font-serif text-sm md:text-md transition-colors duration-300 focus:outline-none`}
                         >
@@ -175,11 +175,11 @@ const ProductInfoTabs = ({product}) => {
                     dangerouslySetInnerHTML={{
                         __html: tabs[activeTab].text
                             // Section headers (lines ending with colon at the start or lines like "Product Details:")
-                            .replace(/^([A-Z][^:\n]*:)$/gm, '<div class="font-serif text-base font-semibold text-charcoal-gray mt-5 mb-1.5 tracking-wide first:mt-0">$1</div>')
+                            .replace(/^([A-Z][^:\n]*:)$/gm, '<div class="font-serif text-base font-semibold text-neera-text mt-5 mb-1.5 tracking-wide first:mt-0">$1</div>')
                             // Label-value pairs (e.g., "Fabric: 100% Pure Cotton")
-                            .replace(/^([A-Za-z\s&]+):\s*(.+)$/gm, '<div class="mb-1"><span class="font-semibold text-charcoal-gray tracking-wider text-xs uppercase">$1:</span> <span class="text-gray-600 ml-1">$2</span></div>')
+                            .replace(/^([A-Za-z\s&]+):\s*(.+)$/gm, '<div class="mb-1"><span class="font-semibold text-neera-text tracking-wider text-xs uppercase">$1:</span> <span class="text-gray-600 ml-1">$2</span></div>')
                             // Bullet points
-                            .replace(/^[•·]\s*(.+)$/gm, '<div class="flex items-start mb-0.5 ml-1"><span class="text-deep-maroon mr-2 flex-shrink-0">•</span><span class="text-gray-600">$1</span></div>')
+                            .replace(/^[•·]\s*(.+)$/gm, '<div class="flex items-start mb-0.5 ml-1"><span class="text-neera-accent mr-2 flex-shrink-0">•</span><span class="text-gray-600">$1</span></div>')
                             // Regular paragraphs (lines that don't match above patterns)
                             .replace(/^(?!<div)([^<\n].+)$/gm, '<p class="text-gray-600 mb-1.5">$1</p>')
                     }}
@@ -197,6 +197,7 @@ const ProductPage = ({ allProducts, session }) => {
     const [product, setProduct] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
     const [mainImage, setMainImage] = useState('');
+    const [isAddToBagHovered, setIsAddToBagHovered] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -231,7 +232,7 @@ const ProductPage = ({ allProducts, session }) => {
     };
     
     if (!product) {
-        return <div className="h-screen flex justify-center items-center bg-soft-beige"><p>Loading Product...</p></div>;
+        return <div className="h-screen flex justify-center items-center bg-neera-bg"><p>Loading Product...</p></div>;
     }
 
     const relatedProducts = allProducts
@@ -254,7 +255,7 @@ const ProductPage = ({ allProducts, session }) => {
 
     return (
         // FIX: Removed pt-16, added pt-8 for breadcrumb spacing
-        <div className="bg-soft-beige pt-8">
+        <div className="bg-neera-bg pt-8">
             <Helmet>
                 <title>{productMeta.title}</title>
                 <meta name="description" content={productMeta.description} />
@@ -317,37 +318,37 @@ const ProductPage = ({ allProducts, session }) => {
                     </div>
                      {/* --- Details Section --- */}
                     <div className="w-full lg:sticky top-28 self-start">
-                        <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight">
+                        <h1 className="text-4xl lg:text-5xl font-serif text-neera-accent leading-tight">
                             {product.name}
                             <span className="sr-only"> – {product.fabric_type} Saree for Working Women</span>
                         </h1>
                         
                         {/* --- MODIFICATION: Using product.short_description --- */}
-                        <p className="text-md text-charcoal-gray/80 mt-3 mb-6 max-w-prose">
+                        <p className="text-md text-neera-text/80 mt-3 mb-6 max-w-prose">
                             {/* This now reads from the database FIRST, then shows the fallback text */}
                             {product.short_description || 'A timeless piece of artistry, this saree is handwoven with passion and precision, embodying both tradition and modernity.'}
                         </p>
                         {/* --- END MODIFICATION --- */}
 
-                        <p className="text-2xl text-charcoal-gray mb-10 font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
+                        <p className="text-2xl text-neera-text mb-10 font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
                         
-                        <div className="border-y border-gray-200 py-8">
+                        <div className="border-y border-neera-border py-8">
                             <dl className="space-y-6">
                                 <div className="grid grid-cols-3 gap-4 items-center">
-                                    <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1">FABRIC</dt>
-                                    <dd className="text-md text-charcoal-gray/90 capitalize col-span-2">{product.fabric_type}</dd>
+                                    <dt className="text-sm font-semibold text-neera-text tracking-wider uppercase col-span-1">FABRIC</dt>
+                                    <dd className="text-md text-neera-text/90 capitalize col-span-2">{product.fabric_type}</dd>
                                 </div>
                                 {product.colors && product.colors.length > 0 && (
                                     <div className="grid grid-cols-3 gap-4">
-                                        <dt className="text-sm font-semibold text-charcoal-gray tracking-wider uppercase col-span-1 self-start pt-1">COLOR</dt>
+                                        <dt className="text-sm font-semibold text-neera-text tracking-wider uppercase col-span-1 self-start pt-1">COLOR</dt>
                                         <dd className="col-span-2">
-                                            <p className="text-md text-charcoal-gray/90 capitalize mb-3">{selectedColor}</p>
+                                            <p className="text-md text-neera-text/90 capitalize mb-3">{selectedColor}</p>
                                             <div className="flex flex-wrap gap-3">
                                                 {product.colors.map(color => (
                                                     <button
                                                         key={color}
                                                         onClick={() => setSelectedColor(color)}
-                                                        className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border-2 shadow-sm hover:shadow-md focus:outline-none ${selectedColor === color ? 'ring-2 ring-offset-2 ring-deep-maroon border-white' : 'border-gray-300'}`}
+                                                        className={`w-8 h-8 rounded-full transition-all duration-200 ease-in-out border-2 shadow-sm hover:shadow-md focus:outline-none ${selectedColor === color ? 'ring-2 ring-offset-2 ring-neera-accent border-white' : 'border-gray-300'}`}
                                                         style={{ backgroundColor: formatCssColor(color) }}
                                                         title={color}
                                                     >
@@ -366,8 +367,16 @@ const ProductPage = ({ allProducts, session }) => {
                                 <strong>Please note:</strong> The actual product color may vary by 2-5% from the image displayed due to differences in screen resolution and lighting.
                             </p>
                             <div className="space-y-4">
-                                <button onClick={handleAddToCart} className="w-full bg-deep-maroon text-white py-4 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300">Add to Bag</button>
-                                <button onClick={handleBuyNow} className="w-full border border-charcoal-gray text-charcoal-gray py-4 tracking-widest uppercase text-sm hover:bg-charcoal-gray hover:text-white transition-colors duration-300">Buy Now</button>
+                                <button
+                                    onClick={handleAddToCart}
+                                    onMouseEnter={() => setIsAddToBagHovered(true)}
+                                    onMouseLeave={() => setIsAddToBagHovered(false)}
+                                    className="w-full py-4 tracking-widest uppercase text-sm transition-colors duration-300"
+                                    style={{ backgroundColor: isAddToBagHovered ? '#8B3A4A' : '#5C1F2E', color: '#FAF7F4' }}
+                                >
+                                    Add to Bag
+                                </button>
+                                <button onClick={handleBuyNow} className="w-full border border-neera-text text-neera-text py-4 tracking-widest uppercase text-sm hover:bg-neera-text hover:text-white transition-colors duration-300">Buy Now</button>
                             </div>
                         </div>
 
@@ -377,10 +386,10 @@ const ProductPage = ({ allProducts, session }) => {
                 </div>
             </div>
             
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-24 border-t border-gray-200">
+            <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-24 border-t border-neera-border">
                 <div className="mb-12 text-center md:text-left">
-                    <h2 className="text-3xl lg:text-4xl font-serif text-deep-maroon tracking-wider">More {product.fabric_type} Sarees for Working Women</h2>
-                    <p className="text-sm text-gray-500 mt-2">Discover other pieces from our curated collection.</p>
+                    <p className="text-neera-text-muted text-[9px] tracking-[0.4em] uppercase font-sans mb-2">YOU MAY ALSO LIKE</p>
+                    <h3 className="font-serif text-neera-text text-2xl mb-8">From the same collection</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12">
                     {relatedProducts.map(relProduct => (
@@ -390,8 +399,8 @@ const ProductPage = ({ allProducts, session }) => {
                                 altText={relProduct.name}
                                 productUrl={`/products/${relProduct.fabric_type}/${relProduct.slug}`}
                             />
-                            <h3 className="text-lg font-serif text-charcoal-gray group-hover:text-deep-maroon transition-colors">{relProduct.name}</h3>
-                            <p className="text-md text-deep-maroon/90 font-sans mt-1">₹ {relProduct.price.toFixed(2)}</p>
+                            <h3 className="text-lg font-serif text-neera-text group-hover:text-neera-accent transition-colors">{relProduct.name}</h3>
+                            <p className="text-md text-neera-accent/90 font-sans mt-1">₹ {relProduct.price.toFixed(2)}</p>
                         </div>
                     ))}
                 </div>

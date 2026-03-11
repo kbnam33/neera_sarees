@@ -48,14 +48,14 @@ const OrderDetailPage = ({ session }) => {
     }, [orderId, session]);
 
     if (loading) {
-        return <div className="bg-soft-beige min-h-screen flex items-center justify-center font-serif text-deep-maroon text-lg">Loading Order Details...</div>;
+        return <div className="bg-neera-bg min-h-screen flex items-center justify-center font-serif text-neera-accent text-lg">Loading Order Details...</div>;
     }
 
     if (error || !order) {
         return (
-            <div className="bg-soft-beige min-h-screen flex flex-col items-center justify-center text-center p-4">
+            <div className="bg-neera-bg min-h-screen flex flex-col items-center justify-center text-center p-4">
                 <p className="text-red-600 max-w-md">{error}</p>
-                <Link to="/profile" className="inline-block mt-8 bg-deep-maroon text-white py-3 px-8 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300">
+                <Link to="/profile" className="inline-block mt-8 bg-neera-accent text-white py-3 px-8 tracking-widest uppercase text-sm hover:bg-neera-accent transition-colors duration-300">
                     &larr; Back to My Orders
                 </Link>
             </div>
@@ -66,21 +66,21 @@ const OrderDetailPage = ({ session }) => {
     
     return (
         // FIX: Changed py-24 to pt-12 pb-24 for consistent spacing
-        <div className="bg-soft-beige min-h-screen pt-12 pb-24 px-4 sm:px-8 font-sans">
+        <div className="bg-neera-bg min-h-screen pt-12 pb-24 px-4 sm:px-8 font-sans">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="md:flex justify-between items-center mb-16">
                     <div>
-                        <Link to="/profile" className="text-sm text-charcoal-gray hover:text-deep-maroon mb-4 inline-block">
+                        <Link to="/profile" className="text-sm text-neera-text hover:text-neera-accent mb-4 inline-block">
                             &larr; All Orders
                         </Link>
-                        <h1 className="text-4xl lg:text-5xl font-serif text-deep-maroon leading-tight">Order #{order.id}</h1>
-                        <p className="text-charcoal-gray/70 mt-2">Placed on {new Date(created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <h1 className="text-4xl lg:text-5xl font-serif text-neera-accent leading-tight">Order #{order.id}</h1>
+                        <p className="text-neera-text/70 mt-2">Placed on {new Date(created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     </div>
                     <div className="mt-8 md:mt-0">
                         <button 
                             onClick={() => navigate('/products')}
-                            className="bg-deep-maroon text-white py-3 px-8 tracking-widest uppercase text-sm hover:bg-deep-maroon-dark transition-colors duration-300 shadow-lg"
+                            className="bg-neera-accent text-white py-3 px-8 tracking-widest uppercase text-sm hover:bg-neera-accent transition-colors duration-300 shadow-lg"
                         >
                             Continue Shopping
                         </button>
@@ -89,7 +89,7 @@ const OrderDetailPage = ({ session }) => {
 
                 {/* Main Content */}
                 <div className="bg-white/50 p-8 sm:p-12 border border-gray-200 rounded-lg shadow-sm">
-                    <h2 className="text-2xl font-serif text-charcoal-gray mb-8">Items Ordered</h2>
+                    <h2 className="text-2xl font-serif text-neera-text mb-8">Items Ordered</h2>
                     
                     <div className="space-y-8">
                         {products.map(item => {
@@ -103,13 +103,13 @@ const OrderDetailPage = ({ session }) => {
                                     </Link>
                                     <div className="md:col-span-2">
                                          <Link to={`/products/${item.fabric_type}/${item.slug}`} className="group">
-                                            <p className="font-serif text-xl text-charcoal-gray group-hover:text-deep-maroon transition-colors">{item.name}</p>
+                                            <p className="font-serif text-xl text-neera-text group-hover:text-neera-accent transition-colors">{item.name}</p>
                                         </Link>
                                         <p className="text-sm text-gray-500 mt-1">
                                             Quantity: {item.quantity}
                                         </p>
                                     </div>
-                                    <p className="text-lg font-semibold text-charcoal-gray text-left md:text-right">
+                                    <p className="text-lg font-semibold text-neera-text text-left md:text-right">
                                         ₹{(item.price * item.quantity).toFixed(2)}
                                     </p>
                                 </div>
@@ -119,7 +119,7 @@ const OrderDetailPage = ({ session }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-12 pt-8 border-t border-gray-200">
                         <div className="md:col-span-1">
-                             <h3 className="text-xl font-serif text-deep-maroon mb-4">Shipping To</h3>
+                             <h3 className="text-xl font-serif text-neera-accent mb-4">Shipping To</h3>
                              <div className="text-sm text-gray-700 space-y-1">
                                 <p className="font-bold">{address.name}</p>
                                 <p>{address.address}</p>
@@ -128,7 +128,7 @@ const OrderDetailPage = ({ session }) => {
                         </div>
 
                         <div className="md:col-span-1">
-                            <h3 className="text-xl font-serif text-deep-maroon mb-4">Payment Summary</h3>
+                            <h3 className="text-xl font-serif text-neera-accent mb-4">Payment Summary</h3>
                             <div className="text-sm text-gray-700 space-y-2">
                                 {original_price && original_price !== total_price ? (
                                     <>
@@ -144,21 +144,21 @@ const OrderDetailPage = ({ session }) => {
                                     <div className="flex justify-between"><span>Subtotal:</span> <span>₹{total_price.toFixed(2)}</span></div>
                                 )}
                                 <div className="flex justify-between"><span>Shipping:</span> <span>Based on location</span></div>
-                                <div className="flex justify-between font-bold text-base text-deep-maroon pt-2 border-t border-gray-300 mt-2"><span>Total Paid:</span> <span>₹{total_price.toFixed(2)}</span></div>
+                                <div className="flex justify-between font-bold text-base text-neera-accent pt-2 border-t border-gray-300 mt-2"><span>Total Paid:</span> <span>₹{total_price.toFixed(2)}</span></div>
                             </div>
                         </div>
 
                         <div className="md:col-span-1 bg-white/70 p-6 border border-gray-200/80 rounded-lg">
                             <div className="flex items-center gap-x-3">
-                                <MailIcon className="w-8 h-8 text-deep-maroon flex-shrink-0" />
-                                <h3 className="text-xl font-serif text-deep-maroon">Need Assistance?</h3>
+                                <MailIcon className="w-8 h-8 text-neera-accent flex-shrink-0" />
+                                <h3 className="text-xl font-serif text-neera-accent">Need Assistance?</h3>
                             </div>
-                            <p className="text-sm text-charcoal-gray/90 mt-4 mb-5">
+                            <p className="text-sm text-neera-text/90 mt-4 mb-5">
                                 For returns, exchanges, or any questions about your order, our team is here to help.
                             </p>
                             <Link 
                                 to="/contact-us" 
-                                className="inline-block w-full text-center border border-deep-maroon text-deep-maroon py-3 px-6 text-sm tracking-wider font-semibold hover:bg-deep-maroon hover:text-white transition-colors duration-300"
+                                className="inline-block w-full text-center border border-neera-accent text-neera-accent py-3 px-6 text-sm tracking-wider font-semibold hover:bg-neera-accent hover:text-white transition-colors duration-300"
                             >
                                 Contact Support
                             </Link>
