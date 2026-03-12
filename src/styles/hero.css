@@ -1,0 +1,583 @@
+.neera-hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.neera-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.neera-hero__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  animation: hero-breathe 18s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes hero-breathe {
+  from { transform: scale(1.00); }
+  to   { transform: scale(1.04); }
+}
+
+.neera-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.05)  0%,
+    rgba(0, 0, 0, 0.15) 40%,
+    rgba(0, 0, 0, 0.60) 75%,
+    rgba(0, 0, 0, 0.78) 100%
+  );
+}
+
+.neera-hero__seo-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.neera-hero__content {
+  position: relative;
+  z-index: 1;
+  padding: 0 5vw 6vh;
+  max-width: 720px;
+  animation: hero-rise 1s ease-out both;
+}
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.neera-hero__label {
+  display: block;
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 1.2rem;
+  font-family: var(--font-sans, sans-serif);
+}
+
+.neera-hero__headline {
+  font-size: clamp(3rem, 9vw, 7.5rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0 0 1.6rem;
+  font-family: var(--font-serif, Georgia, serif);
+}
+
+.neera-hero__sub {
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  margin: 0 0 2.4rem;
+  max-width: 480px;
+  font-family: var(--font-sans, sans-serif);
+}
+
+.neera-hero__cta {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: clamp(0.8rem, 1.4vw, 0.9rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: var(--font-sans, sans-serif);
+  font-weight: 500;
+}
+
+.neera-hero__cta-line {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: background 0.35s ease;
+}
+
+.neera-hero__cta:hover .neera-hero__cta-line {
+  background: #ffffff;
+}
+
+.neera-hero__scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  right: 5vw;
+  z-index: 1;
+  opacity: 0.4;
+  animation: scroll-bounce 2.4s ease-in-out infinite;
+}
+
+.neera-hero__scroll-hint span {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+  transform: rotate(45deg);
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(8px); opacity: 0.8; }
+}
+
+@media (max-width: 640px) {
+  .neera-hero__content { padding: 0 6vw 10vh; }
+  .neera-hero__headline { font-size: clamp(2.8rem, 13vw, 4rem); }
+  .neera-hero__scroll-hint { right: 6vw; bottom: 24px; }
+}
+
+/* ============================================================
+   TRUST BAR — Saree border motif
+   ============================================================ */
+
+.neera-trust {
+  position: relative;
+  background-color: var(--color-bg, #f5f0eb);
+  padding: 0 5vw;
+}
+
+.neera-trust__border-top,
+.neera-trust__border-bottom {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-border, #c8b89a) 8%,
+    var(--color-border, #c8b89a) 92%,
+    transparent 100%
+  );
+}
+
+.neera-trust__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.neera-trust__item + .neera-trust__item {
+  border-left: 1px solid var(--color-border, #c8b89a);
+}
+
+.neera-trust__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  gap: 0.4rem;
+}
+
+.neera-trust__icon {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-border, #c8b89a);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.6rem;
+  font-weight: 300;
+}
+
+.neera-trust__title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  font-weight: 500;
+  color: var(--color-text-dark, #2a1f1a);
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+.neera-trust__desc {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+  font-weight: 300;
+  color: var(--color-text-muted, #7a6a5e);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .neera-trust__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .neera-trust__item + .neera-trust__item {
+    border-left: none;
+    border-top: 1px solid var(--color-border, #c8b89a);
+  }
+
+  .neera-trust__item {
+    padding: 1.8rem 6vw;
+  }
+}
+
+/* ============================================================
+   THE COLLECTION
+   ============================================================ */
+
+.neera-collection {
+  padding: 0 5vw;
+  background: var(--color-bg, #f5f0eb);
+}
+
+.neera-collection__border-top,
+.neera-collection__border-bottom {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-border, #c8b89a) 8%,
+    var(--color-border, #c8b89a) 92%,
+    transparent 100%
+  );
+}
+
+.neera-collection__header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6rem;
+  padding: 2.4rem 0 2rem;
+}
+
+.neera-collection__label {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+}
+
+.neera-collection__heading {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300;
+  color: var(--color-text-dark, #2a1f1a);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.neera-collection__grid {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  min-height: 0;
+}
+
+.neera-collection__divider {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--color-border, #c8b89a) 8%,
+    var(--color-border, #c8b89a) 92%,
+    transparent 100%
+  );
+  margin: 0 2vw;
+}
+
+.neera-collection__item {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 0 2vw 2.4rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.neera-collection__img-wrap {
+  width: 100%;
+  height: clamp(240px, 48vh, 480px);
+  overflow: hidden;
+}
+
+.neera-collection__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.7s ease;
+}
+
+.neera-collection__item:hover .neera-collection__img {
+  transform: scale(1.03);
+}
+
+.neera-collection__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.neera-collection__fabric-tag {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+}
+
+.neera-collection__title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 400;
+  color: var(--color-text-dark, #2a1f1a);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.neera-collection__desc {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.78rem, 1.2vw, 0.88rem);
+  font-weight: 300;
+  color: var(--color-text-muted, #7a6a5e);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 380px;
+}
+
+.neera-collection__cta {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-dark, #2a1f1a);
+  margin-top: 0.4rem;
+}
+
+.neera-collection__cta-line {
+  display: block;
+  height: 1px;
+  background: var(--color-border, #c8b89a);
+  transition: background 0.3s ease;
+}
+
+.neera-collection__item:hover .neera-collection__cta-line {
+  background: var(--color-text-dark, #2a1f1a);
+}
+
+@media (max-width: 640px) {
+  .neera-collection__grid {
+    grid-template-columns: 1fr;
+  }
+  .neera-collection__divider {
+    height: 1px;
+    width: 100%;
+    margin: 0;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--color-border, #c8b89a) 8%,
+      var(--color-border, #c8b89a) 92%,
+      transparent 100%
+    );
+  }
+  .neera-collection__item {
+    padding: 2rem 0;
+  }
+  .neera-collection__img-wrap {
+    height: clamp(220px, 45vw, 320px);
+  }
+}
+
+/* ============================================================
+   SECTION SPACING SYSTEM — Intentional scroll rhythm
+   ============================================================ */
+
+.neera-trust + .neera-collection {
+  margin-top: 6vh;
+}
+
+.neera-collection + .neera-new-in {
+  margin-top: 2vh;
+}
+
+/* ============================================================
+   COLLECTION — Center of gravity fixes
+   ============================================================ */
+
+.neera-collection__header {
+  padding: 2rem 0 1.6rem;
+}
+
+.neera-collection__grid {
+  grid-template-rows: 1fr;
+  align-items: start;
+}
+
+.neera-collection__item:first-child .neera-collection__img-wrap {
+  height: clamp(260px, 52vh, 500px);
+}
+
+.neera-collection__item:last-child .neera-collection__img-wrap {
+  height: clamp(220px, 44vh, 420px);
+}
+
+.neera-collection__img-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.neera-collection__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.7s ease;
+}
+
+.neera-collection__item:hover .neera-collection__img {
+  transform: scale(1.03);
+}
+
+.neera-collection__item:first-child .neera-collection__cta-line {
+  width: 100%;
+}
+
+.neera-collection__item:last-child .neera-collection__cta-line {
+  width: 100%;
+}
+
+/* ============================================================
+   NEW IN — Typography, hierarchy, color
+   ============================================================ */
+
+.neera-new-in {
+  padding: 0 5vw 5vh;
+  background: var(--color-bg, #f5f0eb);
+}
+
+.neera-new-in__label {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.neera-new-in__heading {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 300;
+  color: var(--color-text-dark, #2a1f1a);
+  margin: 0 0 2rem;
+  letter-spacing: -0.01em;
+}
+
+.neera-new-in__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+}
+
+.neera-new-in__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.neera-new-in__img-wrap {
+  width: 100%;
+  height: clamp(220px, 38vh, 380px);
+  overflow: hidden;
+  background: #e8e0d8;
+}
+
+.neera-new-in__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.6s ease;
+}
+
+.neera-new-in__card:hover .neera-new-in__img {
+  transform: scale(1.03);
+}
+
+.neera-new-in__name {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-weight: 400;
+  color: var(--color-text-dark, #2a1f1a);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+
+.neera-new-in__price {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.75rem, 1vw, 0.85rem);
+  font-weight: 300;
+  color: var(--color-text-muted, #7a6a5e);
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.neera-new-in__view-all {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-dark, #2a1f1a);
+  text-decoration: none;
+}
+
+.neera-new-in__view-all-line {
+  display: block;
+  height: 1px;
+  background: var(--color-border, #c8b89a);
+  transition: background 0.3s ease;
+}
+
+.neera-new-in__view-all:hover .neera-new-in__view-all-line {
+  background: var(--color-text-dark, #2a1f1a);
+}
+
+@media (max-width: 640px) {
+  .neera-new-in__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+  .neera-new-in__img-wrap {
+    height: clamp(180px, 42vw, 280px);
+  }
+}
