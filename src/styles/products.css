@@ -1,0 +1,131 @@
+/* ============================================================
+   GLOBAL PRODUCT CARD STANDARD
+   Applies to: Home New In, All Sarees, Fabric pages (Linen, Mulmul, Chettinad)
+   ============================================================ */
+
+/* Shared product grid container - same width system everywhere */
+.neera-product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Shared page section wrapper - All Sarees, Linen, Mulmul pages */
+.neera-product-page {
+  padding: 4vh 5vw 8vh;
+  background: var(--color-bg, #f5f0eb);
+}
+
+/* ============================================================
+   PRODUCT PAGE HEADER - shared across All Sarees + Fabric pages
+   ============================================================ */
+
+.neera-product-page__header {
+  padding-bottom: 2.4rem;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(
+    to right,
+    #c8b89a 0%,
+    #c8b89a 100%
+  ) 1;
+  margin-bottom: 2.4rem;
+}
+
+.neera-product-page__label {
+  display: block;
+  font-family: var(--font-sans, sans-serif);
+  font-size: var(--text-label, 0.68rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  margin-bottom: 0.5rem;
+}
+
+.neera-product-page__heading {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 300;
+  color: var(--color-text-dark, #2a1f1a);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+}
+
+/* Description: only shown on fabric pages, not All Sarees */
+.neera-product-page__desc {
+  font-family: var(--font-sans, sans-serif);
+  font-size: var(--text-body-sm, 0.88rem);
+  font-weight: 300;
+  color: var(--color-text-muted, #7a6a5e);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Shared card */
+.neera-product-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* IMAGE - single standard height sitewide */
+.neera-product-card__img-wrap {
+  width: 100%;
+  height: clamp(320px, 55vh, 520px);
+  overflow: hidden;
+  background: #e8e0d8;
+}
+
+.neera-product-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  transition: transform 0.6s ease;
+}
+
+.neera-product-card:hover .neera-product-card__img {
+  transform: scale(1.03);
+}
+
+/* META - single standard hierarchy sitewide */
+.neera-product-card__meta {
+  padding-top: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.neera-product-card__name {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(0.92rem, 1.3vw, 1rem);
+  font-weight: 400;
+  color: var(--color-text-dark, #2a1f1a);
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  margin: 0 0 0.5rem;
+}
+
+.neera-product-card__price {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: var(--color-text-muted, #7a6a5e);
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .neera-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+  .neera-product-card__img-wrap {
+    height: clamp(280px, 72vw, 420px);
+  }
+}

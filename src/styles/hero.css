@@ -12,13 +12,14 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
 }
 
 .neera-hero__bg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 40%;
+  object-position: center 30%;
   animation: hero-breathe 18s ease-in-out infinite alternate;
   transform-origin: center;
 }
@@ -31,13 +32,13 @@
 .neera-hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.05)  0%,
-    rgba(0, 0, 0, 0.15) 40%,
-    rgba(0, 0, 0, 0.60) 75%,
-    rgba(0, 0, 0, 0.78) 100%
-  );
+  background:
+    linear-gradient(
+      315deg,
+      rgba(0, 0, 0, 0.82) 0%,
+      rgba(0, 0, 0, 0.45) 30%,
+      rgba(0, 0, 0, 0.0)  55%
+    );
 }
 
 .neera-hero__seo-heading {
@@ -149,92 +150,6 @@
   .neera-hero__content { padding: 0 6vw 10vh; }
   .neera-hero__headline { font-size: clamp(2.8rem, 13vw, 4rem); }
   .neera-hero__scroll-hint { right: 6vw; bottom: 24px; }
-}
-
-/* ============================================================
-   TRUST BAR — Saree border motif
-   ============================================================ */
-
-.neera-trust {
-  position: relative;
-  background-color: var(--color-bg, #f5f0eb);
-  padding: 0 5vw;
-}
-
-.neera-trust__border-top,
-.neera-trust__border-bottom {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    var(--color-border, #c8b89a) 8%,
-    var(--color-border, #c8b89a) 92%,
-    transparent 100%
-  );
-}
-
-.neera-trust__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.neera-trust__item + .neera-trust__item {
-  border-left: 1px solid var(--color-border, #c8b89a);
-}
-
-.neera-trust__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2.4rem 2rem;
-  gap: 0.4rem;
-}
-
-.neera-trust__icon {
-  display: block;
-  font-size: 1rem;
-  color: var(--color-border, #c8b89a);
-  letter-spacing: 0.1em;
-  margin-bottom: 0.6rem;
-  font-weight: 300;
-}
-
-.neera-trust__title {
-  font-family: var(--font-serif, Georgia, serif);
-  font-size: clamp(0.85rem, 1.5vw, 1rem);
-  font-weight: 500;
-  color: var(--color-text-dark, #2a1f1a);
-  letter-spacing: 0.01em;
-  line-height: 1.3;
-}
-
-.neera-trust__desc {
-  font-family: var(--font-sans, sans-serif);
-  font-size: clamp(0.75rem, 1.2vw, 0.85rem);
-  font-weight: 300;
-  color: var(--color-text-muted, #7a6a5e);
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-}
-
-@media (max-width: 640px) {
-  .neera-trust__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .neera-trust__item + .neera-trust__item {
-    border-left: none;
-    border-top: 1px solid var(--color-border, #c8b89a);
-  }
-
-  .neera-trust__item {
-    padding: 1.8rem 6vw;
-  }
 }
 
 /* ============================================================
@@ -412,10 +327,6 @@
    SECTION SPACING SYSTEM — Intentional scroll rhythm
    ============================================================ */
 
-.neera-trust + .neera-collection {
-  margin-top: 6vh;
-}
-
 .neera-collection + .neera-new-in {
   margin-top: 2vh;
 }
@@ -513,7 +424,7 @@
 
 .neera-new-in__img-wrap {
   width: 100%;
-  height: clamp(220px, 38vh, 380px);
+  height: clamp(320px, 55vh, 520px);
   overflow: hidden;
   background: #e8e0d8;
 }
@@ -522,7 +433,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 15%;
   transition: transform 0.6s ease;
 }
 
@@ -530,22 +441,29 @@
   transform: scale(1.03);
 }
 
+.neera-new-in__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 0.9rem;
+}
+
 .neera-new-in__name {
   font-family: var(--font-serif, Georgia, serif);
-  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-size: clamp(0.92rem, 1.3vw, 1rem);
   font-weight: 400;
   color: var(--color-text-dark, #2a1f1a);
-  line-height: 1.3;
-  letter-spacing: -0.005em;
-  margin: 0;
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  margin: 0 0 0.5rem;
 }
 
 .neera-new-in__price {
   font-family: var(--font-sans, sans-serif);
-  font-size: clamp(0.75rem, 1vw, 0.85rem);
+  font-size: 0.78rem;
   font-weight: 300;
   color: var(--color-text-muted, #7a6a5e);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.06em;
   margin: 0;
 }
 
@@ -580,4 +498,709 @@
   .neera-new-in__img-wrap {
     height: clamp(180px, 42vw, 280px);
   }
+}
+
+/* ============================================================
+   GLOBAL TYPOGRAPHY STANDARD
+   Add to :root - applies site-wide
+   ============================================================ */
+
+:root {
+  --text-label: 0.68rem;   /* section labels, tags - JUST ARRIVED */
+  --text-body-sm: 0.88rem; /* descriptions, footer links */
+  --text-body: 1rem;       /* standard body */
+  --text-sub: 1.1rem;      /* subtitles */
+  --text-heading: clamp(1.4rem, 2.5vw, 2rem);
+  --text-display: clamp(2.6rem, 5vw, 4.8rem);
+
+  --letter-label: 0.2em;
+  --letter-body: 0.01em;
+  --letter-cta: 0.16em;
+}
+
+/* ============================================================
+   NEW IN - Spacing fix
+   ============================================================ */
+
+.neera-new-in {
+  padding: 8vh 5vw 6vh; /* 8vh top creates deliberate inhale after fabric panels */
+}
+
+.neera-new-in__label {
+  font-size: var(--text-label);
+  letter-spacing: var(--letter-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.neera-new-in__heading {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: var(--text-heading);
+  font-weight: 300;
+  color: var(--color-text-dark, #2a1f1a);
+  letter-spacing: -0.01em;
+  margin: 0 0 3rem; /* clear space between heading and product grid */
+}
+
+/* ============================================================
+   FOOTER - Readable, hierarchical
+   ============================================================ */
+
+.neera-footer {
+  padding: 6vh 5vw 4vh;
+  background: var(--color-bg, #f5f0eb);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Border top - motif closes the page */
+.neera-footer::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    #c8b89a 8%,
+    #c8b89a 92%,
+    transparent 100%
+  );
+  margin-bottom: 4vh;
+}
+
+/* Logo area */
+.neera-footer__logo {
+  margin-bottom: 1rem;
+}
+
+/* Tagline - should read as brand voice, not fine print */
+.neera-footer__tagline {
+  font-family: var(--font-sans, sans-serif);
+  font-size: var(--text-body-sm); /* was too small - now 0.88rem */
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  margin-bottom: 3rem;
+}
+
+/* Nav links - readable, not microscopic */
+.neera-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 2.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 3.5rem;
+}
+
+.neera-footer__nav a {
+  font-family: var(--font-sans, sans-serif);
+  font-size: var(--text-body-sm); /* 0.88rem - was unreadably small */
+  letter-spacing: 0.1em; /* reduced from excessive tracking */
+  text-transform: uppercase;
+  color: var(--color-text-dark, #2a1f1a);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.neera-footer__nav a:hover {
+  color: var(--color-text-muted, #7a6a5e);
+}
+
+/* Copyright - clearly the smallest element */
+.neera-footer__copy {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  opacity: 0.6; /* visually recedes - it's legalese */
+}
+
+/* ============================================================
+   FOOTER - Font size increase only
+   ============================================================ */
+
+.neera-footer__nav a {
+  font-size: 0.82rem;
+}
+
+.neera-footer__tagline {
+  font-size: 0.82rem;
+}
+
+/* ============================================================
+   ANNOUNCEMENT BANNER - immediately after hero
+   ============================================================ */
+
+.neera-banner {
+  width: 100%;
+  background: #6b4f3a;
+  overflow: hidden;
+  padding: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.neera-banner__track {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: banner-scroll 28s linear infinite;
+  will-change: transform;
+}
+
+.neera-banner__content {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
+  padding-right: 3.5rem;
+  flex-shrink: 0;
+}
+
+.neera-banner__text {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f5f0eb;
+}
+
+.neera-banner__code {
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.neera-banner__dot {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  background: rgba(245, 240, 235, 0.4);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes banner-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.neera-banner:hover .neera-banner__track {
+  animation-play-state: paused;
+}
+
+.neera-nav__logo {
+  height: 96px;
+  width: auto;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 640px) {
+}
+
+/* ============================================================
+   CHAPTERS SECTION
+   ============================================================ */
+
+.neera-chapters {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6vh;
+}
+
+.neera-chapters__card {
+  display: grid;
+  grid-template-columns: 48px 1fr 38%;
+  height: 82vh;
+  min-height: 500px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+}
+
+.neera-chapters__card--flipped {
+  grid-template-columns: 48px 38% 1fr;
+}
+
+.neera-chapters__spine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg, #f5f0eb);
+  border-right: 1px solid #c8b89a;
+}
+
+.neera-chapters__spine-text {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+.neera-chapters__img-wrap {
+  overflow: hidden;
+  height: 100%;
+}
+
+.neera-chapters__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transition: transform 0.9s ease;
+}
+
+.neera-chapters__card:hover .neera-chapters__img {
+  transform: scale(1.04);
+}
+
+.neera-chapters__content {
+  background: #ede8e1;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.neera-chapters__content--warm {
+  background: #e8e2d9;
+}
+
+.neera-chapters__content-inner {
+  padding: 0 3.5vw 5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.neera-chapters__tag {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+}
+
+.neera-chapters__headline {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(2.4rem, 4.5vw, 4.4rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--color-text-dark, #2a1f1a);
+  margin: 0;
+}
+
+.neera-chapters__desc {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.78rem, 1.1vw, 0.88rem);
+  font-weight: 300;
+  color: var(--color-text-muted, #7a6a5e);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 280px;
+}
+
+.neera-chapters__cta {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-dark, #2a1f1a);
+  margin-top: 0.6rem;
+  width: fit-content;
+  text-decoration: none;
+}
+
+.neera-chapters__cta-line {
+  display: block;
+  height: 1px;
+  background: var(--color-border, #c8b89a);
+  transition: background 0.3s ease;
+}
+
+.neera-chapters__card:hover .neera-chapters__cta-line {
+  background: var(--color-text-dark, #2a1f1a);
+}
+
+.neera-chapters__rule {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 2.2vh 0 2.2vh 48px;
+  background: var(--color-bg, #f5f0eb);
+}
+
+.neera-chapters__rule-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, #c8b89a, transparent);
+}
+
+.neera-chapters__rule-line:last-child {
+  background: linear-gradient(to left, #c8b89a, transparent);
+}
+
+.neera-chapters__rule-text {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .neera-chapters__card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 52vw auto;
+    height: auto;
+  }
+
+  .neera-chapters__spine {
+    writing-mode: horizontal-tb;
+    border-right: none;
+    border-bottom: 1px solid #c8b89a;
+    padding: 1rem 6vw;
+    justify-content: flex-start;
+  }
+
+  .neera-chapters__spine-text {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 0.65rem;
+  }
+
+  .neera-chapters__img-wrap {
+    height: 52vw;
+  }
+
+  .neera-chapters__content {
+    align-items: flex-start;
+  }
+
+  .neera-chapters__content-inner {
+    padding: 2.4rem 6vw 3rem;
+  }
+
+  .neera-chapters__rule {
+    padding-left: 6vw;
+  }
+}
+
+/* ============================================================
+   BRAND STATEMENT - replaces trust bar
+   ============================================================ */
+
+.neera-statement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 5vh 5vw;
+  background: var(--color-bg, #f5f0eb);
+  gap: 2rem;
+}
+
+.neera-statement__primary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.neera-statement__main {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--color-text-dark, #2a1f1a);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.neera-statement__sub {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.65rem, 1vw, 0.75rem);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted, #7a6a5e);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.neera-statement__rule {
+  width: clamp(40px, 8vw, 80px);
+  height: 1px;
+  background: var(--color-border, #c8b89a);
+}
+
+.neera-statement__proof {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.7rem, 1.1vw, 0.82rem);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-dark, #2a1f1a);
+  margin: 0;
+  opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+  .neera-statement {
+    padding: 4vh 8vw;
+    gap: 1.4rem;
+  }
+}
+
+/* ============================================================
+   NAVBAR - contrast fix when over hero image
+   ============================================================ */
+
+.neera-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 110px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.neera-nav--hero {
+  position: relative;
+  z-index: 50;
+}
+
+.neera-nav--hero > nav > a {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.neera-nav--hero > nav > a:hover {
+  color: #ffffff;
+}
+
+/* ============================================================
+   HERO LABEL PILL
+   ============================================================ */
+
+.neera-hero__label {
+  display: inline-block;
+  background: rgba(107, 79, 58, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 235, 0.92);
+  font-family: var(--font-sans, sans-serif);
+  font-weight: 400;
+  width: fit-content;
+}
+
+/* ============================================================
+   HERO REGISTERS - new_hero
+   ============================================================ */
+
+.neera-hero__upper {
+  position: absolute;
+  top: 22%;
+  right: 5vw;
+  z-index: 2;
+}
+
+.neera-hero__watermark {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  display: block;
+  writing-mode: horizontal-tb;
+}
+
+.neera-hero__lower {
+  position: absolute;
+  bottom: 7vh;
+  right: 5vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.1rem;
+  max-width: 520px;
+  animation: hero-rise 1s ease-out both;
+}
+
+.neera-hero__headline {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(2.6rem, 4.2vw, 3.8rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0;
+  text-align: right;
+  text-shadow: 0 2px 32px rgba(0, 0, 0, 0.12);
+}
+
+.neera-hero__sub {
+  font-family: var(--font-sans, sans-serif);
+  font-size: clamp(0.78rem, 1vw, 0.88rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  margin: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.neera-hero__cta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.neera-hero__cta-line {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.35s ease;
+}
+
+.neera-hero__cta:hover .neera-hero__cta-line {
+  background: #ffffff;
+}
+
+
+@media (max-width: 640px) {
+  .neera-hero__upper {
+    top: 18%;
+    right: 6vw;
+  }
+
+  .neera-hero__lower {
+    right: 6vw;
+    bottom: 10vh;
+    max-width: 88vw;
+  }
+
+  .neera-hero__headline {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+  }
+
+  .neera-hero__sub {
+    white-space: normal;
+  }
+}
+
+/* ============================================================
+   SHOP DROPDOWN
+   ============================================================ */
+
+.neera-nav__dropdown {
+  background: #f5f0eb;
+  border: none;
+  padding: 1.2rem 0;
+  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 100;
+  isolation: isolate;
+}
+
+.neera-nav__dropdown-item {
+  color: #2a1f1a;
+  background: transparent;
+  display: block;
+  padding: 0.65rem 1.6rem;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--color-text-dark, #2a1f1a);
+  text-decoration: none;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+  border-bottom: none;
+}
+
+.neera-nav__dropdown-item:hover {
+  color: #6b4f3a;
+  padding-left: 2rem;
+}
+
+.neera-nav__dropdown-divider {
+  height: 1px;
+  margin: 0.8rem 1.6rem;
+  background: linear-gradient(to right, #c8b89a, transparent);
+}
+
+.neera-nav__dropdown-all {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.6rem;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #7a6a5e);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.neera-nav__dropdown-all:hover {
+  color: #6b4f3a;
+}
+
+.neera-nav__dropdown-all::after {
+  content: '\2192';
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.neera-nav__dropdown-all:hover::after {
+  transform: translateX(3px);
 }

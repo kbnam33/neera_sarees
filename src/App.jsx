@@ -19,10 +19,10 @@ import PrivacyPolicy from './PrivacyPolicy.jsx';
 import TermsAndConditions from './TermsAndConditions.jsx';
 import ShippingPolicy from './ShippingPolicy.jsx';
 import ContactUs from './ContactUs.jsx';
-import ProductImage from './components/ProductImage.jsx';
 import { getHomeMetaTags, getAllSareesMetaTags } from './utils/metaTags.js';
 import { getOrganizationSchema, getWebSiteSchema, getCollectionSchema, getItemListSchema } from './utils/schemaMarkup.js';
 import './styles/hero.css';
+import './styles/products.css';
 
 // --- ICONS ---
 const SearchIcon = ({ className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> );
@@ -248,7 +248,7 @@ const Header = ({ session }) => {
                     zIndex: 100
                 }}
             >
-                <div className="hidden md:flex max-w-screen-xl mx-auto px-8 h-16 items-center justify-between">
+                <div className={`${isHomepage ? 'neera-nav--hero ' : ''}hidden md:flex max-w-screen-xl mx-auto px-8 h-16 items-center justify-between`}>
                     <nav className="hidden md:flex items-center gap-10">
                         <Link to="/" className="text-neera-text-soft text-[10px] tracking-[0.3em] uppercase font-sans hover:text-neera-text transition-colors duration-300" style={{ color: navTextColor }} onMouseEnter={handleNavMouseEnter} onMouseLeave={handleNavMouseLeave}>Home</Link>
                         <div
@@ -264,31 +264,29 @@ const Header = ({ session }) => {
                                 className={`mt-0 w-60 z-[200] transition-all duration-250 shadow-[0_18px_50px_rgba(20,12,8,0.18)] ${activeDropdown === 'shop' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'}`}
                                 style={{ position: 'absolute', top: '100%', left: 0, backgroundColor: '#F2EDE6', border: '1px solid #DDD6CE', borderTop: '2px solid #5C1F2E' }}
                             >
-                                <div className="py-5 px-6 flex flex-col gap-0.5">
+                                <div className="neera-nav__dropdown">
                                     <Link
                                         to="/fabric/linen"
                                         onClick={() => setActiveDropdown(null)}
-                                        className="font-serif text-neera-text text-base py-2.5 hover:text-neera-accent hover:pl-1 transition-all duration-200 block border-b border-neera-border/50"
+                                        className="neera-nav__dropdown-item"
                                     >
                                         Presentation Days
                                     </Link>
                                     <Link
                                         to="/fabric/Mul Mul Cotton"
                                         onClick={() => setActiveDropdown(null)}
-                                        className="font-serif text-neera-text text-base py-2.5 hover:text-neera-accent hover:pl-1 transition-all duration-200 block border-b border-neera-border/50"
+                                        className="neera-nav__dropdown-item"
                                     >
                                         Everyday at Work
                                     </Link>
-                                    <div className="pt-4">
-                                        <Link
-                                            to="/products"
-                                            onClick={() => setActiveDropdown(null)}
-                                            className="inline-flex items-center gap-2 text-neera-text-muted text-[9px] tracking-[0.3em] uppercase font-sans hover:text-neera-accent transition-colors duration-200"
-                                        >
-                                            All Sarees
-                                            <ArrowRightIcon className="w-3 h-3" />
-                                        </Link>
-                                    </div>
+                                    <div className="neera-nav__dropdown-divider" />
+                                    <Link
+                                        to="/products"
+                                        onClick={() => setActiveDropdown(null)}
+                                        className="neera-nav__dropdown-all"
+                                    >
+                                        All Sarees
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -298,7 +296,7 @@ const Header = ({ session }) => {
                     <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5">
                         <Link to="/">
                             {/* Place the Neera logo PNG (transparent background, deep maroon version) at public/images/neera-logo.png */}
-                            <img src="/images/neera-logo.png" alt="Neera" className="h-12 w-auto" style={{ filter: isHomepage ? 'brightness(0) invert(1) opacity(0.85)' : 'none' }} />
+                            <img src="/images/neera-logo.png" alt="Neera" className="neera-nav__logo" />
                         </Link>
                     </div>
 
@@ -367,37 +365,28 @@ const Header = ({ session }) => {
 // --- BRAND HERO (fabric texture editorial variant) ---
 const BrandHero = () => {
     return (
-        <section aria-label="Neera — Cotton and Linen Sarees for Working Women" className="neera-hero">
+        <section aria-label="Neera  Cotton and Linen Sarees for Working Women" className="neera-hero">
             <h1 className="neera-hero__seo-heading">
-                Cotton and Linen Sarees for Working Women — Neera
+                Cotton and Linen Sarees for Working Women  Neera
             </h1>
             <div className="neera-hero__bg" aria-hidden="true">
                 <img
-                    src="/linen-close-shot.jpeg"
-                    alt="Close-up of handwoven cotton linen fabric — Neera sarees"
+                    src="/New%20images/linen_close_shot3.jpeg"
+                    alt="Close-up of handwoven cotton linen fabric  Neera sarees"
                     className="neera-hero__bg-img"
                     fetchPriority="high"
                     decoding="async"
                 />
                 <div className="neera-hero__overlay" />
             </div>
-            <div className="neera-hero__content">
-                <span className="neera-hero__label">
-                    Cotton &amp; Linen · Made for the Office
-                </span>
+            <div className="neera-hero__lower">
                 <p className="neera-hero__headline">
-                    Wear what<br />
-                    the day<br />
-                    demands.
+                    Wear what<br />the day demands.
                 </p>
                 <p className="neera-hero__sub">
-                    Sarees that breathe with you — from the first meeting to the last.
+                    From the first meeting to the last.
                 </p>
-                <a
-                    href="/products"
-                    className="neera-hero__cta"
-                    aria-label="Shop all Neera sarees — cotton and linen for working women"
-                >
+                <a href="/products" className="neera-hero__cta" aria-label="Shop Neera sarees">
                     Explore the Collection
                     <span className="neera-hero__cta-line" aria-hidden="true" />
                 </a>
@@ -409,82 +398,115 @@ const BrandHero = () => {
     );
 };
 
-const TrustStrip = () => {
+const BrandStatement = () => {
     return (
-        <section className="neera-trust" aria-label="Why Neera">
-            <div className="neera-trust__border-top" aria-hidden="true" />
-            <ul className="neera-trust__grid">
-                <li className="neera-trust__item">
-                    <span className="neera-trust__icon" aria-hidden="true">—</span>
-                    <strong className="neera-trust__title">Free Shipping Across India</strong>
-                    <span className="neera-trust__desc">Every order. No minimum.</span>
-                </li>
-                <li className="neera-trust__item">
-                    <span className="neera-trust__icon" aria-hidden="true">—</span>
-                    <strong className="neera-trust__title">Built for 8-Hour Days</strong>
-                    <span className="neera-trust__desc">Pleats that stay. Fabric that doesn't cling.</span>
-                </li>
-                <li className="neera-trust__item">
-                    <span className="neera-trust__icon" aria-hidden="true">—</span>
-                    <strong className="neera-trust__title">Cotton &amp; Linen Only</strong>
-                    <span className="neera-trust__desc">Breathable. Minimal. Office-appropriate.</span>
-                </li>
-            </ul>
-            <div className="neera-trust__border-bottom" aria-hidden="true" />
+        <section className="neera-statement" aria-label="Brand Promise">
+            <div className="neera-statement__primary">
+                <p className="neera-statement__main">Cotton &amp; Linen Only</p>
+                <p className="neera-statement__sub">Breathable. Minimal. Office-appropriate.</p>
+            </div>
+            <div className="neera-statement__rule" aria-hidden="true" />
+            <p className="neera-statement__proof">Built for 8-Hour Days</p>
         </section>
+    );
+};
+
+const AnnouncementBanner = () => {
+    return (
+        <div className="neera-banner" role="marquee" aria-label="Discount offer">
+            <div className="neera-banner__track">
+                <div className="neera-banner__content">
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                </div>
+
+                <div className="neera-banner__content" aria-hidden="true">
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                    <span className="neera-banner__text">
+                        Use code <span className="neera-banner__code">NEERA10</span> for 10% off your first order
+                    </span>
+                </div>
+            </div>
+        </div>
     );
 };
 
 const CollectionEntry = () => {
     return (
-        <section className="neera-collection" aria-label="Shop by Fabric">
-            <div className="neera-collection__border-top" aria-hidden="true" />
-            <header className="neera-collection__header">
-                <span className="neera-collection__label">The Collection</span>
-                <h2 className="neera-collection__heading">Choose your fabric.</h2>
-            </header>
-            <div className="neera-collection__grid">
-                <a href="/fabric/linen" className="neera-collection__item">
-                    <div className="neera-collection__img-wrap">
-                        <img
-                            src="/neera-home-page.jpeg"
-                            alt="Pure linen sarees for office — Neera"
-                            className="neera-collection__img"
-                            loading="lazy"
-                        />
-                    </div>
-                    <div className="neera-collection__meta">
-                        <span className="neera-collection__fabric-tag">Pure Linen</span>
-                        <p className="neera-collection__title">Presentation Days</p>
-                        <p className="neera-collection__desc">Crisp structure. Holds the drape. Looks senior-level from the first meeting to the last.</p>
-                        <span className="neera-collection__cta">
+        <section className="neera-chapters" aria-label="Shop by Fabric">
+            <a href="/fabric/linen" className="neera-chapters__card">
+                <div className="neera-chapters__spine" aria-hidden="true">
+                    <span className="neera-chapters__spine-text">01 / Linen</span>
+                </div>
+                <div className="neera-chapters__img-wrap">
+                    <img
+                        src="/New%20images/linen_close_shot2.jpeg"
+                        alt="Pure linen saree for office  Neera"
+                        className="neera-chapters__img"
+                        loading="lazy"
+                    />
+                </div>
+                <div className="neera-chapters__content">
+                    <div className="neera-chapters__content-inner">
+                        <span className="neera-chapters__tag">Linen</span>
+                        <p className="neera-chapters__headline">Presentation<br />Days.</p>
+                        <p className="neera-chapters__desc">Crisp structure that holds the drape. Looks senior-level from the first meeting to the last.</p>
+                        <span className="neera-chapters__cta">
                             Shop Linen
-                            <span className="neera-collection__cta-line" aria-hidden="true" />
+                            <span className="neera-chapters__cta-line" aria-hidden="true" />
                         </span>
                     </div>
-                </a>
-                <div className="neera-collection__divider" aria-hidden="true" />
-                <a href="/fabric/Mul Mul Cotton" className="neera-collection__item">
-                    <div className="neera-collection__img-wrap">
-                        <img
-                            src="/orange-cotton.png"
-                            alt="Mulmul cotton sarees for everyday office wear — Neera"
-                            className="neera-collection__img"
-                            loading="lazy"
-                        />
-                    </div>
-                    <div className="neera-collection__meta">
-                        <span className="neera-collection__fabric-tag">Mulmul Cotton</span>
-                        <p className="neera-collection__title">Everyday at Work</p>
-                        <p className="neera-collection__desc">Feather-light. Doesn't cling. Stays soft after 8 hours in the office.</p>
-                        <span className="neera-collection__cta">
-                            Shop Mulmul
-                            <span className="neera-collection__cta-line" aria-hidden="true" />
-                        </span>
-                    </div>
-                </a>
+                </div>
+            </a>
+
+            <div className="neera-chapters__rule" aria-hidden="true">
+                <span className="neera-chapters__rule-line" />
+                <span className="neera-chapters__rule-text">Pure in Every Thread</span>
+                <span className="neera-chapters__rule-line" />
             </div>
-            <div className="neera-collection__border-bottom" aria-hidden="true" />
+
+            <a href="/fabric/mulmul" className="neera-chapters__card neera-chapters__card--flipped">
+                <div className="neera-chapters__spine" aria-hidden="true">
+                    <span className="neera-chapters__spine-text">02 / Mulmul</span>
+                </div>
+                <div className="neera-chapters__content neera-chapters__content--warm">
+                    <div className="neera-chapters__content-inner">
+                        <span className="neera-chapters__tag">Mulmul Cotton</span>
+                        <p className="neera-chapters__headline">Everyday<br />at Work.</p>
+                        <p className="neera-chapters__desc">Feather-light. Doesn't cling. Stays soft after 8 hours in the office.</p>
+                        <span className="neera-chapters__cta">
+                            Shop Mulmul
+                            <span className="neera-chapters__cta-line" aria-hidden="true" />
+                        </span>
+                    </div>
+                </div>
+                <div className="neera-chapters__img-wrap">
+                    <img
+                        src="/New%20images/mul-mul-showcase.jpeg"
+                        alt="Mulmul cotton saree for everyday office Neera"
+                        className="neera-chapters__img"
+                        loading="lazy"
+                    />
+                </div>
+            </a>
         </section>
     );
 };
@@ -502,14 +524,18 @@ const HomeProductSection = ({ title, products }) => {
                         <Link to={`/products/${product.fabric_type}/${product.slug}`} className="neera-new-in__card">
                             <div className="neera-new-in__img-wrap">
                                 <img
-                                    src={product.images?.[0] || '/linen-close-shot.jpeg'}
-                                    alt={`${product.name} — Neera`}
+                                    src={product.images?.[0] || '/New%20images/linen_close_shot2.jpeg'}
+                                    alt={`${product.name}  Neera`}
                                     className="neera-new-in__img"
                                     loading="lazy"
                                 />
                             </div>
-                            <p className="neera-new-in__name">{product.name}</p>
-                            <p className="neera-new-in__price">₹ {product.price.toFixed(2)}</p>
+                            <div className="neera-new-in__meta">
+                                <p className="neera-new-in__name">{product.name}</p>
+                                <p className="neera-new-in__price">
+                                    ₹{Number(product.price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                                </p>
+                            </div>
                         </Link>
                     </li>
                 ))}
@@ -564,26 +590,37 @@ const CustomSortDropdown = ({ sortOption, setSortOption }) => {
 // --- ALL PRODUCTS GRID ---
 const AllProductsGrid = ({ products, sortOption, setSortOption }) => {
     return (
-        <div className="bg-neera-bg pt-12 pb-20">
-            <div className="max-w-[1600px] mx-auto px-4 sm:px-10">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-200 pb-4 gap-4">
-                    <h1 className="text-3xl font-serif text-neera-accent">All Sarees</h1>
-                    <CustomSortDropdown sortOption={sortOption} setSortOption={setSortOption} />
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
-                    {products.map((product) => (
-                        <div key={product.id}>
-                            <ProductImage 
-                                images={product.images}
-                                altText={`${product.name} - ${product.fabric_type} ${product.print_type || ''} Saree`}
-                                productUrl={`/products/${product.fabric_type}/${product.slug}`}
-                            />
-                            <h3 className="font-serif text-neera-text text-sm mb-1">{product.name}</h3>
-                            <p className="text-neera-text-muted text-xs font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
-                        </div>
-                    ))}
-                </div>
+        <div className="neera-product-page">
+            <div className="neera-product-page__header">
+                <span className="neera-product-page__label">The Collection</span>
+                <h1 className="neera-product-page__heading">All Sarees.</h1>
             </div>
+            <div className="flex justify-end mb-10">
+                <CustomSortDropdown sortOption={sortOption} setSortOption={setSortOption} />
+            </div>
+            <ul className="neera-product-grid">
+                {products.map((product) => (
+                    <li key={product.id}>
+                        <Link to={`/products/${product.fabric_type}/${product.slug}`} className="neera-product-card">
+                            <div className="neera-product-card__img-wrap">
+                                <img
+                                    src={product.images?.[0] || '/New%20images/linen_close_shot2.jpeg'}
+                                    alt={`${product.name}  Neera`}
+                                    className="neera-product-card__img"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                            <div className="neera-product-card__meta">
+                                <p className="neera-product-card__name">{product.name}</p>
+                                <p className="neera-product-card__price">
+                                    ₹{Number(product.price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                                </p>
+                            </div>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
@@ -601,7 +638,6 @@ const Footer = () => {
             <div className="flex flex-col items-center gap-2">
                 {/* Place the Neera logo PNG (transparent background, deep maroon version) at public/images/neera-logo.png */}
                 <img src="/images/neera-logo.png" alt="Neera" className="h-24 w-auto" />
-                <span className="text-[7px] tracking-[0.32em] uppercase font-sans" style={{ color: '#A89E98' }}>PURE IN EVERY THREAD</span>
             </div>
             <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
                 <Link to="/products" className="text-neera-text-muted text-[9px] tracking-[0.3em] uppercase font-sans hover:text-neera-text transition-colors duration-300">All Sarees</Link>
@@ -780,7 +816,7 @@ function AppContent() {
             {/* Header is not fixed; no top padding required */}
             <main>
                 <Routes>
-                    <Route path="/" element={<><BrandHero /><TrustStrip /><CollectionEntry /><HomeProductSection title="New In" products={homeNewArrivals} /></>} />
+                    <Route path="/" element={<><BrandHero /><AnnouncementBanner /><BrandStatement /><CollectionEntry /><HomeProductSection title="New In" products={homeNewArrivals} /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
                     <Route path="/print/:printName" element={<PrintPage allProducts={products} />} /> {/* New route for prints */}
