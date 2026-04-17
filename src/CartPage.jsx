@@ -9,11 +9,7 @@ const CartPage = ({ session }) => {
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
     const handleCheckout = () => {
-        if (session) {
-            navigate('/checkout');
-        } else {
-            navigate('/auth', { state: { from: { pathname: '/checkout' } } });
-        }
+        navigate('/checkout');
     };
 
     return (

@@ -102,7 +102,7 @@ const StoryPage = () => {
                 </section>
             </AnimatedSection>
             
-            <AnimatedSection>
+            {/* <AnimatedSection>
                  <section className="py-20 md:py-32 bg-neera-bg">
                     <div className="max-w-screen-xl mx-auto px-4 sm:px-8">
                         <div className="max-w-xl">
@@ -134,7 +134,7 @@ const StoryPage = () => {
                         <img src={ASSETS.ORANGE_MANGALAGIRI_URL} alt="A woman wearing a Neera saree with confidence" loading="lazy" decoding="async" width={1600} height={900} className="w-full h-auto object-cover" />
                     </div>
                 </section>
-            </AnimatedSection>
+            </AnimatedSection> */}
             
             <section className="bg-gray-100 py-20 md:py-28 text-center">
                  <div className="max-w-2xl mx-auto px-4">

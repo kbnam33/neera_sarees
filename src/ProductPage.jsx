@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from './CartContext';
 import ProductImage from './components/ProductImage.jsx';
-import Breadcrumb from './components/Breadcrumb.jsx';
 import { getProductMetaTags } from './utils/metaTags.js';
 import { getProductSchema, getOrganizationSchema, getBreadcrumbSchema } from './utils/schemaMarkup.js';
 
@@ -81,7 +80,7 @@ const ProductImageCarousel = ({ images, productName }) => {
     }, []);
 
     return (
-        <div ref={containerRef} className="relative overflow-hidden w-full bg-gray-100">
+        <div className="neera-product-detail__img-wrap relative">
             <div
                 ref={sliderRef}
                 className="flex transition-transform duration-300 ease-in-out"
@@ -97,9 +96,7 @@ const ProductImageCarousel = ({ images, productName }) => {
                                 alt={`${productName} view ${index + 1}`} 
                                 loading={index === 0 ? 'eager' : 'lazy'}
                                 decoding="async"
-                                width={900}
-                                height={1200}
-                                className="w-full h-full object-cover aspect-[3/4] transform scale-[1.12]" 
+                                className="neera-product-detail__img" 
                             />
                         )}
                     </div>
@@ -223,11 +220,7 @@ const ProductPage = ({ allProducts, session }) => {
     const handleBuyNow = () => {
         if (product) {
             addToCart(product);
-            if (session) {
-                navigate('/checkout');
-            } else {
-                navigate('/auth', { state: { from: { pathname: '/checkout' } } });
-            }
+            navigate('/checkout');
         }
     };
     
@@ -289,7 +282,6 @@ const ProductPage = ({ allProducts, session }) => {
                 </script>
             </Helmet>
             <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pb-16">
-                 <Breadcrumb items={breadcrumbs} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-8 lg:gap-y-0">
                     {/* --- Image Section --- */}
                     <div className="w-full">
@@ -298,19 +290,19 @@ const ProductPage = ({ allProducts, session }) => {
                             {product.images && product.images.length > 0 ? (
                                 <ProductImageCarousel images={product.images} productName={product.name} />
                             ) : (
-                                <div className="bg-gray-100"><img src={'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera'} alt={product.name} loading="lazy" decoding="async" width={900} height={1200} className="w-full h-full object-cover aspect-[3/4]" /></div>
+                                <div className="neera-product-detail__img-wrap"><img src={'https://placehold.co/900x1200/F8F5EF/5B1A32?text=Neera'} alt={product.name} loading="lazy" decoding="async" width={900} height={1200} className="neera-product-detail__img" /></div>
                             )}
                         </div>
 
                         {/* Desktop Thumbnails */}
                         <div className="hidden lg:block">
-                            <div className="bg-gray-100 mb-4 overflow-hidden">
-                                <img src={mainImage} alt={product.name} decoding="async" width={900} height={1200} className="w-full h-full object-cover aspect-[3/4] transform scale-[1.12]" />
+                            <div className="neera-product-detail__img-wrap mb-4">
+                                <img src={mainImage} alt={product.name} decoding="async" className="neera-product-detail__img" />
                             </div>
                             <div className="flex gap-4">
                                 {product.images && product.images.map((img, index) => (
-                                    <div key={index} className="w-24 h-32 bg-gray-100 cursor-pointer" onMouseEnter={() => setMainImage(img)}>
-                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} loading="lazy" decoding="async" width={96} height={128} className={`w-full h-full object-cover transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
+                                    <div key={index} className="w-20 aspect-[9/16] bg-gray-100 cursor-pointer" onMouseEnter={() => setMainImage(img)}>
+                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} loading="lazy" decoding="async" className={`w-full h-full object-contain transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
                                     </div>
                                 ))}
                             </div>
@@ -330,7 +322,9 @@ const ProductPage = ({ allProducts, session }) => {
                         </p>
                         {/* --- END MODIFICATION --- */}
 
-                        <p className="text-2xl text-neera-text mb-10 font-sans tracking-wide">₹ {product.price.toFixed(2)}</p>
+                        <p className="neera-product-detail__price">
+                            ₹{Number(product.price).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                        </p>
                         
                         <div className="border-y border-neera-border py-8">
                             <dl className="space-y-6">

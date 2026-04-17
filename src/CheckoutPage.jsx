@@ -40,25 +40,20 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     const [applyingDiscount, setApplyingDiscount] = useState(false);
     
     useEffect(() => {
-        // If there's no active session, redirect to the login page.
-        // Pass the current location so we can come back here after login.
-        if (!session) {
-            navigate('/auth', { state: { from: { pathname: '/checkout' } } });
-            return;
+        // If session exists, pre-fill form with user data if available
+        if (session) {
+            const meta = session.user.user_metadata;
+            const userPhone = session.user.phone ? session.user.phone.replace('+91', '') : '';
+            
+            setShippingInfo(prev => ({
+                ...prev,
+                name: meta.full_name || '',
+                email: session.user.email || '',
+                phone: userPhone,
+                ...meta.shipping_address
+            }));
         }
-
-        // Pre-fill form with user data if available
-        const meta = session.user.user_metadata;
-        const userPhone = session.user.phone ? session.user.phone.replace('+91', '') : '';
-        
-        setShippingInfo(prev => ({
-            ...prev,
-            name: meta.full_name || '',
-            email: session.user.email || '',
-            phone: userPhone,
-            ...meta.shipping_address // Load saved shipping address if it exists
-        }));
-    }, [session, navigate]);
+    }, [session]);
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     
@@ -167,24 +162,53 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
 
     const handleSubmitOrder = async (e) => {
         e.preventDefault();
-        if (!session) {
-            setError("You must be logged in to place an order.");
+        
+        // Validate phone - required for all orders (becomes login for next time)
+        if (!shippingInfo.phone || shippingInfo.phone.trim() === '') {
+            setError("Phone number is required for order confirmation.");
             return;
         }
+        
         setLoading(true);
         setError(null);
 
         try {
-            // Save the latest shipping info to the user's metadata for future checkouts
-            await supabase.auth.updateUser({ data: { shipping_address: shippingInfo } });
+            let userId = session?.user?.id;
+
+            // If not logged in, create/update user account using phone
+            if (!userId) {
+                const formattedPhone = `+91${shippingInfo.phone}`;
+                
+                // Check if user exists with this phone
+                const { data: existingUsers } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('phone', formattedPhone)
+                    .limit(1);
+
+                if (existingUsers && existingUsers.length > 0) {
+                    // User exists - we need them to login, but for now we can proceed as guest
+                    // Just don't link this order to a user
+                    userId = null;
+                }
+            }
+
+            // Save shipping info to user metadata if logged in
+            if (userId) {
+                await supabase.auth.updateUser({ data: { shipping_address: shippingInfo } });
+            }
 
             const orderPayload = {
-                user_id: session.user.id,
                 total_price: finalTotal,
                 shipping_address: shippingInfo,
                 products: cartItems,
                 payment_status: 'pending',
             };
+            
+            // Only add user_id if user is logged in
+            if (userId) {
+                orderPayload.user_id = userId;
+            }
             
             // Add discount fields only if discount is applied
             if (appliedDiscount) {
@@ -322,11 +346,6 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
         }
     };
     
-    // Render nothing or a loader while redirecting
-    if (!session) {
-        return <div className="bg-neera-bg min-h-screen flex items-center justify-center font-serif text-neera-accent text-lg">Redirecting to login...</div>;
-    }
-    
     return (
         // FIX: Changed pt-16 pb-16 to py-16
         <div className="bg-neera-bg min-h-screen py-16 font-sans" style={{ backgroundColor: '#F2EDE6' }}>
@@ -351,8 +370,8 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
                                 <input type="tel" id="phone" value={shippingInfo.phone} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div>
-                                <label htmlFor="email" className="block text-xs font-medium text-neera-text tracking-wider mb-1">EMAIL FOR ORDER CONFIRMATION</label>
-                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} required className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
+                                <label htmlFor="email" className="block text-xs font-medium text-neera-text tracking-wider mb-1">EMAIL (OPTIONAL)</label>
+                                <input type="email" id="email" value={shippingInfo.email} onChange={handleInputChange} className="w-full p-3 bg-white border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-neera-accent transition-shadow" />
                             </div>
                             <div>
                                 <label htmlFor="address" className="block text-xs font-medium text-neera-text tracking-wider mb-1">ADDRESS</label>

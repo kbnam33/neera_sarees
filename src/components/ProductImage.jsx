@@ -99,7 +99,7 @@ const ProductImage = ({ images, altText, productUrl }) => {
     <Link to={productUrl} className="group text-left">
       <div 
         ref={containerRef}
-        className="overflow-hidden mb-3 bg-gray-100 relative"
+        className="neera-product-card__img-wrap mb-3 relative"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -116,7 +116,7 @@ const ProductImage = ({ images, altText, productUrl }) => {
                 loadedIndexesRef.current.add(currentImageIndex);
               }
             }}
-            className="w-full h-full object-cover aspect-[3/4] transition-transform duration-500 transform scale-[1.10] group-hover:scale-[1.15]" 
+            className="neera-product-card__img" 
           />
         )}
         {images && images.length > 1 && (
