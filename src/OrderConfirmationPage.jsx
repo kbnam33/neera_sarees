@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 // Green checkmark icon
 const CheckCircleIcon = ({ className = "w-16 h-16" }) => (
@@ -12,7 +13,6 @@ const OrderConfirmationPage = ({ order }) => {
     const navigate = useNavigate();
 
     if (!order) {
-        // Fallback for when the page is refreshed or accessed directly
         return (
             <div className="bg-neera-bg min-h-screen flex items-center justify-center text-center">
                 <div>

@@ -11,6 +11,7 @@ import ProfilePage from './ProfilePage.jsx';
 import OrderDetailPage from './OrderDetailPage.jsx';
 import ProductPage from './ProductPage.jsx';
 import FabricPage from './FabricPage.jsx';
+import UseCasePage from './UseCasePage.jsx';
 import PrintPage from './PrintPage.jsx'; // Import the new PrintPage component
 import SearchPage from './SearchPage.jsx';
 import StoryPage from './StoryPage.jsx';
@@ -19,7 +20,6 @@ import PrivacyPolicy from './PrivacyPolicy.jsx';
 import TermsAndConditions from './TermsAndConditions.jsx';
 import ShippingPolicy from './ShippingPolicy.jsx';
 import ContactUs from './ContactUs.jsx';
-import { getHomeMetaTags, getAllSareesMetaTags } from './utils/metaTags.js';
 import { getOrganizationSchema, getWebSiteSchema, getCollectionSchema, getItemListSchema } from './utils/schemaMarkup.js';
 import './styles/hero.css';
 import './styles/products.css';
@@ -364,19 +364,24 @@ const Header = ({ session }) => {
 
 // --- BRAND HERO (fabric texture editorial variant) ---
 const BrandHero = () => {
+    const [heroLoaded, setHeroLoaded] = useState(false);
     return (
         <section aria-label="Neera  Cotton and Linen Sarees for Working Women" className="neera-hero">
             <h1 className="neera-hero__seo-heading">
                 Cotton and Linen Sarees for Working Women  Neera
             </h1>
             <div className="neera-hero__bg" aria-hidden="true">
-                <img
-                    src="/New%20images/linen_close_shot3.jpeg"
-                    alt="Close-up of handwoven cotton linen fabric  Neera sarees"
-                    className="neera-hero__bg-img"
-                    fetchPriority="high"
-                    decoding="async"
-                />
+                <picture>
+                    <source srcSet="/hero-bg.webp" type="image/webp" />
+                    <img
+                        src="/New%20images/linen_close_shot3.jpeg"
+                        alt="Close-up of handwoven cotton linen fabric  Neera sarees"
+                        className={`neera-hero__bg-img ${heroLoaded ? 'is-loaded' : ''}`}
+                        fetchPriority="high"
+                        decoding="sync"
+                        onLoad={() => setHeroLoaded(true)}
+                    />
+                </picture>
                 <div className="neera-hero__overlay" />
             </div>
             <div className="neera-hero__lower">
@@ -753,49 +758,22 @@ function AppContent() {
     if (loading) return <div className="h-screen flex justify-center items-center bg-neera-bg"><p>Loading Neera...</p></div>;
     if (error && !products.length) return <div className="h-screen flex justify-center items-center bg-neera-bg text-center p-8"><p className="text-red-600 font-semibold">{error}</p></div>
 
-    // Generate meta tags and schema based on current route
-    const homeMeta = getHomeMetaTags();
-    const allSareesMeta = getAllSareesMetaTags(products.length);
-
-    // Determine meta tags and schema based on route
-    const currentMeta = location.pathname === '/products' ? allSareesMeta : 
-                       location.pathname === '/' ? homeMeta : homeMeta;
-    
     // Get schema markup
     const orgSchema = getOrganizationSchema();
     const isHomepage = location.pathname === '/';
     const isAllSarees = location.pathname === '/products';
 
-    return (
+return (
         <div className="font-sans bg-neera-bg text-neera-text">
-             <Helmet>
-                <title>{currentMeta.title}</title>
-                <meta name="description" content={currentMeta.description} />
-                <link rel="canonical" href={currentMeta.canonical} />
-                <meta property="og:title" content={currentMeta.openGraph.title} />
-                <meta property="og:description" content={currentMeta.openGraph.description} />
-                <meta property="og:url" content={currentMeta.openGraph.url} />
-                <meta property="og:type" content={currentMeta.openGraph.type} />
-                <meta property="og:image" content={currentMeta.openGraph.image} />
-                <meta property="og:site_name" content={currentMeta.openGraph.siteName} />
-                <meta name="twitter:card" content={currentMeta.twitter.card} />
-                <meta name="twitter:title" content={currentMeta.twitter.title} />
-                <meta name="twitter:description" content={currentMeta.twitter.description} />
-                <meta name="twitter:image" content={currentMeta.twitter.image} />
-                
-                {/* Organization Schema (site-wide) */}
+            <Helmet>
                 <script type="application/ld+json">
                     {JSON.stringify(orgSchema)}
                 </script>
-                
-                {/* Homepage: WebSite schema */}
                 {isHomepage && (
                     <script type="application/ld+json">
                         {JSON.stringify(getWebSiteSchema())}
                     </script>
                 )}
-                
-                {/* All Sarees page: CollectionPage and ItemList schema */}
                 {isAllSarees && products.length > 0 && (
                     <>
                         <script type="application/ld+json">
@@ -818,6 +796,7 @@ function AppContent() {
                 <Routes>
                     <Route path="/" element={<><BrandHero /><AnnouncementBanner /><BrandStatement /><CollectionEntry /><HomeProductSection title="New In" products={homeNewArrivals} /></>} />
                     <Route path="/products" element={<AllProductsGrid products={displayedProducts} sortOption={sortOption} setSortOption={setSortOption} />} />
+                    <Route path="/for/:useCaseSlug" element={<UseCasePage allProducts={products} />} />
                     <Route path="/fabric/:fabricName" element={<FabricPage allProducts={products} />} />
                     <Route path="/print/:printName" element={<PrintPage allProducts={products} />} /> {/* New route for prints */}
                     <Route path="/products/:fabric_type/:slug" element={<ProductPage allProducts={products} session={session} />} />

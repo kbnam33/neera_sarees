@@ -19,20 +19,33 @@ export function getOrganizationSchema() {
     "description": "Neera crafts Mulmul cotton, pure linen, and Chettinad sarees for working women. Breathable, office-ready, and minimal. Free shipping across India.",
     "address": {
       "@type": "PostalAddress",
+      "addressLocality": "Chennai",
+      "addressRegion": "Tamil Nadu",
       "addressCountry": "IN"
-    }
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@neera.store",
+      "contactType": "customer service",
+      "availableLanguage": ["English", "Tamil"],
+      "areaServed": "IN"
+    },
+    "sameAs": [
+      "https://www.instagram.com/neeradrapes/"
+    ]
   };
 }
 
 /**
  * Get Product schema for product pages
  * @param {Object} product - Product data from database
+ * @param {Object} reviewStats - Optional {ratingValue, reviewCount} from product_reviews
  */
-export function getProductSchema(product) {
+export function getProductSchema(product, reviewStats = null) {
   const price = product.selling_price || product.mrp;
   const inStock = product.in_stock !== false; // Default to true if undefined
   
-  return {
+  const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.name,
@@ -58,6 +71,19 @@ export function getProductSchema(product) {
     "category": `${product.fabric_type} Sarees`,
     "material": product.fabric_type
   };
+
+  // Only attach aggregateRating when real data exists (5+ reviews)
+  if (reviewStats && reviewStats.reviewCount >= 5) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": reviewStats.ratingValue,
+      "reviewCount": reviewStats.reviewCount,
+      "bestRating": "5",
+      "worstRating": "1"
+    };
+  }
+
+  return schema;
 }
 
 /**
@@ -109,7 +135,7 @@ export function getWebSiteSchema() {
     "@type": "WebSite",
     "name": "Neera Sarees",
     "url": BASE_URL,
-    "description": "Premium handwoven sarees collection featuring Chanderi, Mul Mul, Maheshwari and traditional Indian textiles.",
+    "description": "Neera offers Mulmul cotton, pure linen, and Chettinad sarees crafted for working women. Breathable, office-ready, and minimal. Free shipping across India.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {

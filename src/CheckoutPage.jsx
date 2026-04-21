@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { useCart } from './CartContext';
+import { Helmet } from 'react-helmet-async';
 
 const BackArrowIcon = ({ className = "w-4 h-4" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}>
@@ -347,7 +348,6 @@ const CheckoutPage = ({ session, onOrderSuccess }) => {
     };
     
     return (
-        // FIX: Changed pt-16 pb-16 to py-16
         <div className="bg-neera-bg min-h-screen py-16 font-sans" style={{ backgroundColor: '#F2EDE6' }}>
             {isPlacingOrder && <LoadingOverlay message="Placing Your Order..." />}
             {loading && !isPlacingOrder && <LoadingOverlay message="Processing..." />}

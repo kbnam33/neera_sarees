@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from './CartContext';
+import { supabase } from './supabaseClient';
 import ProductImage from './components/ProductImage.jsx';
 import { getProductMetaTags } from './utils/metaTags.js';
 import { getProductSchema, getOrganizationSchema, getBreadcrumbSchema } from './utils/schemaMarkup.js';
@@ -18,223 +19,220 @@ const formatCssColor = (colorName) => {
 
 // --- SWIPEABLE IMAGE CAROUSEL FOR MOBILE ---
 const ProductImageCarousel = ({ images, productName }) => {
+    console.log('🖼 images received:', images); // Debug log
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [shouldLoad, setShouldLoad] = useState(false);
-    const containerRef = useRef(null);
-    const sliderRef = useRef(null);
-    const touchStartX = useRef(0);
-    const touchStartY = useRef(0);
-    const isHorizontalSwipe = useRef(false);
-    const prefetchedRef = useRef(new Set());
+    const [shouldLoad, setShouldLoad]     = useState(false);
+    const outerRef = useRef(null);
+    const trackRef = useRef(null);
 
-    const prefetch = (idx) => {
-        if (!images?.[idx]) return;
-        const url = images[idx];
-        if (prefetchedRef.current.has(url)) return;
-        prefetchedRef.current.add(url);
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = url;
-    };
-
-    // Lazy load trigger
+    // ── Lazy load ──────────────────────────────────────────
     useEffect(() => {
-        const el = containerRef.current;
+        const el = outerRef.current;
         if (!el) return;
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setShouldLoad(true);
-                    prefetch(0); prefetch(1); prefetch(2);
-                    io.disconnect();
-                }
-            });
-        }, { rootMargin: '600px 0px' });
+        const io = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) { setShouldLoad(true); io.disconnect(); }
+        }, { rootMargin: '400px' });
         io.observe(el);
         return () => io.disconnect();
     }, []);
 
-    // Slide on index change
+    // ── Sync dots with scroll position ─────────────────────
     useEffect(() => {
-        if (sliderRef.current) {
-            sliderRef.current.style.transform = `translateX(-${currentIndex * 100}%)`;
-        }
-    }, [currentIndex]);
+        const el = trackRef.current;
+        if (!el) return;
+        const onScroll = () =>
+            setCurrentIndex(Math.round(el.scrollLeft / el.clientWidth));
+        el.addEventListener('scroll', onScroll, { passive: true });
+        return () => el.removeEventListener('scroll', onScroll);
+    }, []);
 
-    // Native non-passive touch listeners — must be native to use preventDefault
-    useEffect(() => {
-        const el = sliderRef.current;
-        if (!el || !images?.length) return;
+    const goTo = (idx) =>
+        trackRef.current?.scrollTo({
+            left: idx * trackRef.current.clientWidth,
+            behavior: 'smooth',
+        });
 
-        const onTouchStart = (e) => {
-            touchStartX.current = e.touches[0].clientX;
-            touchStartY.current = e.touches[0].clientY;
-            isHorizontalSwipe.current = false;
-        };
-
-        const onTouchMove = (e) => {
-            const dx = e.touches[0].clientX - touchStartX.current;
-            const dy = e.touches[0].clientY - touchStartY.current;
-            if (!isHorizontalSwipe.current && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
-                isHorizontalSwipe.current = true;
-            }
-            // Only block page scroll if user is clearly swiping horizontally
-            if (isHorizontalSwipe.current) e.preventDefault();
-        };
-
-        const onTouchEnd = (e) => {
-            const dx = touchStartX.current - e.changedTouches[0].clientX;
-            if (Math.abs(dx) > 50) {
-                if (dx > 0) setCurrentIndex(prev => Math.min(prev + 1, images.length - 1));
-                else        setCurrentIndex(prev => Math.max(prev - 1, 0));
-            }
-            isHorizontalSwipe.current = false;
-        };
-
-        el.addEventListener('touchstart', onTouchStart, { passive: true });
-        el.addEventListener('touchmove',  onTouchMove,  { passive: false });
-        el.addEventListener('touchend',   onTouchEnd,   { passive: true });
-
-        return () => {
-            el.removeEventListener('touchstart', onTouchStart);
-            el.removeEventListener('touchmove',  onTouchMove);
-            el.removeEventListener('touchend',   onTouchEnd);
-        };
-    }, [images]);
+    if (!images?.length) return null;
 
     return (
+        /*
+         * IMPORTANT: no overflow:hidden here — it blocks WebKit touch-scroll
+         * on the inner track. The track is absolutely inset so nothing leaks.
+         */
         <div
-            ref={containerRef}
+            ref={outerRef}
             className="neera-product-detail__img-wrap"
-            style={{ position: 'relative', overflow: 'hidden' }}
+            style={{ position: 'relative', overflow: 'visible' }}
         >
-            {/* Slider track */}
             <div
-                ref={sliderRef}
+                ref={trackRef}
+                className="neera-snap-track"
                 style={{
-                    display: 'flex',
-                    width: '100%',
-                    height: '100%',
-                    transition: 'transform 0.3s ease',
-                    willChange: 'transform',
+                    position : 'absolute',
+                    top      : 0, left: 0, right: 0, bottom: 0,
+                    display  : 'flex',
+                    /* scroll-snap — browser owns ALL touch handling */
+                    overflowX           : 'auto',
+                    overflowY           : 'hidden',
+                    scrollSnapType      : 'x mandatory',
+                    WebkitOverflowScrolling: 'touch',   /* smooth momentum on iOS */
+                    touchAction         : 'pan-x',      /* hint: this element handles horizontal panning */
+                    /* hide scrollbar */
+                    scrollbarWidth      : 'none',
+                    msOverflowStyle     : 'none',
                 }}
             >
-                {images.map((img, index) => (
-                    <div key={index} style={{ minWidth: '100%', height: '100%', flexShrink: 0 }}>
+                {/* hide webkit scrollbar — injected once */}
+                <style>{`.neera-snap-track::-webkit-scrollbar{display:none}`}</style>
+
+                {images.map((img, i) => (
+                    <div
+                        key={i}
+                        style={{
+                            minWidth       : '100%',
+                            height         : '100%',
+                            flexShrink     : 0,
+                            scrollSnapAlign: 'start',
+                        }}
+                    >
                         {shouldLoad && (
                             <img
                                 src={img}
-                                alt={`${productName} view ${index + 1}`}
-                                loading={index === 0 ? 'eager' : 'lazy'}
+                                alt={`${productName} view ${i + 1}`}
+                                loading={i === 0 ? 'eager' : 'lazy'}
                                 decoding="async"
-                                className="neera-product-detail__img"
+                                style={{
+                                    width          : '100%',
+                                    height         : '100%',
+                                    objectFit      : 'contain',
+                                    objectPosition : 'center top',
+                                    background     : '#e8e0d8',
+                                    display        : 'block',
+                                }}
                             />
                         )}
                     </div>
                 ))}
             </div>
 
-            {/* Dot indicators — explicit z-index so they sit above the slider */}
-            <div style={{
-                position: 'absolute',
-                bottom: '16px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                gap: '8px',
-                zIndex: 10,
-            }}>
-                {images.map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setCurrentIndex(index)}
-                        aria-label={`View image ${index + 1}`}
-                        style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            border: 'none',
-                            padding: 0,
-                            cursor: 'pointer',
-                            backgroundColor: currentIndex === index
-                                ? 'white'
-                                : 'rgba(255,255,255,0.45)',
-                            transition: 'background-color 0.3s',
-                        }}
-                    />
-                ))}
-            </div>
+            {/* Dots — only render when there is something to swipe to */}
+            {images.length > 1 && (
+                <div style={{
+                    position : 'absolute',
+                    bottom   : 16,
+                    left     : '50%',
+                    transform: 'translateX(-50%)',
+                    display  : 'flex',
+                    gap      : 8,
+                    zIndex   : 10,
+                }}>
+                    {images.map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => goTo(i)}
+                            aria-label={`View image ${i + 1}`}
+                            style={{
+                                width       : 8,
+                                height      : 8,
+                                borderRadius: '50%',
+                                border      : 'none',
+                                padding     : 0,
+                                cursor      : 'pointer',
+                                background  : i === currentIndex
+                                    ? '#ffffff'
+                                    : 'rgba(255,255,255,0.45)',
+                                transition  : 'background 0.3s',
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
 
 
-// --- PRODUCT INFO TABS ---
-const ProductInfoTabs = ({product}) => {
-    const [activeTab, setActiveTab] = useState('DETAILS');
+// --- PRODUCT INFO ACCORDION ---
+const ProductInfoTabs = ({ product }) => {
+    const [openSection, setOpenSection] = useState('DETAILS');
 
-    // --- MODIFICATION: Tabs now read from product properties with fallbacks ---
-    const tabs = {
-        DETAILS: { 
-            title: 'Details & Craftsmanship', 
-            // This reads from product.description. If it's empty, it shows the default text.
-            text: product.description || 'This exquisite piece is handcrafted by master artisans, featuring traditional weaving techniques passed down through generations. Made from the finest silk, its unique texture and drape are a testament to its quality. Kindly note, product tones may vary slightly due to the natural dyeing process and lighting.' 
+    const sections = [
+        {
+            key: 'DETAILS',
+            title: 'Details & Craftsmanship',
+            text: product.description || 'This exquisite piece is handcrafted by master artisans, featuring traditional weaving techniques passed down through generations. Made from the finest silk, its unique texture and drape are a testament to its quality. Kindly note, product tones may vary slightly due to the natural dyeing process and lighting.',
         },
-        CARE: { 
-            title: 'Care Instructions', 
-            // This reads from product.care_instructions. If it's empty, it shows the default text.
-            text: product.care_instructions || 'To preserve the beauty of your saree, we recommend dry cleaning only. Store in a cool, dry place away from direct sunlight. Fold carefully and avoid using metal hangers to maintain the integrity of the fabric.' 
+        {
+            key: 'CARE',
+            title: 'Care Instructions',
+            text: product.care_instructions || 'To preserve the beauty of your saree, we recommend dry cleaning only. Store in a cool, dry place away from direct sunlight. Fold carefully and avoid using metal hangers to maintain the integrity of the fabric.',
         },
-        SHIPPING: { 
-            title: 'Shipping & Returns', 
-            // This reads from product.shipping_returns. If it's empty, it shows the default text.
-            text: product.shipping_returns || 'Enjoy complimentary shipping within India. For international orders, charges and duties may apply. We only offer exchanges for products that are defective or damaged upon receipt. Please refer to our detailed Refund and Exchange Policy for more information.'
-        }
-    };
-    // --- END MODIFICATION ---
+        {
+            key: 'SHIPPING',
+            title: 'Shipping & Returns',
+            text: product.shipping_returns || 'Enjoy complimentary shipping within India. For international orders, charges and duties may apply. We only offer exchanges for products that are defective or damaged upon receipt. Please refer to our detailed Refund and Exchange Policy for more information.',
+        },
+    ];
 
     return (
-        <div className="mt-16">
-            <div className="border-b border-neera-border">
-                <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
-                    {Object.keys(tabs).map((key) => (
+        <div className="mt-16 border-t border-neera-border">
+            {sections.map((section, i) => {
+                const isOpen = openSection === section.key;
+                return (
+                    <div key={section.key} className={i < sections.length - 1 ? 'border-b border-neera-border' : ''}>
+                        {/* Header row — always visible, tappable */}
                         <button
-                            key={key}
-                            onClick={() => setActiveTab(key)}
-                            className={`${
-                                activeTab === key
-                                    ? 'border-neera-accent text-neera-accent'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-serif text-sm md:text-md transition-colors duration-300 focus:outline-none`}
+                            onClick={() => setOpenSection(isOpen ? null : section.key)}
+                            className="w-full flex items-center justify-between py-5 text-left focus:outline-none group"
+                            aria-expanded={isOpen}
                         >
-                            {tabs[key].title}
+                            <span
+                                className="font-serif text-sm md:text-base tracking-wide transition-colors duration-200"
+                                style={{ color: isOpen ? '#5C1F2E' : '#2a1f1a' }}
+                            >
+                                {section.title}
+                            </span>
+                            {/* +/− icon */}
+                            <span
+                                className="ml-4 flex-shrink-0 transition-transform duration-300"
+                                style={{
+                                    color: '#5C1F2E',
+                                    transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                                    fontSize: '1.4rem',
+                                    lineHeight: 1,
+                                    fontWeight: 300,
+                                }}
+                                aria-hidden="true"
+                            >
+                                +
+                            </span>
                         </button>
-                    ))}
-                </nav>
-            </div>
-            <div className="py-8 h-64 overflow-y-auto hover:pr-2 transition-all duration-200" 
-                style={{
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#D1D5DB transparent'
-                }}>
-                <div className="text-sm leading-relaxed max-w-prose animate-fadeIn pr-2"
-                    style={{
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word'
-                    }}
-                    dangerouslySetInnerHTML={{
-                        __html: tabs[activeTab].text
-                            // Section headers (lines ending with colon at the start or lines like "Product Details:")
-                            .replace(/^([A-Z][^:\n]*:)$/gm, '<div class="font-serif text-base font-semibold text-neera-text mt-5 mb-1.5 tracking-wide first:mt-0">$1</div>')
-                            // Label-value pairs (e.g., "Fabric: 100% Pure Cotton")
-                            .replace(/^([A-Za-z\s&]+):\s*(.+)$/gm, '<div class="mb-1"><span class="font-semibold text-neera-text tracking-wider text-xs uppercase">$1:</span> <span class="text-gray-600 ml-1">$2</span></div>')
-                            // Bullet points
-                            .replace(/^[•·]\s*(.+)$/gm, '<div class="flex items-start mb-0.5 ml-1"><span class="text-neera-accent mr-2 flex-shrink-0">•</span><span class="text-gray-600">$1</span></div>')
-                            // Regular paragraphs (lines that don't match above patterns)
-                            .replace(/^(?!<div)([^<\n].+)$/gm, '<p class="text-gray-600 mb-1.5">$1</p>')
-                    }}
-                />
-            </div>
+
+                        {/* Collapsible content */}
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateRows: isOpen ? '1fr' : '0fr',
+                                transition: 'grid-template-rows 0.3s ease',
+                            }}
+                        >
+                            <div style={{ overflow: 'hidden' }}>
+                                <div
+                                    className="pb-6 text-sm leading-relaxed max-w-prose pr-2"
+                                    style={{ color: '#4a3f38', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: section.text
+                                            .replace(/^([A-Z][^:\n]*:)$/gm, '<div class="font-serif text-base font-semibold text-neera-text mt-5 mb-1.5 tracking-wide first:mt-0">$1</div>')
+                                            .replace(/^([A-Za-z\s&]+):\s*(.+)$/gm, '<div class="mb-1"><span class="font-semibold text-neera-text tracking-wider text-xs uppercase">$1:</span> <span class="text-gray-600 ml-1">$2</span></div>')
+                                            .replace(/^[•·]\s*(.+)$/gm, '<div class="flex items-start mb-0.5 ml-1"><span class="text-neera-accent mr-2 flex-shrink-0">•</span><span class="text-gray-600">$1</span></div>')
+                                            .replace(/^(?<!<)(?!\s*<div)((?!^\s*$)[^<\n].+)$/gm, '<p class="text-gray-600 mb-1.5">$1</p>')
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     );
 };
@@ -248,6 +246,7 @@ const ProductPage = ({ allProducts, session }) => {
     const [selectedColor, setSelectedColor] = useState(null);
     const [mainImage, setMainImage] = useState('');
     const [isAddToBagHovered, setIsAddToBagHovered] = useState(false);
+    const [reviewStats, setReviewStats] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -268,6 +267,34 @@ const ProductPage = ({ allProducts, session }) => {
         }
     }, [slug, allProducts, navigate]);
 
+    // Fetch review stats for this product
+    useEffect(() => {
+        if (!product) return;
+        
+        const fetchReviewStats = async () => {
+            try {
+                const { data } = await supabase
+                    .from('product_reviews')
+                    .select('rating')
+                    .eq('product_id', product.id)
+                    .eq('is_approved', true);
+
+                if (data && data.length >= 5) {
+                    const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+                    setReviewStats({
+                        ratingValue: avg.toFixed(1),
+                        reviewCount: data.length
+                    });
+                }
+            } catch (err) {
+                // Table may not exist yet - that's OK
+                console.log('Reviews not available yet');
+            }
+        };
+
+        fetchReviewStats();
+    }, [product]);
+
     const handleAddToCart = () => { if(product) addToCart(product); };
     
     const handleBuyNow = () => {
@@ -287,7 +314,7 @@ const ProductPage = ({ allProducts, session }) => {
 
     // Generate comprehensive meta tags for product
     const productMeta = getProductMetaTags(product);
-    const productSchema = getProductSchema(product);
+    const productSchema = getProductSchema(product, reviewStats);
     const orgSchema = getOrganizationSchema();
     
     // Breadcrumb data
@@ -355,7 +382,7 @@ const ProductPage = ({ allProducts, session }) => {
                             <div className="flex gap-4">
                                 {product.images && product.images.map((img, index) => (
                                     <div key={index} className="w-20 aspect-[9/16] bg-gray-100 cursor-pointer" onMouseEnter={() => setMainImage(img)}>
-                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} loading="lazy" decoding="async" className={`w-full h-full object-contain transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
+                                        <img src={img} alt={`${product.name} thumbnail ${index + 1}`} loading="lazy" decoding="async" width={80} height={142} className={`w-full h-full object-contain transition-opacity duration-300 ${mainImage === img ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`} />
                                     </div>
                                 ))}
                             </div>

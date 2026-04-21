@@ -1,64 +1,61 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { getFabricCategoryMetaTags } from './utils/metaTags.js';
-import { getCollectionSchema, getOrganizationSchema } from './utils/schemaMarkup.js';
+import { USE_CASES } from './config/useCaseMap';
+import { getUseCaseMetaTags } from './utils/metaTags';
+import { getCollectionSchema, getOrganizationSchema } from './utils/schemaMarkup';
 
-const FabricPage = ({ allProducts }) => {
-    const { fabricName } = useParams();
-    const normalizedFabricName = fabricName.toLowerCase();
+const UseCasePage = ({ allProducts }) => {
+    const { useCaseSlug } = useParams();
+    const useCase = USE_CASES[useCaseSlug];
+    const navigate = useNavigate();
 
-    const filteredProducts = allProducts.filter(p => p.fabric_type.toLowerCase() === normalizedFabricName);
+    if (!useCase) {
+        navigate('/products', { replace: true });
+        return null;
+    }
 
-    const fabricDescriptions = {
-        linen: "Crisp. Structured. Holds its drape all day.",
-        mulmul: "Feather-light. Breathable. Built for 8-hour days.",
-        "mul mul cotton": "Feather-light. Breathable. Built for 8-hour days.",
-        chettinad: "Bold weaves. Heritage structure. Office-ready.",
-        default: `${fabricName} sarees - made for working women.`
-    };
-    const fabricDesc = fabricDescriptions[normalizedFabricName] || fabricDescriptions.default;
+    const filteredProducts = allProducts.filter(p =>
+        useCase.fabrics.some(f => f.toLowerCase() === p.fabric_type.toLowerCase())
+    );
 
-    // Generate meta tags
-    const fabricMeta = getFabricCategoryMetaTags(fabricName, fabricDesc);
+    const meta = getUseCaseMetaTags(useCase);
     const collectionSchema = getCollectionSchema(
-        `${fabricName} Sarees Collection`,
-        `Explore ${filteredProducts.length} premium ${fabricName} sarees with authentic handwoven craftsmanship.`,
-        `/fabric/${fabricName}`,
+        useCase.metaTitle,
+        useCase.metaDescription,
+        useCase.canonicalPath,
         filteredProducts.length
     );
     const orgSchema = getOrganizationSchema();
-    
+
     return (
         <div className="neera-product-page">
             <Helmet>
-                <title>{fabricMeta.title}</title>
-                <meta name="description" content={fabricMeta.description} />
-                <link rel="canonical" href={fabricMeta.canonical} />
-                <meta property="og:title" content={fabricMeta.openGraph.title} />
-                <meta property="og:description" content={fabricMeta.openGraph.description} />
-                <meta property="og:url" content={fabricMeta.openGraph.url} />
-                <meta property="og:type" content={fabricMeta.openGraph.type} />
-                <meta property="og:image" content={fabricMeta.openGraph.image} />
-                <meta property="og:site_name" content={fabricMeta.openGraph.siteName} />
-                <meta name="twitter:card" content={fabricMeta.twitter.card} />
-                <meta name="twitter:title" content={fabricMeta.twitter.title} />
-                <meta name="twitter:description" content={fabricMeta.twitter.description} />
-                <meta name="twitter:image" content={fabricMeta.twitter.image} />
-                
-                {/* Collection Schema */}
+                <title>{meta.title}</title>
+                <meta name="description" content={meta.description} />
+                <link rel="canonical" href={meta.canonical} />
+                <meta property="og:title" content={meta.openGraph.title} />
+                <meta property="og:description" content={meta.openGraph.description} />
+                <meta property="og:url" content={meta.openGraph.url} />
+                <meta property="og:type" content={meta.openGraph.type} />
+                <meta property="og:image" content={meta.openGraph.image} />
+                <meta property="og:site_name" content={meta.openGraph.siteName} />
+                <meta name="twitter:card" content={meta.twitter.card} />
+                <meta name="twitter:title" content={meta.twitter.title} />
+                <meta name="twitter:description" content={meta.twitter.description} />
+                <meta name="twitter:image" content={meta.twitter.image} />
+
                 <script type="application/ld+json">
                     {JSON.stringify(collectionSchema)}
                 </script>
-                {/* Organization Schema */}
                 <script type="application/ld+json">
                     {JSON.stringify(orgSchema)}
                 </script>
             </Helmet>
             <div className="neera-product-page__header">
-                <span className="neera-product-page__label">The Collection</span>
-                <h1 className="neera-product-page__heading">{fabricName} Sarees.</h1>
-                <p className="neera-product-page__desc">{fabricDesc}</p>
+                <span className="neera-product-page__label">{useCase.label}</span>
+                <h1 className="neera-product-page__heading">{useCase.headline}</h1>
+                <p className="neera-product-page__desc">{useCase.subheading}</p>
             </div>
             <div>
                 {filteredProducts.length > 0 ? (
@@ -95,8 +92,18 @@ const FabricPage = ({ allProducts }) => {
                     </div>
                 )}
             </div>
+            {filteredProducts.length > 0 && (
+                <p className="neera-product-page__desc" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                    <Link
+                        to={`/fabric/${useCase.fabrics[0]}`}
+                        style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                    >
+                        Browse all {useCase.label} sarees by fabric &rarr;
+                    </Link>
+                </p>
+            )}
         </div>
     );
 };
 
-export default FabricPage;
+export default UseCasePage;

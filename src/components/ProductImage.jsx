@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-const ProductImage = ({ images, altText, productUrl }) => {
+const ProductImage = ({ images, altText, productUrl, isPriority = false }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(isPriority);
   const loadedIndexesRef = useRef(new Set());
   const prefetchedRef = useRef(new Set());
   const intervalRef = useRef(null);
@@ -77,13 +77,13 @@ const ProductImage = ({ images, altText, productUrl }) => {
 
   // Only load/render the image once it is about to enter the viewport
   useEffect(() => {
+    if (isPriority) return;
     const el = containerRef.current;
     if (!el) return;
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setShouldLoad(true);
-          // Warm up the first few images so hover is instant
           prefetchIndex(0);
           prefetchIndex(1);
           prefetchIndex(2);
@@ -93,7 +93,7 @@ const ProductImage = ({ images, altText, productUrl }) => {
     }, { rootMargin: '600px 0px' });
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [isPriority]);
 
   return (
     <Link to={productUrl} className="group text-left">

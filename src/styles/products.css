@@ -198,14 +198,9 @@
   width: 100%;
   aspect-ratio: 9 / 16;
   height: auto;
-  overflow: hidden;
+  overflow: visible;
   background: #e8e0d8;
-}
-
-/* Inner slider needs explicit height */
-.neera-product-detail__img-wrap > div {
-  width: 100%;
-  height: 100%;
+  position: relative;
 }
 
 /* Tablet and below - scale down while maintaining ratio */

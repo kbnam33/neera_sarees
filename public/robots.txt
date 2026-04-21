@@ -4,6 +4,7 @@ Disallow: /auth
 Disallow: /checkout
 Disallow: /cart
 Disallow: /profile
+Disallow: /order/
 Disallow: /order-confirmation
 Disallow: /search
 

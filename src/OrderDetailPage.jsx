@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import { Helmet } from 'react-helmet-async';
 
 const MailIcon = ({ className = "w-6 h-6" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
@@ -65,7 +66,6 @@ const OrderDetailPage = ({ session }) => {
     const { shipping_address: address, products, total_price, original_price, discount_code, discount_amount, created_at } = order;
     
     return (
-        // FIX: Changed py-24 to pt-12 pb-24 for consistent spacing
         <div className="bg-neera-bg min-h-screen pt-12 pb-24 px-4 sm:px-8 font-sans">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
@@ -148,7 +148,7 @@ const OrderDetailPage = ({ session }) => {
                             </div>
                         </div>
 
-                        <div className="md:col-span-1 bg-white/70 p-6 border border-gray-200/80 rounded-lg">
+<div className="md:col-span-1 bg-white/70 p-6 border border-gray-200/80 rounded-lg">
                             <div className="flex items-center gap-x-3">
                                 <MailIcon className="w-8 h-8 text-neera-accent flex-shrink-0" />
                                 <h3 className="text-xl font-serif text-neera-accent">Need Assistance?</h3>

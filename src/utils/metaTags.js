@@ -61,7 +61,7 @@ export function getHomeMetaTags() {
     type: 'website'
   });
   // Set full title with site name (beyond 60-char SEO truncation used for og:title)
-  meta.title = 'Neera Sarees \u2013 Cotton & Linen Sarees for Working Women | neera.store';
+  meta.title = 'Neera \u2013 Cotton & Linen Sarees for Working Women';
   return meta;
 }
 
@@ -119,7 +119,7 @@ export function getPrintCategoryMetaTags(printType, productCount) {
   return generateMetaTags({
     title: `${printType} Sarees Collection | Neera Sarees`,
     description: `Discover ${productCount} stunning ${printType} sarees. Traditional prints meet modern elegance in handwoven perfection.`,
-    canonical: `/prints/${printType}`,
+    canonical: `/print/${printType}`,
     type: 'website'
   });
 }
@@ -192,6 +192,19 @@ export function getShippingPolicyMetaTags() {
     title: 'Shipping Policy | Neera Sarees',
     description: 'Learn about Neera Sarees\' shipping policy. Fast, secure delivery of your handwoven sarees across India.',
     canonical: '/shipping-policy',
+    type: 'website'
+  });
+}
+
+/**
+ * Generate meta tags for use-case category page
+ * @param {Object} useCase - Use-case config object
+ */
+export function getUseCaseMetaTags(useCase) {
+  return generateMetaTags({
+    title: useCase.metaTitle,
+    description: useCase.metaDescription,
+    canonical: useCase.canonicalPath,
     type: 'website'
   });
 }

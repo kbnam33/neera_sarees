@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { useCart } from './CartContext';
+import { Helmet } from 'react-helmet-async';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);

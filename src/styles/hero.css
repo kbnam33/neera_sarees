@@ -20,8 +20,11 @@
   height: 100%;
   object-fit: cover;
   object-position: center 30%;
-  animation: hero-breathe 18s ease-in-out infinite alternate;
   transform-origin: center;
+}
+
+.neera-hero__bg-img.is-loaded {
+  animation: hero-breathe 18s ease-in-out infinite alternate;
 }
 
 @keyframes hero-breathe {

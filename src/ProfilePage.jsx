@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ArrowRightIcon = ({ className = "w-5 h-5" }) => (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>);
 
@@ -46,7 +47,6 @@ const ProfilePage = ({ session }) => {
     }
 
     return (
-        // FIX: Changed pt-32 to pt-12 for consistent spacing
         <div className="bg-neera-bg min-h-screen pt-12 pb-24 font-sans">
             <div className="max-w-screen-lg mx-auto px-4 sm:px-8">
                 <div className="text-center border-b border-gray-200 pb-10 mb-16">
