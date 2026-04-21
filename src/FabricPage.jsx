@@ -71,7 +71,7 @@ const FabricPage = ({ allProducts }) => {
                                             src={product.images?.[0] || '/New%20images/linen_close_shot2.jpeg'}
                                             alt={`${product.name} — Neera`}
                                             loading={index < 3 ? "eager" : "lazy"}
-                                            fetchPriority={index === 0 ? "high" : index < 3 ? "auto" : undefined}
+                                            fetchpriority={index === 0 ? "high" : index < 3 ? "auto" : undefined}
                                             decoding="async"
                                             className="neera-product-card__img"
                                         />

@@ -136,19 +136,28 @@ const MobileMenu = ({ isOpen, onClose, session, onOpenSearch }) => {
             <nav className="flex flex-col px-6 pt-8 gap-1 overflow-y-auto">
                 <p className="text-[9px] tracking-[0.35em] text-neera-text/35 uppercase font-sans mb-3">COLLECTION</p>
                 <button
-                    onClick={() => handleNavigate('/fabric/linen')}
+                    onClick={() => handleNavigate('/for/office-meetings')}
                     className="text-left font-serif text-neera-accent text-2xl py-3 border-b border-neera-border w-full flex items-center justify-between"
                 >
                     Presentation Days
                     <ArrowRightIcon className="w-4 h-4 opacity-40" />
                 </button>
                 <button
-                    onClick={() => handleNavigate('/fabric/Mul Mul Cotton')}
+                    onClick={() => handleNavigate('/for/everyday-work')}
                     className="text-left font-serif text-neera-accent text-2xl py-3 border-b border-neera-border w-full flex items-center justify-between"
                 >
                     Everyday at Work
                     <ArrowRightIcon className="w-4 h-4 opacity-40" />
                 </button>
+                {/* Heritage Days option hidden until more products available
+                <button
+                    onClick={() => handleNavigate('/for/heritage-occasions')}
+                    className="text-left font-serif text-neera-accent text-2xl py-3 border-b border-neera-border w-full flex items-center justify-between"
+                >
+                    Heritage Days
+                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
+                </button>
+                */}
 
                 <div className="mt-6 mb-2">
                     <p className="text-[9px] tracking-[0.35em] text-neera-text/35 uppercase font-sans">EXPLORE</p>
@@ -266,19 +275,28 @@ const Header = ({ session }) => {
                             >
                                 <div className="neera-nav__dropdown">
                                     <Link
-                                        to="/fabric/linen"
+                                        to="/for/office-meetings"
                                         onClick={() => setActiveDropdown(null)}
                                         className="neera-nav__dropdown-item"
                                     >
                                         Presentation Days
                                     </Link>
                                     <Link
-                                        to="/fabric/Mul Mul Cotton"
+                                        to="/for/everyday-work"
                                         onClick={() => setActiveDropdown(null)}
                                         className="neera-nav__dropdown-item"
                                     >
                                         Everyday at Work
                                     </Link>
+                                    {/* Heritage Days option hidden until more products available
+                                    <Link
+                                        to="/for/heritage-occasions"
+                                        onClick={() => setActiveDropdown(null)}
+                                        className="neera-nav__dropdown-item"
+                                    >
+                                        Heritage Days
+                                    </Link>
+                                    */}
                                     <div className="neera-nav__dropdown-divider" />
                                     <Link
                                         to="/products"
@@ -371,17 +389,14 @@ const BrandHero = () => {
                 Cotton and Linen Sarees for Working Women  Neera
             </h1>
             <div className="neera-hero__bg" aria-hidden="true">
-                <picture>
-                    <source srcSet="/hero-bg.webp" type="image/webp" />
-                    <img
-                        src="/New%20images/linen_close_shot3.jpeg"
-                        alt="Close-up of handwoven cotton linen fabric  Neera sarees"
-                        className={`neera-hero__bg-img ${heroLoaded ? 'is-loaded' : ''}`}
-                        fetchPriority="high"
-                        decoding="sync"
-                        onLoad={() => setHeroLoaded(true)}
-                    />
-                </picture>
+                <img
+                    src="/hero-bg.jpeg"
+                    alt=""
+                    fetchpriority="high"
+                    decoding="sync"
+                    className={`neera-hero__bg-img ${heroLoaded ? 'is-loaded' : ''}`}
+                    onLoad={() => setHeroLoaded(true)}
+                />
                 <div className="neera-hero__overlay" />
             </div>
             <div className="neera-hero__lower">
@@ -457,7 +472,7 @@ const AnnouncementBanner = () => {
 const CollectionEntry = () => {
     return (
         <section className="neera-chapters" aria-label="Shop by Fabric">
-            <a href="/fabric/linen" className="neera-chapters__card">
+            <a href="/for/office-meetings" className="neera-chapters__card">
                 <div className="neera-chapters__spine" aria-hidden="true">
                     <span className="neera-chapters__spine-text">01 / Linen</span>
                 </div>
