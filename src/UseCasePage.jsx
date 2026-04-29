@@ -55,7 +55,14 @@ const UseCasePage = ({ allProducts }) => {
             <div className="neera-product-page__header">
                 <span className="neera-product-page__label">{useCase.label}</span>
                 <h1 className="neera-product-page__heading">{useCase.headline}</h1>
+                <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 <p className="neera-product-page__desc">{useCase.subheading}</p>
+                {useCase.bodyCopy && (
+                    <p className="neera-product-page__desc" style={{ lineHeight: '1.8' }}>
+                        {useCase.bodyCopy}
+                    </p>
+                )}
+            </div>
             </div>
             <div>
                 {filteredProducts.length > 0 ? (
@@ -66,7 +73,7 @@ const UseCasePage = ({ allProducts }) => {
                                     <div className="neera-product-card__img-wrap">
                                         <img
                                             src={product.images?.[0] || '/New%20images/linen_close_shot2.jpeg'}
-                                            alt={`${product.name} — Neera`}
+                                            alt={`${product.name} — ${product.fabric_type} saree for working women`}
                                             loading={index < 3 ? "eager" : "lazy"}
                                             fetchpriority={index === 0 ? "high" : index < 3 ? "auto" : undefined}
                                             decoding="async"

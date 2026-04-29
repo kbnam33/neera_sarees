@@ -149,15 +149,6 @@ const MobileMenu = ({ isOpen, onClose, session, onOpenSearch }) => {
                     Everyday at Work
                     <ArrowRightIcon className="w-4 h-4 opacity-40" />
                 </button>
-                {/* Heritage Days option hidden until more products available
-                <button
-                    onClick={() => handleNavigate('/for/heritage-occasions')}
-                    className="text-left font-serif text-neera-accent text-2xl py-3 border-b border-neera-border w-full flex items-center justify-between"
-                >
-                    Heritage Days
-                    <ArrowRightIcon className="w-4 h-4 opacity-40" />
-                </button>
-                */}
 
                 <div className="mt-6 mb-2">
                     <p className="text-[9px] tracking-[0.35em] text-neera-text/35 uppercase font-sans">EXPLORE</p>
@@ -288,15 +279,6 @@ const Header = ({ session }) => {
                                     >
                                         Everyday at Work
                                     </Link>
-                                    {/* Heritage Days option hidden until more products available
-                                    <Link
-                                        to="/for/heritage-occasions"
-                                        onClick={() => setActiveDropdown(null)}
-                                        className="neera-nav__dropdown-item"
-                                    >
-                                        Heritage Days
-                                    </Link>
-                                    */}
                                     <div className="neera-nav__dropdown-divider" />
                                     <Link
                                         to="/products"
@@ -503,7 +485,7 @@ const CollectionEntry = () => {
                 <span className="neera-chapters__rule-line" />
             </div>
 
-            <a href="/fabric/mulmul" className="neera-chapters__card neera-chapters__card--flipped">
+            <a href="/for/everyday-work" className="neera-chapters__card neera-chapters__card--flipped">
                 <div className="neera-chapters__spine" aria-hidden="true">
                     <span className="neera-chapters__spine-text">02 / Mulmul</span>
                 </div>

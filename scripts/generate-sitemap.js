@@ -3,9 +3,11 @@
  * Generates XML sitemap with all product, category, and key pages
  * All Sarees page is prioritized as PRIMARY TARGET (priority 1.0)
  */
-
+import fetch from 'node-fetch';
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
+
+global.fetch = fetch;
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || 'https://qjkyzqvnvcgqejnlhegf.supabase.co',
@@ -121,4 +123,26 @@ async function generateSitemap() {
   console.log(`   - Key pages: ${keyPages.length} (priority 0.3-0.6)`);
 }
 
-generateSitemap().catch(console.error);
+generateSitemap().catch((err) => {
+  console.error('❌ Sitemap generation failed:', err.message);
+  console.log('⚠️  Writing static-only fallback sitemap...');
+
+  const fallback = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://neera.store/</loc><priority>0.9</priority></url>
+  <url><loc>https://neera.store/products</loc><priority>1.0</priority></url>
+  <url><loc>https://neera.store/for/office-meetings</loc><priority>0.85</priority></url>
+  <url><loc>https://neera.store/for/everyday-work</loc><priority>0.85</priority></url>
+  <url><loc>https://neera.store/for/heritage-occasions</loc><priority>0.85</priority></url>
+  <url><loc>https://neera.store/story</loc><priority>0.6</priority></url>
+  <url><loc>https://neera.store/contact-us</loc><priority>0.5</priority></url>
+  <url><loc>https://neera.store/shipping-policy</loc><priority>0.4</priority></url>
+  <url><loc>https://neera.store/refund-and-exchange-policy</loc><priority>0.4</priority></url>
+  <url><loc>https://neera.store/privacy-policy</loc><priority>0.3</priority></url>
+  <url><loc>https://neera.store/terms-and-conditions</loc><priority>0.3</priority></url>
+</urlset>`;
+
+  fs.writeFileSync('./public/sitemap.xml', fallback);
+  console.log('✅ Fallback sitemap written to public/sitemap.xml');
+  process.exit(0);
+});
